@@ -1,0 +1,2577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chaterra — Discover</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* ========== RESET & BASE ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', 'Inter', sans-serif;
+            background: #0B0F1A;
+            color: #FFFFFF;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 90px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(77, 163, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        /* ========== ANIMATED BG ========== */
+        .bg-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-glow .g {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.15;
+        }
+
+        .bg-glow .g:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            background: #A855F7;
+            top: -200px;
+            right: -100px;
+            animation: glow1 12s ease-in-out infinite;
+        }
+
+        .bg-glow .g:nth-child(2) {
+            width: 350px;
+            height: 350px;
+            background: #4DA3FF;
+            bottom: -150px;
+            left: -100px;
+            animation: glow2 15s ease-in-out infinite;
+        }
+
+        .bg-glow .g:nth-child(3) {
+            width: 250px;
+            height: 250px;
+            background: #FF4D8D;
+            top: 40%;
+            left: 60%;
+            animation: glow3 10s ease-in-out infinite;
+        }
+
+        @keyframes glow1 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.15; }
+            33% { transform: translate(-80px, 60px) scale(1.2); opacity: 0.2; }
+            66% { transform: translate(40px, -40px) scale(0.9); opacity: 0.12; }
+        }
+
+        @keyframes glow2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(60px, -50px) scale(1.15); }
+        }
+
+        @keyframes glow3 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-40px, 30px) scale(1.1); }
+        }
+
+        /* ========== CONTENT WRAPPER ========== */
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ========== TOP HEADER ========== */
+        .top-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(11, 15, 26, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(77, 163, 255, 0.08);
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+        }
+
+        .top-header.scrolled {
+            background: rgba(11, 15, 26, 0.95);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #A855F7, #4DA3FF);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            animation: logoFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .header-logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1.5px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(26, 36, 56, 0.6);
+            color: #A1A1AA;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .header-btn:hover {
+            background: rgba(77, 163, 255, 0.15);
+            color: #4DA3FF;
+            transform: translateY(-2px);
+        }
+
+        .header-btn:active {
+            transform: scale(0.92);
+        }
+
+        .header-btn .notif-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: #FF3B30;
+            border-radius: 50%;
+            border: 2px solid #0B0F1A;
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        .header-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid rgba(77, 163, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .header-avatar:hover {
+            border-color: #4DA3FF;
+            transform: scale(1.05);
+        }
+
+        .header-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .header-avatar .avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* ========== GREETING SECTION ========== */
+        .greeting-section {
+            padding: 20px 16px 8px;
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeUp 0.6s ease;
+        }
+
+        .greeting-text {
+            font-size: 14px;
+            color: #A1A1AA;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .greeting-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .greeting-name span {
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ========== SEARCH BAR ========== */
+        .search-section {
+            padding: 12px 16px 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeUp 0.7s ease;
+        }
+
+        .search-bar {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar i.search-icon {
+            position: absolute;
+            left: 16px;
+            color: #6B7280;
+            font-size: 15px;
+            z-index: 2;
+            transition: color 0.3s ease;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 14px 48px 14px 44px;
+            background: rgba(18, 26, 42, 0.8);
+            border: 1.5px solid rgba(77, 163, 255, 0.1);
+            border-radius: 16px;
+            color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar input::placeholder {
+            color: #6B7280;
+        }
+
+        .search-bar input:focus {
+            border-color: #4DA3FF;
+            box-shadow: 0 0 0 4px rgba(77, 163, 255, 0.1);
+            background: rgba(18, 26, 42, 1);
+        }
+
+        .search-bar input:focus ~ i.search-icon {
+            color: #4DA3FF;
+        }
+
+        .search-bar .search-filter-btn {
+            position: absolute;
+            right: 6px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            color: #FFFFFF;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-bar .search-filter-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 16px rgba(77, 163, 255, 0.3);
+        }
+
+        /* ========== CATEGORY PILLS ========== */
+        .category-section {
+            padding: 0 16px 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeUp 0.8s ease;
+        }
+
+        .category-scroll {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .category-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-pill {
+            padding: 8px 18px;
+            border-radius: 24px;
+            border: 1.5px solid rgba(77, 163, 255, 0.15);
+            background: rgba(18, 26, 42, 0.5);
+            color: #A1A1AA;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .category-pill:hover {
+            border-color: rgba(77, 163, 255, 0.4);
+            color: #FFFFFF;
+            transform: translateY(-2px);
+        }
+
+        .category-pill.active {
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            border-color: transparent;
+            color: #FFFFFF;
+            box-shadow: 0 4px 16px rgba(77, 163, 255, 0.25);
+        }
+
+        .category-pill:active {
+            transform: scale(0.95);
+        }
+
+        /* ========== SECTION HEADER ========== */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 16px 12px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+        }
+
+        .section-icon.live {
+            background: rgba(255, 59, 48, 0.15);
+            color: #FF3B30;
+        }
+
+        .section-icon.trending {
+            background: rgba(251, 191, 36, 0.15);
+            color: #FBBF24;
+        }
+
+        .section-icon.upcoming {
+            background: rgba(77, 163, 255, 0.15);
+            color: #4DA3FF;
+        }
+
+        .section-icon.recommended {
+            background: rgba(168, 85, 247, 0.15);
+            color: #A855F7;
+        }
+
+        .section-title h2 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .section-count {
+            font-size: 11px;
+            color: #6B7280;
+            margin-left: -4px;
+            margin-top: 2px;
+        }
+
+        .see-all-btn {
+            font-size: 13px;
+            color: #4DA3FF;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s ease;
+            background: none;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .see-all-btn:hover {
+            color: #A855F7;
+            gap: 8px;
+        }
+
+        /* ========== HORIZONTAL SCROLL CONTAINER ========== */
+        .scroll-container {
+            padding: 0 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .horizontal-scroll {
+            display: flex;
+            gap: 14px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scroll-snap-type: x mandatory;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* ========== STREAM CARD — LIVE ========== */
+        .stream-card {
+            min-width: 260px;
+            max-width: 260px;
+            background: rgba(18, 26, 42, 0.7);
+            border: 1px solid rgba(77, 163, 255, 0.08);
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            scroll-snap-align: start;
+            flex-shrink: 0;
+            position: relative;
+            animation: cardAppear 0.5s ease backwards;
+        }
+
+        .stream-card:nth-child(1) { animation-delay: 0.05s; }
+        .stream-card:nth-child(2) { animation-delay: 0.1s; }
+        .stream-card:nth-child(3) { animation-delay: 0.15s; }
+        .stream-card:nth-child(4) { animation-delay: 0.2s; }
+        .stream-card:nth-child(5) { animation-delay: 0.25s; }
+
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .stream-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            border-color: rgba(77, 163, 255, 0.2);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(77, 163, 255, 0.08);
+        }
+
+        .stream-card:active {
+            transform: scale(0.98);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 150px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .stream-card:hover .card-image img {
+            transform: scale(1.08);
+        }
+
+        .card-image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, transparent 40%, rgba(11, 15, 26, 0.8) 100%);
+        }
+
+        .card-image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1A2438, #121A2A);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: rgba(77, 163, 255, 0.2);
+        }
+
+        /* Live Badge */
+        .live-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            background: rgba(255, 59, 48, 0.9);
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            z-index: 2;
+            animation: livePulse 2s ease-in-out infinite;
+        }
+
+        .live-badge .live-dot {
+            width: 6px;
+            height: 6px;
+            background: #FFFFFF;
+            border-radius: 50%;
+            animation: dotPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes livePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.4); }
+            50% { box-shadow: 0 0 0 6px rgba(255, 59, 48, 0); }
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.7); }
+        }
+
+        /* Listener Count */
+        .listener-count {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 500;
+            color: #FFFFFF;
+            z-index: 2;
+        }
+
+        .listener-count i {
+            font-size: 10px;
+            color: #4DA3FF;
+        }
+
+        /* Waveform on card */
+        .card-waveform {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            z-index: 2;
+        }
+
+        .card-waveform .cw-bar {
+            width: 2px;
+            background: rgba(77, 163, 255, 0.7);
+            border-radius: 2px;
+            animation: cwAnim 0.8s ease-in-out infinite;
+        }
+
+        .card-waveform .cw-bar:nth-child(1) { height: 8px; animation-delay: 0s; }
+        .card-waveform .cw-bar:nth-child(2) { height: 14px; animation-delay: 0.1s; }
+        .card-waveform .cw-bar:nth-child(3) { height: 10px; animation-delay: 0.2s; }
+        .card-waveform .cw-bar:nth-child(4) { height: 18px; animation-delay: 0.3s; }
+        .card-waveform .cw-bar:nth-child(5) { height: 12px; animation-delay: 0.4s; }
+        .card-waveform .cw-bar:nth-child(6) { height: 16px; animation-delay: 0.5s; }
+        .card-waveform .cw-bar:nth-child(7) { height: 8px; animation-delay: 0.6s; }
+
+        @keyframes cwAnim {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.3); }
+        }
+
+        /* Card Content */
+        .card-content {
+            padding: 14px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-host {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .card-host-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .card-host-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-host-avatar .mini-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .card-host-name {
+            font-size: 12px;
+            color: #A1A1AA;
+            font-weight: 500;
+        }
+
+        .card-host-verified {
+            color: #4DA3FF;
+            font-size: 11px;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-category {
+            font-size: 11px;
+            color: #A855F7;
+            background: rgba(168, 85, 247, 0.1);
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .card-join-btn {
+            padding: 6px 16px;
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            border: none;
+            border-radius: 8px;
+            color: #FFFFFF;
+            font-family: 'Poppins', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .card-join-btn:hover {
+            box-shadow: 0 4px 16px rgba(77, 163, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .card-join-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ========== UPCOMING CARD ========== */
+        .upcoming-card {
+            min-width: 280px;
+            max-width: 280px;
+            background: rgba(18, 26, 42, 0.7);
+            border: 1px solid rgba(77, 163, 255, 0.08);
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            scroll-snap-align: start;
+            flex-shrink: 0;
+            animation: cardAppear 0.5s ease backwards;
+        }
+
+        .upcoming-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(77, 163, 255, 0.2);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .upcoming-card:active {
+            transform: scale(0.98);
+        }
+
+        .upcoming-image {
+            width: 100%;
+            height: 130px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upcoming-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .upcoming-card:hover .upcoming-image img {
+            transform: scale(1.08);
+        }
+
+        .upcoming-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, transparent 30%, rgba(11, 15, 26, 0.9) 100%);
+        }
+
+        .scheduled-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            background: rgba(77, 163, 255, 0.85);
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .countdown-badge {
+            position: absolute;
+            bottom: 8px;
+            left: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 500;
+            color: #FBBF24;
+            z-index: 2;
+        }
+
+        .upcoming-content {
+            padding: 14px;
+        }
+
+        .upcoming-title {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 6px;
+        }
+
+        .upcoming-meta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #A1A1AA;
+            margin-bottom: 10px;
+        }
+
+        .upcoming-meta i {
+            font-size: 11px;
+            color: #4DA3FF;
+        }
+
+        .remind-btn {
+            width: 100%;
+            padding: 10px;
+            background: rgba(77, 163, 255, 0.1);
+            border: 1.5px solid rgba(77, 163, 255, 0.2);
+            border-radius: 10px;
+            color: #4DA3FF;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .remind-btn:hover {
+            background: rgba(77, 163, 255, 0.2);
+            border-color: #4DA3FF;
+            transform: translateY(-1px);
+        }
+
+        .remind-btn:active {
+            transform: scale(0.95);
+        }
+
+        .remind-btn.reminded {
+            background: rgba(52, 211, 153, 0.1);
+            border-color: rgba(52, 211, 153, 0.3);
+            color: #34D399;
+        }
+
+        /* ========== TRENDING CARD ========== */
+        .trending-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px;
+            background: rgba(18, 26, 42, 0.5);
+            border: 1px solid rgba(77, 163, 255, 0.06);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            margin-bottom: 10px;
+            animation: fadeSlideUp 0.5s ease backwards;
+        }
+
+        .trending-card:nth-child(1) { animation-delay: 0.05s; }
+        .trending-card:nth-child(2) { animation-delay: 0.1s; }
+        .trending-card:nth-child(3) { animation-delay: 0.15s; }
+        .trending-card:nth-child(4) { animation-delay: 0.2s; }
+
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .trending-card:hover {
+            background: rgba(26, 36, 56, 0.7);
+            border-color: rgba(77, 163, 255, 0.15);
+            transform: translateX(4px);
+        }
+
+        .trending-card:active {
+            transform: scale(0.98);
+        }
+
+        .trending-rank {
+            font-size: 20px;
+            font-weight: 800;
+            color: rgba(77, 163, 255, 0.3);
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .trending-rank.top-3 {
+            background: linear-gradient(135deg, #FBBF24, #FF4D8D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .trending-thumb {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            overflow: hidden;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .trending-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .trending-thumb .trending-live-dot {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            width: 10px;
+            height: 10px;
+            background: #FF3B30;
+            border-radius: 50%;
+            border: 2px solid #121A2A;
+            animation: dotPulse 1.5s infinite;
+        }
+
+        .trending-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .trending-info .t-title {
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .trending-info .t-host {
+            font-size: 11px;
+            color: #A1A1AA;
+            margin-top: 2px;
+        }
+
+        .trending-info .t-stats {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .trending-info .t-stat {
+            font-size: 11px;
+            color: #6B7280;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .trending-info .t-stat i {
+            font-size: 10px;
+        }
+
+        .trending-info .t-stat.listeners i {
+            color: #4DA3FF;
+        }
+
+        .trending-info .t-stat.gifts i {
+            color: #FF4D8D;
+        }
+
+        .trending-play {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            color: #FFFFFF;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .trending-play:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 16px rgba(77, 163, 255, 0.3);
+        }
+
+        .trending-play:active {
+            transform: scale(0.9);
+        }
+
+        /* ========== VERTICAL GRID (RECOMMENDED) ========== */
+        .grid-section {
+            padding: 0 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stream-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 14px;
+        }
+
+        .grid-card {
+            background: rgba(18, 26, 42, 0.7);
+            border: 1px solid rgba(77, 163, 255, 0.08);
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: cardAppear 0.5s ease backwards;
+        }
+
+        .grid-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(77, 163, 255, 0.2);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(77, 163, 255, 0.08);
+        }
+
+        .grid-card:active {
+            transform: scale(0.98);
+        }
+
+        .grid-card .card-image {
+            height: 140px;
+        }
+
+        /* ========== TRENDING SECTION WRAPPER ========== */
+        .trending-list {
+            padding: 0 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ========== FLOATING LIVE INDICATOR ========== */
+        .floating-live {
+            position: fixed;
+            bottom: 100px;
+            right: 16px;
+            z-index: 90;
+            display: none;
+            animation: bounceIn 0.5s ease;
+        }
+
+        .floating-live.active {
+            display: block;
+        }
+
+        .floating-live-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            border: none;
+            background: linear-gradient(135deg, #FF3B30, #FF4D8D);
+            color: #FFFFFF;
+            font-size: 22px;
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(255, 59, 48, 0.4);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: fabPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes fabPulse {
+            0%, 100% { box-shadow: 0 8px 32px rgba(255, 59, 48, 0.4); }
+            50% { box-shadow: 0 8px 48px rgba(255, 59, 48, 0.6); }
+        }
+
+        .floating-live-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .floating-live-btn:active {
+            transform: scale(0.95);
+        }
+
+        .floating-live-btn .fab-ripple {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            border: 2px solid rgba(255, 59, 48, 0.5);
+            animation: fabRipple 2s ease-out infinite;
+        }
+
+        @keyframes fabRipple {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.15); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ========== BOTTOM NAV ========== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            background: rgba(11, 15, 26, 0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(77, 163, 255, 0.08);
+            padding: 8px 0;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+        }
+
+        .nav-inner {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 6px 12px;
+            border: none;
+            background: none;
+            color: #6B7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item span {
+            font-size: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active {
+            color: #4DA3FF;
+        }
+
+        .nav-item.active i {
+            transform: translateY(-2px);
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background: #4DA3FF;
+            border-radius: 3px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { width: 0; opacity: 0; }
+            to { width: 20px; opacity: 1; }
+        }
+
+        .nav-item:hover:not(.active) {
+            color: #A1A1AA;
+        }
+
+        .nav-item:active {
+            transform: scale(0.9);
+        }
+
+        /* Go Live center button */
+        .nav-item.go-live {
+            position: relative;
+        }
+
+        .nav-item.go-live .go-live-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #FF3B30, #FF4D8D);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #FFFFFF;
+            margin-top: -20px;
+            box-shadow: 0 6px 24px rgba(255, 59, 48, 0.35);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.go-live:hover .go-live-icon {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(255, 59, 48, 0.5);
+        }
+
+        .nav-item.go-live:active .go-live-icon {
+            transform: scale(0.9);
+        }
+
+        .nav-item.go-live span {
+            color: #FF4D8D;
+            margin-top: 2px;
+        }
+
+        .nav-item .nav-badge {
+            position: absolute;
+            top: 2px;
+            right: 6px;
+            min-width: 16px;
+            height: 16px;
+            background: #FF3B30;
+            border-radius: 8px;
+            font-size: 9px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            border: 2px solid #0B0F1A;
+        }
+
+        /* ========== EMPTY STATE ========== */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 20px;
+            background: rgba(77, 163, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #4DA3FF;
+            margin-bottom: 16px;
+            animation: emptyPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes emptyPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .empty-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .empty-text {
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        /* ========== LOADING SKELETON ========== */
+        .skeleton-card {
+            min-width: 260px;
+            max-width: 260px;
+            background: rgba(18, 26, 42, 0.7);
+            border: 1px solid rgba(77, 163, 255, 0.06);
+            border-radius: 20px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .skeleton-img {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(90deg, #1A2438 25%, #243050 50%, #1A2438 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s ease-in-out infinite;
+        }
+
+        .skeleton-body {
+            padding: 14px;
+        }
+
+        .skeleton-line {
+            height: 12px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #1A2438 25%, #243050 50%, #1A2438 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s ease-in-out infinite;
+            margin-bottom: 8px;
+        }
+
+        .skeleton-line.short { width: 60%; }
+        .skeleton-line.medium { width: 80%; }
+        .skeleton-line.full { width: 100%; }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* ========== PULL TO REFRESH ========== */
+        .ptr-indicator {
+            text-align: center;
+            padding: 12px;
+            color: #4DA3FF;
+            font-size: 20px;
+            display: none;
+            animation: spinSlow 1s linear infinite;
+        }
+
+        .ptr-indicator.active {
+            display: block;
+        }
+
+        @keyframes spinSlow {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ========== TOAST ========== */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 260px;
+            max-width: 380px;
+            animation: toastIn 0.4s ease, toastOut 0.4s ease 3.6s forwards;
+            backdrop-filter: blur(10px);
+        }
+
+        .toast.success { background: rgba(52,211,153,0.15); border: 1px solid rgba(52,211,153,0.3); color: #34D399; }
+        .toast.error { background: rgba(255,59,48,0.15); border: 1px solid rgba(255,59,48,0.3); color: #FF3B30; }
+        .toast.info { background: rgba(77,163,255,0.15); border: 1px solid rgba(77,163,255,0.3); color: #4DA3FF; }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes toastOut {
+            to { opacity: 0; transform: translateX(100px); }
+        }
+
+        /* ========== FADE UP ANIMATION ========== */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== INTERSECTION OBSERVER ANIMATION ========== */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 360px) {
+            .stream-card, .skeleton-card {
+                min-width: 220px;
+                max-width: 220px;
+            }
+
+            .upcoming-card {
+                min-width: 240px;
+                max-width: 240px;
+            }
+
+            .card-image { height: 120px; }
+            .upcoming-image { height: 110px; }
+            .header-logo-text { font-size: 17px; }
+            .greeting-name { font-size: 20px; }
+
+            .stream-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-item span { font-size: 9px; }
+            .nav-item i { font-size: 18px; }
+        }
+
+        @media (min-width: 361px) and (max-width: 480px) {
+            .stream-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .stream-grid .grid-card .card-image { height: 110px; }
+            .stream-grid .grid-card .card-title { font-size: 12px; }
+            .stream-grid .grid-card .card-content { padding: 10px; }
+        }
+
+        @media (min-width: 481px) and (max-width: 768px) {
+            .stream-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .trending-card {
+                max-width: 100%;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .stream-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .trending-list {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .trending-card {
+                margin-bottom: 0;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            body {
+                padding-bottom: 0;
+            }
+
+            .stream-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .trending-list {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .trending-card {
+                margin-bottom: 0;
+            }
+
+            .bottom-nav {
+                display: none;
+            }
+
+            /* Desktop side nav hint */
+            .top-header {
+                padding: 14px 24px;
+            }
+
+            .section-header,
+            .scroll-container,
+            .trending-list,
+            .grid-section,
+            .greeting-section,
+            .search-section,
+            .category-section {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+
+            .stream-card {
+                min-width: 280px;
+                max-width: 280px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .stream-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        /* ========== SAFE AREA PADDING ========== */
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            body {
+                padding-bottom: calc(90px + env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Glow -->
+    <div class="bg-glow">
+        <div class="g"></div>
+        <div class="g"></div>
+        <div class="g"></div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Main Content -->
+    <div class="content">
+
+        <!-- Pull to Refresh Indicator -->
+        <div class="ptr-indicator" id="ptrIndicator">
+            <i class="fa-solid fa-rotate"></i>
+        </div>
+
+        <!-- Top Header -->
+        <header class="top-header" id="topHeader">
+            <div class="header-inner">
+                <div class="header-left">
+                    <div class="header-logo-icon">
+                        <i class="fa-solid fa-headphones-simple"></i>
+                    </div>
+                    <span class="header-logo-text">CHATERRA</span>
+                </div>
+                <div class="header-right">
+                    <button class="header-btn" id="walletBtn" title="Wallet" onclick="goToWallet()">
+                        <i class="fa-solid fa-wallet"></i>
+                    </button>
+                    <button class="header-btn" id="notifBtn" title="Notifications" onclick="goToNotifications()">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notif-dot" id="notifDot" style="display:none;"></span>
+                    </button>
+                    <div class="header-avatar" id="headerAvatar" onclick="goToProfile()">
+                        <div class="avatar-placeholder" id="avatarInitials">U</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Greeting -->
+        <div class="greeting-section">
+            <div class="greeting-text">
+                <i class="fa-solid fa-hand-sparkles"></i>
+                <span id="greetingTime">Good evening</span>
+            </div>
+            <div class="greeting-name">
+                <span id="userName">User</span> 👋
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-section">
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Search streams, creators...">
+                <button class="search-filter-btn" onclick="toggleFilter()">
+                    <i class="fa-solid fa-sliders"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Category Pills -->
+        <div class="category-section">
+            <div class="category-scroll" id="categoryScroll">
+                <button class="category-pill active" data-cat="all" onclick="selectCategory(this, 'all')">
+                    <i class="fa-solid fa-fire"></i> All
+                </button>
+                <button class="category-pill" data-cat="music" onclick="selectCategory(this, 'music')">
+                    <i class="fa-solid fa-music"></i> Music
+                </button>
+                <button class="category-pill" data-cat="talk" onclick="selectCategory(this, 'talk')">
+                    <i class="fa-solid fa-comments"></i> Talk Show
+                </button>
+                <button class="category-pill" data-cat="podcast" onclick="selectCategory(this, 'podcast')">
+                    <i class="fa-solid fa-podcast"></i> Podcast
+                </button>
+                <button class="category-pill" data-cat="comedy" onclick="selectCategory(this, 'comedy')">
+                    <i class="fa-solid fa-face-laugh-beam"></i> Comedy
+                </button>
+                <button class="category-pill" data-cat="education" onclick="selectCategory(this, 'education')">
+                    <i class="fa-solid fa-graduation-cap"></i> Education
+                </button>
+                <button class="category-pill" data-cat="sports" onclick="selectCategory(this, 'sports')">
+                    <i class="fa-solid fa-futbol"></i> Sports
+                </button>
+                <button class="category-pill" data-cat="spiritual" onclick="selectCategory(this, 'spiritual')">
+                    <i class="fa-solid fa-dove"></i> Spiritual
+                </button>
+                <button class="category-pill" data-cat="gaming" onclick="selectCategory(this, 'gaming')">
+                    <i class="fa-solid fa-gamepad"></i> Gaming
+                </button>
+            </div>
+        </div>
+
+        <!-- ====== LIVE NOW SECTION ====== -->
+        <div class="animate-on-scroll">
+            <div class="section-header">
+                <div class="section-title">
+                    <div class="section-icon live">
+                        <i class="fa-solid fa-tower-broadcast"></i>
+                    </div>
+                    <div>
+                        <h2>Live Now</h2>
+                        <div class="section-count" id="liveCount">0 streams</div>
+                    </div>
+                </div>
+                <button class="see-all-btn" onclick="seeAll('live')">
+                    See All <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="scroll-container">
+                <div class="horizontal-scroll" id="liveScroll">
+                    <!-- Skeleton loaders -->
+                    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line full"></div><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div></div>
+                    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line full"></div><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div></div>
+                    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line full"></div><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== TRENDING SECTION ====== -->
+        <div class="animate-on-scroll">
+            <div class="section-header">
+                <div class="section-title">
+                    <div class="section-icon trending">
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+                    </div>
+                    <div>
+                        <h2>Trending</h2>
+                        <div class="section-count" id="trendingCount">Top streams</div>
+                    </div>
+                </div>
+                <button class="see-all-btn" onclick="seeAll('trending')">
+                    See All <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="trending-list" id="trendingList">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- ====== UPCOMING SECTION ====== -->
+        <div class="animate-on-scroll">
+            <div class="section-header">
+                <div class="section-title">
+                    <div class="section-icon upcoming">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div>
+                        <h2>Upcoming</h2>
+                        <div class="section-count" id="upcomingCount">Scheduled</div>
+                    </div>
+                </div>
+                <button class="see-all-btn" onclick="seeAll('upcoming')">
+                    See All <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="scroll-container">
+                <div class="horizontal-scroll" id="upcomingScroll">
+                    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line full"></div><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div></div>
+                    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line full"></div><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== RECOMMENDED SECTION ====== -->
+        <div class="animate-on-scroll">
+            <div class="section-header">
+                <div class="section-title">
+                    <div class="section-icon recommended">
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <div>
+                        <h2>Recommended</h2>
+                        <div class="section-count">For you</div>
+                    </div>
+                </div>
+                <button class="see-all-btn" onclick="seeAll('recommended')">
+                    See All <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="grid-section">
+                <div class="stream-grid" id="recommendedGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Spacer -->
+        <div style="height: 20px;"></div>
+
+    </div>
+
+    <!-- Floating Live Button (for streamers) -->
+    <div class="floating-live" id="floatingLive">
+        <button class="floating-live-btn" onclick="goLive()">
+            <span class="fab-ripple"></span>
+            <i class="fa-solid fa-microphone-lines"></i>
+        </button>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-inner">
+            <button class="nav-item active" onclick="navTo('home', this)">
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </button>
+            <button class="nav-item" onclick="navTo('search', this)">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span>Search</span>
+            </button>
+            <button class="nav-item go-live" id="goLiveNav" onclick="goLive()" style="display: none;">
+                <div class="go-live-icon">
+                    <i class="fa-solid fa-microphone-lines"></i>
+                </div>
+                <span>Go Live</span>
+            </button>
+            <button class="nav-item" onclick="navTo('messages', this)">
+                <i class="fa-solid fa-comment-dots"></i>
+                <span>Messages</span>
+                <span class="nav-badge" id="msgBadge" style="display:none;">3</span>
+            </button>
+            <button class="nav-item" onclick="navTo('profile', this)">
+                <i class="fa-solid fa-user"></i>
+                <span>Profile</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // ========== FIREBASE CONFIG ==========
+        const firebaseConfig = {
+apiKey: "AIzaSyATqi4oZTu5j5ZNJKN6dBRCN64c_zfzwVs",
+  authDomain: "ooooo-a0f87.firebaseapp.com",
+  projectId: "ooooo-a0f87",
+  storageBucket: "ooooo-a0f87.firebasestorage.app",
+  messagingSenderId: "427620508727",
+  appId: "1:427620508727:web:360997dac7362780940bb2"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentUser = null;
+        let currentUserData = null;
+        let selectedCategory = 'all';
+        let liveUnsubscribe = null;
+
+        // ========== AUTH CHECK ==========
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            currentUser = user;
+
+            try {
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (userDoc.exists) {
+                    currentUserData = userDoc.data();
+                    setupUI();
+                    loadAllSections();
+                } else {
+                    window.location.href = 'index.html';
+                }
+            } catch (err) {
+                console.error('Error fetching user:', err);
+                showToast('Failed to load user data', 'error');
+            }
+        });
+
+        // ========== SETUP UI ==========
+        function setupUI() {
+            // Greeting
+            const hour = new Date().getHours();
+            let greeting = 'Good evening';
+            if (hour < 12) greeting = 'Good morning';
+            else if (hour < 17) greeting = 'Good afternoon';
+            document.getElementById('greetingTime').textContent = greeting;
+
+            // Name
+            const firstName = (currentUserData.fullName || 'User').split(' ')[0];
+            document.getElementById('userName').textContent = firstName;
+
+            // Avatar
+            const avatarEl = document.getElementById('headerAvatar');
+            if (currentUserData.avatar && currentUserData.avatar.startsWith('data:')) {
+                avatarEl.innerHTML = `<img src="${currentUserData.avatar}" alt="avatar">`;
+            } else if (currentUserData.avatar && currentUserData.avatar.startsWith('http')) {
+                avatarEl.innerHTML = `<img src="${currentUserData.avatar}" alt="avatar">`;
+            } else {
+                const initials = (currentUserData.fullName || 'U').charAt(0).toUpperCase();
+                document.getElementById('avatarInitials').textContent = initials;
+            }
+
+            // Role-based UI
+            if (currentUserData.role === 'streamer') {
+                document.getElementById('goLiveNav').style.display = 'flex';
+                document.getElementById('floatingLive').classList.add('active');
+            }
+        }
+
+        // ========== LOAD ALL SECTIONS ==========
+        function loadAllSections() {
+            loadLiveStreams();
+            loadTrendingStreams();
+            loadUpcomingStreams();
+            loadRecommendedStreams();
+        }
+
+        // ========== LOAD LIVE STREAMS (Real-time) ==========
+        function loadLiveStreams() {
+            const container = document.getElementById('liveScroll');
+
+            if (liveUnsubscribe) liveUnsubscribe();
+
+            let query = db.collection('streams')
+                .where('status', '==', 'live')
+                .orderBy('listenerCount', 'desc')
+                .limit(15);
+
+            if (selectedCategory !== 'all') {
+                query = db.collection('streams')
+                    .where('status', '==', 'live')
+                    .where('category', '==', selectedCategory)
+                    .orderBy('listenerCount', 'desc')
+                    .limit(15);
+            }
+
+            liveUnsubscribe = query.onSnapshot((snapshot) => {
+                if (snapshot.empty) {
+                    container.innerHTML = `
+                        <div class="empty-state" style="min-width: 100%;">
+                            <div class="empty-icon"><i class="fa-solid fa-tower-broadcast"></i></div>
+                            <div class="empty-title">No Live Streams</div>
+                            <div class="empty-text">No one is streaming right now. Check back soon!</div>
+                        </div>
+                    `;
+                    document.getElementById('liveCount').textContent = '0 streams';
+                    return;
+                }
+
+                document.getElementById('liveCount').textContent = `${snapshot.size} stream${snapshot.size > 1 ? 's' : ''}`;
+
+                container.innerHTML = '';
+                snapshot.forEach((doc) => {
+                    const stream = doc.data();
+                    container.appendChild(createLiveCard(doc.id, stream));
+                });
+            }, (err) => {
+                console.error('Live streams error:', err);
+                container.innerHTML = `
+                    <div class="empty-state" style="min-width: 100%;">
+                        <div class="empty-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+                        <div class="empty-title">Error Loading</div>
+                        <div class="empty-text">Could not load live streams</div>
+                    </div>
+                `;
+            });
+        }
+
+        // ========== CREATE LIVE STREAM CARD ==========
+        function createLiveCard(id, stream) {
+            const card = document.createElement('div');
+            card.className = 'stream-card';
+            card.onclick = () => joinStream(id);
+
+            const coverImg = stream.coverImage
+                ? `<img src="${stream.coverImage}" alt="${stream.title}" loading="lazy">`
+                : `<div class="card-image-placeholder"><i class="fa-solid fa-headphones"></i></div>`;
+
+            const hostInitial = (stream.hostName || 'S').charAt(0).toUpperCase();
+            const hostAvatar = stream.hostAvatar
+                ? `<img src="${stream.hostAvatar}" alt="">`
+                : `<div class="mini-placeholder">${hostInitial}</div>`;
+
+            card.innerHTML = `
+                <div class="card-image">
+                    ${coverImg}
+                    <div class="card-image-overlay"></div>
+                    <div class="live-badge"><span class="live-dot"></span> LIVE</div>
+                    <div class="listener-count">
+                        <i class="fa-solid fa-headphones"></i>
+                        <span>${formatCount(stream.listenerCount || 0)}</span>
+                    </div>
+                    <div class="card-waveform">
+                        <div class="cw-bar"></div>
+                        <div class="cw-bar"></div>
+                        <div class="cw-bar"></div>
+                        <div class="cw-bar"></div>
+                        <div class="cw-bar"></div>
+                        <div class="cw-bar"></div>
+                        <div class="cw-bar"></div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">${escapeHtml(stream.title || 'Untitled Stream')}</div>
+                    <div class="card-host">
+                        <div class="card-host-avatar">${hostAvatar}</div>
+                        <span class="card-host-name">${escapeHtml(stream.hostName || 'Unknown')}</span>
+                        ${stream.hostVerified ? '<i class="fa-solid fa-circle-check card-host-verified"></i>' : ''}
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-category">${escapeHtml(stream.category || 'General')}</span>
+                        <button class="card-join-btn">
+                            <i class="fa-solid fa-right-to-bracket"></i> Join
+                        </button>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        // ========== LOAD TRENDING ==========
+        async function loadTrendingStreams() {
+            const container = document.getElementById('trendingList');
+
+            try {
+                let query = db.collection('streams')
+                    .where('status', '==', 'live')
+                    .orderBy('totalGifts', 'desc')
+                    .limit(5);
+
+                const snapshot = await query.get();
+
+                if (snapshot.empty) {
+                    container.innerHTML = `
+                        <div class="empty-state" style="grid-column: 1 / -1;">
+                            <div class="empty-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                            <div class="empty-title">No Trending Streams</div>
+                            <div class="empty-text">Trends will appear as streams gain traction</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                document.getElementById('trendingCount').textContent = `Top ${snapshot.size}`;
+                container.innerHTML = '';
+                let rank = 1;
+
+                snapshot.forEach((doc) => {
+                    const stream = doc.data();
+                    container.appendChild(createTrendingCard(doc.id, stream, rank));
+                    rank++;
+                });
+            } catch (err) {
+                console.error('Trending error:', err);
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div class="empty-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+                        <div class="empty-title">Error Loading</div>
+                        <div class="empty-text">Could not load trending streams</div>
+                    </div>
+                `;
+            }
+        }
+
+        // ========== CREATE TRENDING CARD ==========
+        function createTrendingCard(id, stream, rank) {
+            const card = document.createElement('div');
+            card.className = 'trending-card';
+            card.onclick = () => joinStream(id);
+
+            const coverImg = stream.coverImage
+                ? `<img src="${stream.coverImage}" alt="" loading="lazy">`
+                : `<div class="mini-placeholder" style="font-size: 18px; background: linear-gradient(135deg, #1A2438, #121A2A); color: rgba(77,163,255,0.3);"><i class="fa-solid fa-music"></i></div>`;
+
+            card.innerHTML = `
+                <span class="trending-rank ${rank <= 3 ? 'top-3' : ''}">${rank}</span>
+                <div class="trending-thumb">
+                    ${coverImg}
+                    ${stream.status === 'live' ? '<span class="trending-live-dot"></span>' : ''}
+                </div>
+                <div class="trending-info">
+                    <div class="t-title">${escapeHtml(stream.title || 'Untitled')}</div>
+                    <div class="t-host">${escapeHtml(stream.hostName || 'Unknown')}</div>
+                    <div class="t-stats">
+                        <span class="t-stat listeners"><i class="fa-solid fa-headphones"></i> ${formatCount(stream.listenerCount || 0)}</span>
+                        <span class="t-stat gifts"><i class="fa-solid fa-gift"></i> ${formatCount(stream.totalGifts || 0)}</span>
+                    </div>
+                </div>
+                <button class="trending-play"><i class="fa-solid fa-play"></i></button>
+            `;
+            return card;
+        }
+
+        // ========== LOAD UPCOMING ==========
+        async function loadUpcomingStreams() {
+            const container = document.getElementById('upcomingScroll');
+
+            try {
+                const now = new Date();
+                const snapshot = await db.collection('streams')
+                    .where('status', '==', 'scheduled')
+                    .where('scheduledAt', '>', now)
+                    .orderBy('scheduledAt', 'asc')
+                    .limit(10)
+                    .get();
+
+                if (snapshot.empty) {
+                    container.innerHTML = `
+                        <div class="empty-state" style="min-width: 100%;">
+                            <div class="empty-icon"><i class="fa-solid fa-clock"></i></div>
+                            <div class="empty-title">No Upcoming Streams</div>
+                            <div class="empty-text">No streams scheduled yet</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                document.getElementById('upcomingCount').textContent = `${snapshot.size} scheduled`;
+                container.innerHTML = '';
+
+                snapshot.forEach((doc) => {
+                    const stream = doc.data();
+                    container.appendChild(createUpcomingCard(doc.id, stream));
+                });
+
+                startCountdowns();
+            } catch (err) {
+                console.error('Upcoming error:', err);
+                container.innerHTML = `
+                    <div class="empty-state" style="min-width: 100%;">
+                        <div class="empty-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+                        <div class="empty-title">Error Loading</div>
+                        <div class="empty-text">Could not load upcoming streams</div>
+                    </div>
+                `;
+            }
+        }
+
+        // ========== CREATE UPCOMING CARD ==========
+        function createUpcomingCard(id, stream) {
+            const card = document.createElement('div');
+            card.className = 'upcoming-card';
+
+            const schedDate = stream.scheduledAt?.toDate ? stream.scheduledAt.toDate() : new Date(stream.scheduledAt);
+            const dateStr = schedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            const timeStr = schedDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+            const coverImg = stream.coverImage
+                ? `<img src="${stream.coverImage}" alt="" loading="lazy">`
+                : `<div class="card-image-placeholder" style="height:100%;"><i class="fa-solid fa-calendar-day" style="font-size:28px; color: rgba(77,163,255,0.2);"></i></div>`;
+
+            card.innerHTML = `
+                <div class="upcoming-image">
+                    ${coverImg}
+                    <div class="upcoming-overlay"></div>
+                    <div class="scheduled-badge"><i class="fa-solid fa-clock"></i> Scheduled</div>
+                    <div class="countdown-badge" data-time="${schedDate.getTime()}">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                        <span class="countdown-text">Loading...</span>
+                    </div>
+                </div>
+                <div class="upcoming-content">
+                    <div class="upcoming-title">${escapeHtml(stream.title || 'Untitled Stream')}</div>
+                    <div class="upcoming-meta">
+                        <i class="fa-solid fa-calendar"></i> ${dateStr} at ${timeStr}
+                    </div>
+                    <div class="upcoming-meta">
+                        <i class="fa-solid fa-user"></i> ${escapeHtml(stream.hostName || 'Unknown')}
+                    </div>
+                    <button class="remind-btn" onclick="event.stopPropagation(); toggleReminder('${id}', this)">
+                        <i class="fa-solid fa-bell"></i> Set Reminder
+                    </button>
+                </div>
+            `;
+            return card;
+        }
+
+        // ========== COUNTDOWN TIMER ==========
+        function startCountdowns() {
+            setInterval(() => {
+                document.querySelectorAll('.countdown-badge').forEach((badge) => {
+                    const targetTime = parseInt(badge.dataset.time);
+                    const now = Date.now();
+                    const diff = targetTime - now;
+                    const textEl = badge.querySelector('.countdown-text');
+
+                    if (diff <= 0) {
+                        textEl.textContent = 'Starting soon!';
+                        return;
+                    }
+
+                    const hours = Math.floor(diff / 3600000);
+                    const mins = Math.floor((diff % 3600000) / 60000);
+                    const secs = Math.floor((diff % 60000) / 1000);
+
+                    if (hours > 24) {
+                        const days = Math.floor(hours / 24);
+                        textEl.textContent = `${days}d ${hours % 24}h`;
+                    } else if (hours > 0) {
+                        textEl.textContent = `${hours}h ${mins}m`;
+                    } else {
+                        textEl.textContent = `${mins}m ${secs}s`;
+                    }
+                });
+            }, 1000);
+        }
+
+        // ========== LOAD RECOMMENDED ==========
+        async function loadRecommendedStreams() {
+            const container = document.getElementById('recommendedGrid');
+
+            try {
+                let query = db.collection('streams')
+                    .where('status', 'in', ['live', 'scheduled'])
+                    .orderBy('createdAt', 'desc')
+                    .limit(12);
+
+                const snapshot = await query.get();
+
+                if (snapshot.empty) {
+                    container.innerHTML = `
+                        <div class="empty-state" style="grid-column: 1 / -1;">
+                            <div class="empty-icon"><i class="fa-solid fa-star"></i></div>
+                            <div class="empty-title">No Recommendations</div>
+                            <div class="empty-text">We'll recommend streams as you explore more</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = '';
+                snapshot.forEach((doc) => {
+                    const stream = doc.data();
+                    container.appendChild(createGridCard(doc.id, stream));
+                });
+            } catch (err) {
+                console.error('Recommended error:', err);
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div class="empty-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+                        <div class="empty-title">Error Loading</div>
+                        <div class="empty-text">Could not load recommendations</div>
+                    </div>
+                `;
+            }
+        }
+
+        // ========== CREATE GRID CARD (RECOMMENDED) ==========
+        function createGridCard(id, stream) {
+            const card = document.createElement('div');
+            card.className = 'grid-card';
+            card.onclick = () => joinStream(id);
+
+            const isLive = stream.status === 'live';
+            const coverImg = stream.coverImage
+                ? `<img src="${stream.coverImage}" alt="" loading="lazy">`
+                : `<div class="card-image-placeholder"><i class="fa-solid fa-headphones"></i></div>`;
+
+            const hostInitial = (stream.hostName || 'S').charAt(0).toUpperCase();
+
+            card.innerHTML = `
+                <div class="card-image">
+                    ${coverImg}
+                    <div class="card-image-overlay"></div>
+                    ${isLive ? '<div class="live-badge"><span class="live-dot"></span> LIVE</div>' : '<div class="scheduled-badge"><i class="fa-solid fa-clock"></i> Upcoming</div>'}
+                    ${isLive ? `<div class="listener-count"><i class="fa-solid fa-headphones"></i> ${formatCount(stream.listenerCount || 0)}</div>` : ''}
+                    ${isLive ? `<div class="card-waveform"><div class="cw-bar"></div><div class="cw-bar"></div><div class="cw-bar"></div><div class="cw-bar"></div><div class="cw-bar"></div></div>` : ''}
+                </div>
+                <div class="card-content">
+                    <div class="card-title">${escapeHtml(stream.title || 'Untitled')}</div>
+                    <div class="card-host">
+                        <div class="card-host-avatar">
+                            <div class="mini-placeholder">${hostInitial}</div>
+                        </div>
+                        <span class="card-host-name">${escapeHtml(stream.hostName || 'Unknown')}</span>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-category">${escapeHtml(stream.category || 'General')}</span>
+                        <button class="card-join-btn">
+                            <i class="fa-solid ${isLive ? 'fa-right-to-bracket' : 'fa-bell'}"></i> ${isLive ? 'Join' : 'Remind'}
+                        </button>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        // ========== CATEGORY FILTER ==========
+        function selectCategory(el, cat) {
+            document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+            selectedCategory = cat;
+            loadLiveStreams();
+        }
+
+        // ========== SEARCH ==========
+        let searchTimeout;
+        document.getElementById('searchInput').addEventListener('input', function () {
+            clearTimeout(searchTimeout);
+            const query = this.value.trim().toLowerCase();
+            searchTimeout = setTimeout(() => {
+                if (query.length >= 2) {
+                    searchStreams(query);
+                } else if (query.length === 0) {
+                    loadAllSections();
+                }
+            }, 400);
+        });
+
+        async function searchStreams(query) {
+            // Simple client-side filtering approach
+            // For production, use Algolia or similar
+            try {
+                const snapshot = await db.collection('streams')
+                    .where('status', 'in', ['live', 'scheduled'])
+                    .limit(50)
+                    .get();
+
+                const results = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const title = (data.title || '').toLowerCase();
+                    const host = (data.hostName || '').toLowerCase();
+                    const category = (data.category || '').toLowerCase();
+                    if (title.includes(query) || host.includes(query) || category.includes(query)) {
+                        results.push({ id: doc.id, ...data });
+                    }
+                });
+
+                const grid = document.getElementById('recommendedGrid');
+                grid.innerHTML = '';
+
+                if (results.length === 0) {
+                    grid.innerHTML = `
+                        <div class="empty-state" style="grid-column: 1 / -1;">
+                            <div class="empty-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                            <div class="empty-title">No Results</div>
+                            <div class="empty-text">Try a different search term</div>
+                        </div>
+                    `;
+                } else {
+                    results.forEach(stream => {
+                        grid.appendChild(createGridCard(stream.id, stream));
+                    });
+                }
+            } catch (err) {
+                console.error('Search error:', err);
+            }
+        }
+
+        // ========== REMINDER TOGGLE ==========
+        async function toggleReminder(streamId, btn) {
+            if (!currentUser) return;
+
+            const reminded = btn.classList.contains('reminded');
+
+            try {
+                if (reminded) {
+                    await db.collection('reminders').doc(`${currentUser.uid}_${streamId}`).delete();
+                    btn.classList.remove('reminded');
+                    btn.innerHTML = '<i class="fa-solid fa-bell"></i> Set Reminder';
+                    showToast('Reminder removed', 'info');
+                } else {
+                    await db.collection('reminders').doc(`${currentUser.uid}_${streamId}`).set({
+                        userId: currentUser.uid,
+                        streamId: streamId,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    btn.classList.add('reminded');
+                    btn.innerHTML = '<i class="fa-solid fa-bell-slash"></i> Reminded';
+                    showToast('Reminder set! 🔔', 'success');
+                }
+            } catch (err) {
+                console.error('Reminder error:', err);
+                showToast('Failed to update reminder', 'error');
+            }
+        }
+
+        // ========== NAVIGATION ==========
+        function joinStream(streamId) {
+            window.location.href = `stream-room.html?id=${streamId}`;
+        }
+
+        function goLive() {
+            if (currentUserData?.role !== 'streamer') {
+                showToast('Only streamers can go live', 'error');
+                return;
+            }
+            window.location.href = 'create-stream.html';
+        }
+
+        function goToProfile() {
+            window.location.href = 'profile.html';
+        }
+
+        function goToWallet() {
+            window.location.href = 'wallet.html';
+        }
+
+        function goToNotifications() {
+            window.location.href = 'notifications.html';
+        }
+
+        function navTo(page, el) {
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+
+            const routes = {
+                home: 'home.html',
+                search: 'search.html',
+                messages: 'messages.html',
+                profile: 'profile.html'
+            };
+
+            if (page === 'home') return; // Already here
+            if (routes[page]) {
+                window.location.href = routes[page];
+            }
+        }
+
+        function seeAll(section) {
+            showToast(`Viewing all ${section} streams`, 'info');
+            // Could navigate to a dedicated page
+        }
+
+        function toggleFilter() {
+            showToast('Filter options coming soon!', 'info');
+        }
+
+        // ========== UTILITY FUNCTIONS ==========
+        function formatCount(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const icons = {
+                success: 'fa-circle-check',
+                error: 'fa-circle-xmark',
+                warning: 'fa-triangle-exclamation',
+                info: 'fa-circle-info'
+            };
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => { if (toast.parentNode) toast.remove(); }, 4000);
+        }
+
+        // ========== HEADER SCROLL EFFECT ==========
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('topHeader');
+            const scrollY = window.scrollY;
+            if (scrollY > 30) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+            lastScroll = scrollY;
+        });
+
+        // ========== INTERSECTION OBSERVER (Scroll Animations) ==========
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -40px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // ========== PULL TO REFRESH ==========
+        let touchStartY = 0;
+        let isPulling = false;
+
+        document.addEventListener('touchstart', (e) => {
+            if (window.scrollY === 0) {
+                touchStartY = e.touches[0].clientY;
+                isPulling = true;
+            }
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isPulling) return;
+            const diff = e.touches[0].clientY - touchStartY;
+            if (diff > 80) {
+                document.getElementById('ptrIndicator').classList.add('active');
+            }
+        });
+
+        document.addEventListener('touchend', () => {
+            if (document.getElementById('ptrIndicator').classList.contains('active')) {
+                loadAllSections();
+                setTimeout(() => {
+                    document.getElementById('ptrIndicator').classList.remove('active');
+                    showToast('Refreshed! ✨', 'success');
+                }, 1000);
+            }
+            isPulling = false;
+        });
+
+        // ========== CHECK FOR NOTIFICATIONS ==========
+        async function checkNotifications() {
+            if (!currentUser) return;
+            try {
+                const snap = await db.collection('notifications')
+                    .where('userId', '==', currentUser.uid)
+                    .where('read', '==', false)
+                    .limit(1)
+                    .get();
+
+                if (!snap.empty) {
+                    document.getElementById('notifDot').style.display = 'block';
+                }
+            } catch (err) {
+                // Silently fail
+            }
+        }
+
+        // Check notifications after 2 seconds
+        setTimeout(checkNotifications, 2000);
+
+        // ========== HORIZONTAL SCROLL — DRAG ON DESKTOP ==========
+        document.querySelectorAll('.horizontal-scroll').forEach(container => {
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            container.addEventListener('mousedown', (e) => {
+                isDown = true;
+                container.style.cursor = 'grabbing';
+                startX = e.pageX - container.offsetLeft;
+                scrollLeft = container.scrollLeft;
+            });
+
+            container.addEventListener('mouseleave', () => {
+                isDown = false;
+                container.style.cursor = 'grab';
+            });
+
+            container.addEventListener('mouseup', () => {
+                isDown = false;
+                container.style.cursor = 'grab';
+            });
+
+            container.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - container.offsetLeft;
+                const walk = (x - startX) * 2;
+                container.scrollLeft = scrollLeft - walk;
+            });
+        });
+    </script>
+</body>
+</html>

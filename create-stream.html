@@ -1,0 +1,2498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chaterra — Create Stream</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* ========== RESET & BASE ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Poppins', 'Inter', sans-serif;
+            background: #0B0F1A;
+            color: #FFFFFF;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(77,163,255,0.3); border-radius: 4px; }
+
+        /* ========== ANIMATED BACKGROUND ========== */
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-glow .g {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.12;
+        }
+
+        .bg-glow .g:nth-child(1) {
+            width: 500px; height: 500px;
+            background: #A855F7;
+            top: -200px; left: -150px;
+            animation: gDrift1 14s ease-in-out infinite;
+        }
+
+        .bg-glow .g:nth-child(2) {
+            width: 400px; height: 400px;
+            background: #4DA3FF;
+            bottom: -150px; right: -100px;
+            animation: gDrift2 18s ease-in-out infinite;
+        }
+
+        .bg-glow .g:nth-child(3) {
+            width: 300px; height: 300px;
+            background: #FF4D8D;
+            top: 50%; right: 20%;
+            animation: gDrift3 12s ease-in-out infinite;
+        }
+
+        @keyframes gDrift1 {
+            0%,100% { transform: translate(0,0) scale(1); }
+            33% { transform: translate(60px,80px) scale(1.1); }
+            66% { transform: translate(-40px,40px) scale(0.9); }
+        }
+
+        @keyframes gDrift2 {
+            0%,100% { transform: translate(0,0); }
+            50% { transform: translate(-70px,-50px) scale(1.15); }
+        }
+
+        @keyframes gDrift3 {
+            0%,100% { transform: translate(0,0) scale(1); }
+            50% { transform: translate(30px,-40px) scale(1.2); }
+        }
+
+        /* ========== PARTICLES ========== */
+        .particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px; height: 2px;
+            background: rgba(77,163,255,0.5);
+            border-radius: 50%;
+            animation: particleFloat linear infinite;
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) translateX(50px); opacity: 0; }
+        }
+
+        /* ========== CONTENT ========== */
+        .content {
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* ========== HEADER ========== */
+        .page-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(11,15,26,0.88);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(77,163,255,0.08);
+            padding: 14px 16px;
+            margin: 0 -16px;
+        }
+
+        .header-inner {
+            max-width: 720px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .back-btn {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(26,36,56,0.7);
+            color: #A1A1AA;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .back-btn:hover {
+            background: rgba(77,163,255,0.15);
+            color: #4DA3FF;
+            transform: translateX(-2px);
+        }
+
+        .back-btn:active { transform: scale(0.9); }
+
+        .page-title-wrap {
+            flex: 1;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            font-size: 11px;
+            color: #6B7280;
+            margin-top: 1px;
+        }
+
+        .draft-btn {
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: 1.5px solid rgba(77,163,255,0.2);
+            background: transparent;
+            color: #4DA3FF;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+
+        .draft-btn:hover {
+            background: rgba(77,163,255,0.1);
+            border-color: #4DA3FF;
+        }
+
+        .draft-btn:active { transform: scale(0.95); }
+
+        /* ========== PROGRESS STEPS ========== */
+        .progress-steps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            padding: 20px 0 8px;
+            animation: fadeUp 0.5s ease;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            position: relative;
+        }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: calc(50% + 16px);
+            right: calc(-50% + 16px);
+            height: 2px;
+            background: rgba(77,163,255,0.1);
+            transition: background 0.4s ease;
+        }
+
+        .step:last-child::before { display: none; }
+
+        .step.completed::before,
+        .step.active::before {
+            background: linear-gradient(90deg, #4DA3FF, rgba(77,163,255,0.3));
+        }
+
+        .step-circle {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            border: 2px solid rgba(77,163,255,0.2);
+            background: rgba(11,15,26,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #6B7280;
+            transition: all 0.4s ease;
+            z-index: 1;
+        }
+
+        .step.active .step-circle {
+            border-color: #4DA3FF;
+            background: rgba(77,163,255,0.15);
+            color: #4DA3FF;
+            box-shadow: 0 0 16px rgba(77,163,255,0.3);
+            animation: stepPulse 2s ease-in-out infinite;
+        }
+
+        .step.completed .step-circle {
+            border-color: #34D399;
+            background: rgba(52,211,153,0.15);
+            color: #34D399;
+        }
+
+        @keyframes stepPulse {
+            0%,100% { box-shadow: 0 0 16px rgba(77,163,255,0.3); }
+            50% { box-shadow: 0 0 24px rgba(77,163,255,0.5); }
+        }
+
+        .step-label {
+            font-size: 10px;
+            color: #6B7280;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: color 0.3s ease;
+        }
+
+        .step.active .step-label { color: #4DA3FF; }
+        .step.completed .step-label { color: #34D399; }
+
+        /* ========== FORM SECTIONS (STEPS) ========== */
+        .form-step {
+            display: none;
+            animation: stepFadeIn 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+
+        .form-step.active { display: block; }
+
+        @keyframes stepFadeIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes stepFadeBack {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .form-step.back-anim { animation: stepFadeBack 0.4s cubic-bezier(0.25,0.46,0.45,0.94); }
+
+        /* ========== COVER IMAGE UPLOAD ========== */
+        .cover-upload-section {
+            margin: 20px 0;
+        }
+
+        .cover-upload-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #A1A1AA;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cover-upload-label i { color: #4DA3FF; }
+
+        .cover-drop-zone {
+            width: 100%;
+            height: 200px;
+            border-radius: 20px;
+            border: 2px dashed rgba(77,163,255,0.2);
+            background: rgba(18,26,42,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cover-drop-zone:hover,
+        .cover-drop-zone.dragging {
+            border-color: #4DA3FF;
+            background: rgba(77,163,255,0.05);
+            transform: scale(1.01);
+        }
+
+        .cover-drop-zone.has-image {
+            border-color: transparent;
+            padding: 0;
+        }
+
+        .cover-drop-zone .drop-icon {
+            width: 60px; height: 60px;
+            border-radius: 18px;
+            background: rgba(77,163,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #4DA3FF;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%,100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .drop-text {
+            text-align: center;
+        }
+
+        .drop-text h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .drop-text p {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .drop-text span {
+            color: #4DA3FF;
+            font-weight: 600;
+        }
+
+        .cover-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 18px;
+            display: none;
+        }
+
+        .cover-overlay-controls {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            border-radius: 18px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .cover-drop-zone.has-image:hover .cover-overlay-controls {
+            display: flex;
+            opacity: 1;
+        }
+
+        .cover-overlay-btn {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255,255,255,0.15);
+            color: #FFFFFF;
+            font-size: 18px;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cover-overlay-btn:hover { background: rgba(255,255,255,0.25); }
+        .cover-overlay-btn.delete:hover { background: rgba(255,59,48,0.4); }
+
+        .cover-input { display: none; }
+
+        /* Color palette for cover gradient fallback */
+        .color-palette {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .color-swatch {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .color-swatch:hover { transform: scale(1.15); }
+
+        .color-swatch.selected {
+            border-color: #FFFFFF;
+            box-shadow: 0 0 12px rgba(255,255,255,0.3);
+        }
+
+        .color-swatch.selected::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+            color: #FFFFFF;
+        }
+
+        /* ========== INPUT GROUPS ========== */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .input-label label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #A1A1AA;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .input-label label i { color: #4DA3FF; font-size: 11px; }
+
+        .char-count {
+            font-size: 11px;
+            color: #6B7280;
+            transition: color 0.3s ease;
+        }
+
+        .char-count.warn { color: #FBBF24; }
+        .char-count.limit { color: #FF3B30; }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .input-wrapper i.field-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6B7280;
+            font-size: 15px;
+            pointer-events: none;
+            transition: color 0.3s ease;
+            z-index: 2;
+        }
+
+        .input-wrapper.textarea-wrap i.field-icon {
+            top: 16px;
+            transform: none;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px 14px 46px;
+            background: rgba(18,26,42,0.8);
+            border: 1.5px solid rgba(77,163,255,0.1);
+            border-radius: 14px;
+            color: #FFFFFF;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+            -webkit-appearance: none;
+        }
+
+        .form-input::placeholder { color: #6B7280; }
+
+        .form-input:focus {
+            border-color: #4DA3FF;
+            box-shadow: 0 0 0 4px rgba(77,163,255,0.1);
+            background: rgba(18,26,42,1);
+        }
+
+        .form-input:focus ~ i.field-icon,
+        .input-wrapper:focus-within i.field-icon {
+            color: #4DA3FF;
+        }
+
+        .form-textarea {
+            width: 100%;
+            min-height: 110px;
+            padding: 14px 16px 14px 46px;
+            background: rgba(18,26,42,0.8);
+            border: 1.5px solid rgba(77,163,255,0.1);
+            border-radius: 14px;
+            color: #FFFFFF;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            outline: none;
+            resize: vertical;
+            transition: all 0.3s ease;
+            line-height: 1.5;
+        }
+
+        .form-textarea::placeholder { color: #6B7280; }
+
+        .form-textarea:focus {
+            border-color: #4DA3FF;
+            box-shadow: 0 0 0 4px rgba(77,163,255,0.1);
+            background: rgba(18,26,42,1);
+        }
+
+        /* ========== CATEGORY GRID ========== */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .cat-option { display: none; }
+
+        .cat-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 10px;
+            background: rgba(18,26,42,0.6);
+            border: 1.5px solid rgba(77,163,255,0.08);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .cat-label:hover {
+            border-color: rgba(77,163,255,0.3);
+            transform: translateY(-2px);
+            background: rgba(26,36,56,0.6);
+        }
+
+        .cat-label:active { transform: scale(0.95); }
+
+        .cat-option:checked + .cat-label {
+            border-color: #4DA3FF;
+            background: rgba(77,163,255,0.12);
+            box-shadow: 0 4px 16px rgba(77,163,255,0.15);
+        }
+
+        .cat-icon {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .cat-name {
+            font-size: 11px;
+            font-weight: 600;
+            color: #A1A1AA;
+            transition: color 0.3s ease;
+        }
+
+        .cat-option:checked + .cat-label .cat-name { color: #FFFFFF; }
+
+        /* ========== SCHEDULE TOGGLE ========== */
+        .schedule-toggle-card {
+            background: rgba(18,26,42,0.6);
+            border: 1.5px solid rgba(77,163,255,0.08);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .schedule-toggle-card.active {
+            border-color: rgba(77,163,255,0.25);
+            background: rgba(77,163,255,0.05);
+        }
+
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .toggle-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .toggle-icon {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: rgba(77,163,255,0.1);
+            color: #4DA3FF;
+            flex-shrink: 0;
+        }
+
+        .toggle-text h4 {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .toggle-text p {
+            font-size: 12px;
+            color: #6B7280;
+            margin-top: 2px;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 52px; height: 28px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input { display: none; }
+
+        .toggle-slider {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(77,163,255,0.1);
+            border: 1.5px solid rgba(77,163,255,0.15);
+            border-radius: 28px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            background: #6B7280;
+            top: 2px; left: 2px;
+            transition: all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: rgba(77,163,255,0.2);
+            border-color: #4DA3FF;
+        }
+
+        .toggle-switch input:checked + .toggle-slider::before {
+            background: #4DA3FF;
+            transform: translateX(24px);
+            box-shadow: 0 0 8px rgba(77,163,255,0.4);
+        }
+
+        .schedule-fields {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.4s ease;
+            opacity: 0;
+        }
+
+        .schedule-fields.open {
+            max-height: 300px;
+            opacity: 1;
+        }
+
+        .schedule-fields-inner {
+            padding-top: 16px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .date-input-wrap {
+            position: relative;
+        }
+
+        .date-input-wrap label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #A1A1AA;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .date-input-wrap input[type="date"],
+        .date-input-wrap input[type="time"] {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(11,15,26,0.8);
+            border: 1.5px solid rgba(77,163,255,0.15);
+            border-radius: 12px;
+            color: #FFFFFF;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            outline: none;
+            -webkit-appearance: none;
+            transition: all 0.3s ease;
+            color-scheme: dark;
+        }
+
+        .date-input-wrap input:focus {
+            border-color: #4DA3FF;
+            box-shadow: 0 0 0 3px rgba(77,163,255,0.1);
+        }
+
+        /* ========== SETTINGS CARDS ========== */
+        .settings-section {
+            margin-bottom: 20px;
+        }
+
+        .settings-section h3 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #A1A1AA;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .settings-section h3 i { color: #4DA3FF; font-size: 12px; }
+
+        .setting-card {
+            background: rgba(18,26,42,0.6);
+            border: 1.5px solid rgba(77,163,255,0.08);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .setting-card:hover {
+            border-color: rgba(77,163,255,0.15);
+            background: rgba(26,36,56,0.5);
+        }
+
+        .setting-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .setting-icon {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .setting-text h4 {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .setting-text p {
+            font-size: 11px;
+            color: #6B7280;
+            margin-top: 2px;
+        }
+
+        /* ========== CHAT MODE SELECT ========== */
+        .chat-mode-select {
+            background: rgba(11,15,26,0.8);
+            border: 1.5px solid rgba(77,163,255,0.15);
+            border-radius: 10px;
+            color: #FFFFFF;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            padding: 8px 12px;
+            outline: none;
+            cursor: pointer;
+            -webkit-appearance: none;
+            transition: all 0.3s ease;
+            min-width: 110px;
+        }
+
+        .chat-mode-select option { background: #121A2A; }
+
+        .chat-mode-select:focus {
+            border-color: #4DA3FF;
+        }
+
+        /* ========== TAGS INPUT ========== */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px 14px;
+            background: rgba(18,26,42,0.8);
+            border: 1.5px solid rgba(77,163,255,0.1);
+            border-radius: 14px;
+            min-height: 50px;
+            cursor: text;
+            transition: all 0.3s ease;
+        }
+
+        .tags-container:focus-within {
+            border-color: #4DA3FF;
+            box-shadow: 0 0 0 4px rgba(77,163,255,0.1);
+        }
+
+        .tag-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: rgba(77,163,255,0.15);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #4DA3FF;
+            animation: tagPop 0.2s ease;
+        }
+
+        @keyframes tagPop {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .tag-remove {
+            cursor: pointer;
+            font-size: 10px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            background: none;
+            border: none;
+            color: #4DA3FF;
+            padding: 0;
+        }
+
+        .tag-remove:hover { opacity: 1; }
+
+        .tag-input {
+            flex: 1;
+            min-width: 100px;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #FFFFFF;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+        }
+
+        .tag-input::placeholder { color: #6B7280; }
+
+        /* ========== REVIEW CARD ========== */
+        .review-card {
+            background: rgba(18,26,42,0.7);
+            border: 1.5px solid rgba(77,163,255,0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            animation: fadeUp 0.5s ease;
+        }
+
+        .review-cover {
+            width: 100%;
+            height: 180px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .review-cover img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        .review-cover .review-cover-placeholder {
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: rgba(77,163,255,0.2);
+        }
+
+        .review-cover-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(180deg, transparent 30%, rgba(11,15,26,0.9) 100%);
+        }
+
+        .review-live-badge {
+            position: absolute;
+            top: 12px; left: 12px;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .review-live-badge.live {
+            background: rgba(255,59,48,0.9);
+            animation: livePulse 2s ease-in-out infinite;
+        }
+
+        .review-live-badge.scheduled {
+            background: rgba(77,163,255,0.85);
+        }
+
+        .review-live-dot {
+            width: 6px; height: 6px;
+            background: #FFFFFF;
+            border-radius: 50%;
+            animation: dotBlink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes livePulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(255,59,48,0.4); }
+            50% { box-shadow: 0 0 0 6px rgba(255,59,48,0); }
+        }
+
+        @keyframes dotBlink {
+            0%,100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .review-body {
+            padding: 18px;
+        }
+
+        .review-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .review-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .review-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #A1A1AA;
+        }
+
+        .review-meta-item i { color: #4DA3FF; font-size: 12px; }
+
+        .review-desc {
+            font-size: 13px;
+            color: #A1A1AA;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .review-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .review-tag {
+            padding: 3px 10px;
+            background: rgba(168,85,247,0.12);
+            border-radius: 6px;
+            font-size: 11px;
+            color: #A855F7;
+            font-weight: 500;
+        }
+
+        /* ========== STEP NAVIGATION BUTTONS ========== */
+        .step-nav {
+            display: flex;
+            gap: 12px;
+            padding: 20px 0;
+        }
+
+        .btn-back-step {
+            padding: 16px 24px;
+            border-radius: 14px;
+            border: 1.5px solid rgba(77,163,255,0.2);
+            background: transparent;
+            color: #A1A1AA;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .btn-back-step:hover {
+            border-color: rgba(77,163,255,0.4);
+            color: #FFFFFF;
+        }
+
+        .btn-back-step:active { transform: scale(0.95); }
+
+        .btn-next-step {
+            flex: 1;
+            padding: 16px 24px;
+            border-radius: 14px;
+            border: none;
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            color: #FFFFFF;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-next-step::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-next-step:hover::before { left: 100%; }
+
+        .btn-next-step:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(77,163,255,0.35);
+        }
+
+        .btn-next-step:active { transform: scale(0.97); }
+
+        .btn-next-step:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-next-step .spinner {
+            display: none;
+            width: 20px; height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #FFFFFF;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .btn-next-step.loading .btn-text { display: none; }
+        .btn-next-step.loading .spinner { display: block; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ========== GO LIVE BUTTON ========== */
+        .go-live-btn {
+            width: 100%;
+            padding: 20px;
+            border-radius: 18px;
+            border: none;
+            background: linear-gradient(135deg, #FF3B30, #FF4D8D);
+            color: #FFFFFF;
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+            animation: goBtnPulse 3s ease-in-out infinite;
+        }
+
+        .go-live-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .go-live-btn:hover::before { left: 100%; }
+
+        .go-live-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(255,59,48,0.45);
+        }
+
+        .go-live-btn:active { transform: scale(0.97); }
+
+        .go-live-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            animation: none;
+        }
+
+        .go-live-btn .btn-ripple {
+            position: absolute;
+            width: 100%; height: 100%;
+            border: 3px solid rgba(255,59,48,0.4);
+            border-radius: 18px;
+            animation: goRipple 2.5s ease-out infinite;
+        }
+
+        @keyframes goRipple {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.06); opacity: 0; }
+        }
+
+        @keyframes goBtnPulse {
+            0%,100% { box-shadow: 0 8px 32px rgba(255,59,48,0.3); }
+            50% { box-shadow: 0 8px 48px rgba(255,59,48,0.5); }
+        }
+
+        .go-live-btn .spinner {
+            display: none;
+            width: 24px; height: 24px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #FFFFFF;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .go-live-btn.loading .btn-text { display: none; }
+        .go-live-btn.loading .spinner { display: block; }
+        .go-live-btn.loading .btn-ripple { display: none; }
+
+        /* ========== SCHEDULE CONFIRM BUTTON ========== */
+        .schedule-confirm-btn {
+            width: 100%;
+            padding: 18px;
+            border-radius: 16px;
+            border: none;
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            color: #FFFFFF;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .schedule-confirm-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(77,163,255,0.35);
+        }
+
+        .schedule-confirm-btn:active { transform: scale(0.97); }
+
+        .schedule-confirm-btn .spinner {
+            display: none;
+            width: 22px; height: 22px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #FFFFFF;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .schedule-confirm-btn.loading .btn-text { display: none; }
+        .schedule-confirm-btn.loading .spinner { display: block; }
+
+        /* ========== TOAST ========== */
+        .toast-container {
+            position: fixed;
+            top: 20px; right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 260px;
+            max-width: 380px;
+            animation: toastIn 0.4s ease, toastOut 0.4s ease 3.6s forwards;
+            backdrop-filter: blur(10px);
+        }
+
+        .toast.success { background: rgba(52,211,153,0.15); border: 1px solid rgba(52,211,153,0.3); color: #34D399; }
+        .toast.error { background: rgba(255,59,48,0.15); border: 1px solid rgba(255,59,48,0.3); color: #FF3B30; }
+        .toast.warning { background: rgba(251,191,36,0.15); border: 1px solid rgba(251,191,36,0.3); color: #FBBF24; }
+        .toast.info { background: rgba(77,163,255,0.15); border: 1px solid rgba(77,163,255,0.3); color: #4DA3FF; }
+
+        @keyframes toastIn { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes toastOut { to { opacity: 0; transform: translateX(100px); } }
+
+        /* ========== BOTTOM NAV ========== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0;
+            width: 100%;
+            z-index: 100;
+            background: rgba(11,15,26,0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(77,163,255,0.08);
+            padding: 8px 0;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+        }
+
+        .nav-inner {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 6px 12px;
+            border: none;
+            background: none;
+            color: #6B7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .nav-item i { font-size: 20px; transition: all 0.3s ease; }
+        .nav-item span { font-size: 10px; font-weight: 500; }
+
+        .nav-item.active { color: #4DA3FF; }
+        .nav-item.active i { transform: translateY(-2px); }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            top: -8px; left: 50%;
+            transform: translateX(-50%);
+            width: 20px; height: 3px;
+            background: #4DA3FF;
+            border-radius: 3px;
+        }
+
+        .nav-item.go-live .go-live-icon {
+            width: 48px; height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #FF3B30, #FF4D8D);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #FFFFFF;
+            margin-top: -20px;
+            box-shadow: 0 6px 24px rgba(255,59,48,0.35);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.go-live:hover .go-live-icon {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(255,59,48,0.5);
+        }
+
+        .nav-item.go-live span { color: #FF4D8D; margin-top: 2px; }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 360px) {
+            .category-grid { grid-template-columns: repeat(2, 1fr); }
+            .cat-icon { width: 34px; height: 34px; font-size: 15px; }
+            .cat-name { font-size: 10px; }
+            .page-title { font-size: 15px; }
+            .go-live-btn { font-size: 15px; padding: 16px; }
+            .schedule-fields-inner { grid-template-columns: 1fr; }
+            .step-label { font-size: 9px; }
+            .step-circle { width: 28px; height: 28px; font-size: 11px; }
+            .toast { min-width: auto; max-width: calc(100vw - 40px); }
+            .toast-container { right: 10px; left: 10px; }
+        }
+
+        @media (min-width: 361px) and (max-width: 480px) {
+            .category-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (min-width: 481px) {
+            .category-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        @media (min-width: 768px) {
+            body { padding-bottom: 40px; }
+            .bottom-nav { display: none; }
+            .content { padding: 0 24px; }
+            .cover-drop-zone { height: 240px; }
+            .category-grid { grid-template-columns: repeat(5, 1fr); }
+        }
+
+        @media (min-width: 1024px) {
+            .content { max-width: 680px; }
+        }
+
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-glow">
+    <div class="g"></div>
+    <div class="g"></div>
+    <div class="g"></div>
+</div>
+<div class="particles" id="particles"></div>
+
+<!-- Toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Main Content -->
+<div class="content">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div class="header-inner">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="page-title-wrap">
+                <div class="page-title">Create Stream</div>
+                <div class="page-subtitle" id="stepSubtitle">Step 1 of 3 — Details</div>
+            </div>
+            <button class="draft-btn" onclick="saveDraft()">
+                <i class="fa-solid fa-floppy-disk"></i> Draft
+            </button>
+        </div>
+    </div>
+
+    <!-- Progress Steps -->
+    <div class="progress-steps" id="progressSteps">
+        <div class="step active" id="step1Indicator">
+            <div class="step-circle"><i class="fa-solid fa-pen"></i></div>
+            <span class="step-label">Details</span>
+        </div>
+        <div class="step" id="step2Indicator">
+            <div class="step-circle"><i class="fa-solid fa-sliders"></i></div>
+            <span class="step-label">Settings</span>
+        </div>
+        <div class="step" id="step3Indicator">
+            <div class="step-circle"><i class="fa-solid fa-eye"></i></div>
+            <span class="step-label">Review</span>
+        </div>
+    </div>
+
+    <!-- ====== STEP 1: DETAILS ====== -->
+    <div class="form-step active" id="step1">
+
+        <!-- Cover Image -->
+        <div class="cover-upload-section">
+            <div class="input-label">
+                <label><i class="fa-solid fa-image"></i> Cover Image</label>
+            </div>
+            <div class="cover-drop-zone" id="coverDropZone"
+                 onclick="triggerCoverInput()"
+                 ondragover="handleDragOver(event)"
+                 ondragleave="handleDragLeave(event)"
+                 ondrop="handleDrop(event)">
+                <div class="drop-icon" id="dropIcon">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                </div>
+                <div class="drop-text" id="dropText">
+                    <h4>Upload Cover Image</h4>
+                    <p>Drag & drop or <span>browse</span></p>
+                    <p style="margin-top:4px;">JPG, PNG · Max 2MB</p>
+                </div>
+                <img class="cover-preview" id="coverPreview" alt="Cover">
+                <div class="cover-overlay-controls" id="coverOverlay">
+                    <button class="cover-overlay-btn" onclick="event.stopPropagation(); triggerCoverInput()">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button class="cover-overlay-btn delete" onclick="event.stopPropagation(); removeCover()">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <input type="file" class="cover-input" id="coverInput" accept="image/*" onchange="handleCoverFile(this)">
+
+            <!-- No cover: pick a gradient color -->
+            <div id="colorPaletteSection" style="margin-top:12px;">
+                <div style="font-size:11px; color:#6B7280; margin-bottom:8px;">
+                    <i class="fa-solid fa-palette" style="color:#A855F7;"></i> Or choose a gradient:
+                </div>
+                <div class="color-palette" id="colorPalette">
+                    <div class="color-swatch selected" data-gradient="linear-gradient(135deg,#667eea,#764ba2)" style="background:linear-gradient(135deg,#667eea,#764ba2)" onclick="selectGradient(this)"></div>
+                    <div class="color-swatch" data-gradient="linear-gradient(135deg,#f093fb,#f5576c)" style="background:linear-gradient(135deg,#f093fb,#f5576c)" onclick="selectGradient(this)"></div>
+                    <div class="color-swatch" data-gradient="linear-gradient(135deg,#4facfe,#00f2fe)" style="background:linear-gradient(135deg,#4facfe,#00f2fe)" onclick="selectGradient(this)"></div>
+                    <div class="color-swatch" data-gradient="linear-gradient(135deg,#43e97b,#38f9d7)" style="background:linear-gradient(135deg,#43e97b,#38f9d7)" onclick="selectGradient(this)"></div>
+                    <div class="color-swatch" data-gradient="linear-gradient(135deg,#fa709a,#fee140)" style="background:linear-gradient(135deg,#fa709a,#fee140)" onclick="selectGradient(this)"></div>
+                    <div class="color-swatch" data-gradient="linear-gradient(135deg,#a18cd1,#fbc2eb)" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb)" onclick="selectGradient(this)"></div>
+                    <div class="color-swatch" data-gradient="linear-gradient(135deg,#fd7043,#ff8a65)" style="background:linear-gradient(135deg,#fd7043,#ff8a65)" onclick="selectGradient(this)"></div>
+                    <div class="color-swatch" data-gradient="linear-gradient(135deg,#0B0F1A,#1A2438)" style="background:linear-gradient(135deg,#1A2438,#243050); border:1px solid rgba(77,163,255,0.2);" onclick="selectGradient(this)"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Title -->
+        <div class="input-group">
+            <div class="input-label">
+                <label><i class="fa-solid fa-heading"></i> Stream Title</label>
+                <span class="char-count" id="titleCount">0/80</span>
+            </div>
+            <div class="input-wrapper">
+                <i class="fa-solid fa-microphone-lines field-icon"></i>
+                <input type="text"
+                       class="form-input"
+                       id="streamTitle"
+                       placeholder="Give your stream an exciting title..."
+                       maxlength="80"
+                       oninput="updateCharCount('streamTitle','titleCount',80)">
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="input-group">
+            <div class="input-label">
+                <label><i class="fa-solid fa-align-left"></i> Description</label>
+                <span class="char-count" id="descCount">0/300</span>
+            </div>
+            <div class="input-wrapper textarea-wrap">
+                <i class="fa-solid fa-quote-left field-icon"></i>
+                <textarea class="form-textarea"
+                          id="streamDesc"
+                          placeholder="Tell listeners what your stream is about..."
+                          maxlength="300"
+                          oninput="updateCharCount('streamDesc','descCount',300)"></textarea>
+            </div>
+        </div>
+
+        <!-- Category -->
+        <div class="input-group">
+            <div class="input-label">
+                <label><i class="fa-solid fa-th-large"></i> Category</label>
+            </div>
+            <div class="category-grid">
+                <input type="radio" name="category" id="catMusic" value="music" class="cat-option" checked>
+                <label for="catMusic" class="cat-label">
+                    <div class="cat-icon" style="background:rgba(255,77,141,0.12); color:#FF4D8D;">
+                        <i class="fa-solid fa-music"></i>
+                    </div>
+                    <span class="cat-name">Music</span>
+                </label>
+
+                <input type="radio" name="category" id="catTalk" value="talk" class="cat-option">
+                <label for="catTalk" class="cat-label">
+                    <div class="cat-icon" style="background:rgba(77,163,255,0.12); color:#4DA3FF;">
+                        <i class="fa-solid fa-comments"></i>
+                    </div>
+                    <span class="cat-name">Talk Show</span>
+                </label>
+
+                <input type="radio" name="category" id="catPodcast" value="podcast" class="cat-option">
+                <label for="catPodcast" class="cat-label">
+                    <div class="cat-icon" style="background:rgba(168,85,247,0.12); color:#A855F7;">
+                        <i class="fa-solid fa-podcast"></i>
+                    </div>
+                    <span class="cat-name">Podcast</span>
+                </label>
+
+                <input type="radio" name="category" id="catComedy" value="comedy" class="cat-option">
+                <label for="catComedy" class="cat-label">
+                    <div class="cat-icon" style="background:rgba(251,191,36,0.12); color:#FBBF24;">
+                        <i class="fa-solid fa-face-laugh-beam"></i>
+                    </div>
+                    <span class="cat-name">Comedy</span>
+                </label>
+
+                <input type="radio" name="category" id="catEdu" value="education" class="cat-option">
+                <label for="catEdu" class="cat-label">
+                    <div class="cat-icon" style="background:rgba(52,211,153,0.12); color:#34D399;">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <span class="cat-name">Education</span>
+                </label>
+
+                <input type="radio" name="category" id="catSports" value="sports" class="cat-option">
+                <label for="catSports" class="cat-label">
+                    <div class="cat-icon" style="background:rgba(255,107,53,0.12); color:#FF6B35;">
+                        <i class="fa-solid fa-futbol"></i>
+                    </div>
+                    <span class="cat-name">Sports</span>
+                </label>
+
+                <input type="radio" name="category" id="catSpiritual" value="spiritual" class="cat-option">
+                <label for="catSpiritual" class="cat-label">
+                    <div class="cat-icon" style="background:rgba(99,102,241,0.12); color:#818CF8;">
+                        <i class="fa-solid fa-dove"></i>
+                    </div>
+                    <span class="cat-name">Spiritual</span>
+                </label>
+
+                <input type="radio" name="category" id="catGaming" value="gaming" class="cat-option">
+                <label for="catGaming" class="cat-label">
+                    <div class="cat-icon" style="background:rgba(16,185,129,0.12); color:#10B981;">
+                        <i class="fa-solid fa-gamepad"></i>
+                    </div>
+                    <span class="cat-name">Gaming</span>
+                </label>
+
+                <input type="radio" name="category" id="catOther" value="other" class="cat-option">
+                <label for="catOther" class="cat-label">
+                    <div class="cat-icon" style="background:rgba(107,114,128,0.12); color:#9CA3AF;">
+                        <i class="fa-solid fa-ellipsis"></i>
+                    </div>
+                    <span class="cat-name">Other</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="input-group">
+            <div class="input-label">
+                <label><i class="fa-solid fa-hashtag"></i> Tags <span style="color:#6B7280; text-transform:none; font-size:11px;">(optional)</span></label>
+            </div>
+            <div class="tags-container" id="tagsContainer" onclick="document.getElementById('tagInput').focus()">
+                <input type="text" class="tag-input" id="tagInput" placeholder="Add tag, press Enter...">
+            </div>
+        </div>
+
+        <!-- Step Nav -->
+        <div class="step-nav">
+            <button class="btn-next-step" onclick="goToStep(2)" style="border-radius:14px;">
+                <span class="btn-text">Next: Settings <i class="fa-solid fa-arrow-right"></i></span>
+                <div class="spinner"></div>
+            </button>
+        </div>
+    </div>
+
+    <!-- ====== STEP 2: SETTINGS ====== -->
+    <div class="form-step" id="step2">
+
+        <!-- Schedule Toggle -->
+        <div style="margin: 20px 0 0;">
+            <div class="schedule-toggle-card" id="scheduleToggleCard">
+                <div class="toggle-row">
+                    <div class="toggle-info">
+                        <div class="toggle-icon">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </div>
+                        <div class="toggle-text">
+                            <h4>Schedule Stream</h4>
+                            <p>Set a future date and time</p>
+                        </div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="scheduleToggle" onchange="toggleSchedule()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="schedule-fields" id="scheduleFields">
+                    <div class="schedule-fields-inner">
+                        <div class="date-input-wrap">
+                            <label><i class="fa-solid fa-calendar" style="color:#4DA3FF; font-size:10px;"></i> Date</label>
+                            <input type="date" id="scheduleDate">
+                        </div>
+                        <div class="date-input-wrap">
+                            <label><i class="fa-solid fa-clock" style="color:#4DA3FF; font-size:10px;"></i> Time</label>
+                            <input type="time" id="scheduleTime">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Settings -->
+        <div class="settings-section">
+            <h3><i class="fa-solid fa-comments"></i> Chat Settings</h3>
+
+            <div class="setting-card">
+                <div class="setting-left">
+                    <div class="setting-icon" style="background:rgba(77,163,255,0.1); color:#4DA3FF;">
+                        <i class="fa-solid fa-message"></i>
+                    </div>
+                    <div class="setting-text">
+                        <h4>Chat Mode</h4>
+                        <p>Who can send messages</p>
+                    </div>
+                </div>
+                <select class="chat-mode-select" id="chatMode">
+                    <option value="everyone">Everyone</option>
+                    <option value="followers">Followers Only</option>
+                    <option value="gifters">Gifters Only</option>
+                    <option value="disabled">Disabled</option>
+                </select>
+            </div>
+
+            <div class="setting-card">
+                <div class="setting-left">
+                    <div class="setting-icon" style="background:rgba(168,85,247,0.1); color:#A855F7;">
+                        <i class="fa-solid fa-face-smile"></i>
+                    </div>
+                    <div class="setting-text">
+                        <h4>Emoji Reactions</h4>
+                        <p>Allow emoji in chat</p>
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="emojiToggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Audio Settings -->
+        <div class="settings-section">
+            <h3><i class="fa-solid fa-microphone"></i> Audio Settings</h3>
+
+            <div class="setting-card">
+                <div class="setting-left">
+                    <div class="setting-icon" style="background:rgba(52,211,153,0.1); color:#34D399;">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div class="setting-text">
+                        <h4>Co-hosts Allowed</h4>
+                        <p>Let others speak on mic</p>
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="coHostToggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-card">
+                <div class="setting-left">
+                    <div class="setting-icon" style="background:rgba(251,191,36,0.1); color:#FBBF24;">
+                        <i class="fa-solid fa-hand"></i>
+                    </div>
+                    <div class="setting-text">
+                        <h4>Raise Hand to Speak</h4>
+                        <p>Listeners request mic access</p>
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="raiseHandToggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Gift Settings -->
+        <div class="settings-section">
+            <h3><i class="fa-solid fa-gift"></i> Gift Settings</h3>
+
+            <div class="setting-card">
+                <div class="setting-left">
+                    <div class="setting-icon" style="background:rgba(255,77,141,0.1); color:#FF4D8D;">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                    <div class="setting-text">
+                        <h4>Enable Gifts</h4>
+                        <p>Receive virtual gifts from listeners</p>
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="giftsToggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-card">
+                <div class="setting-left">
+                    <div class="setting-icon" style="background:rgba(77,163,255,0.1); color:#4DA3FF;">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <div class="setting-text">
+                        <h4>Top Supporter Board</h4>
+                        <p>Show leaderboard during stream</p>
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="leaderboardToggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Privacy Settings -->
+        <div class="settings-section">
+            <h3><i class="fa-solid fa-lock"></i> Privacy</h3>
+
+            <div class="setting-card">
+                <div class="setting-left">
+                    <div class="setting-icon" style="background:rgba(107,114,128,0.1); color:#9CA3AF;">
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <div class="setting-text">
+                        <h4>Stream Visibility</h4>
+                        <p>Who can see your stream</p>
+                    </div>
+                </div>
+                <select class="chat-mode-select" id="visibility">
+                    <option value="public">Public</option>
+                    <option value="followers">Followers</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Step Nav -->
+        <div class="step-nav">
+            <button class="btn-back-step" onclick="goToStep(1)">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+            <button class="btn-next-step" onclick="goToStep(3)">
+                <span class="btn-text">Review <i class="fa-solid fa-arrow-right"></i></span>
+                <div class="spinner"></div>
+            </button>
+        </div>
+    </div>
+
+    <!-- ====== STEP 3: REVIEW ====== -->
+    <div class="form-step" id="step3">
+        <div style="margin: 20px 0 0;">
+
+            <!-- Stream Preview Card -->
+            <div class="review-card" id="reviewCard">
+                <div class="review-cover" id="reviewCover">
+                    <div class="review-cover-placeholder" id="reviewCoverPlaceholder">
+                        <i class="fa-solid fa-headphones"></i>
+                    </div>
+                    <img id="reviewCoverImg" src="" alt="" style="display:none; width:100%; height:100%; object-fit:cover;">
+                    <div class="review-cover-overlay"></div>
+                    <div class="review-live-badge live" id="reviewBadge">
+                        <span class="review-live-dot"></span> LIVE
+                    </div>
+                </div>
+                <div class="review-body">
+                    <div class="review-title" id="reviewTitle">Your Stream Title</div>
+                    <div class="review-meta">
+                        <div class="review-meta-item">
+                            <i class="fa-solid fa-tag"></i>
+                            <span id="reviewCategory">Music</span>
+                        </div>
+                        <div class="review-meta-item">
+                            <i class="fa-solid fa-message"></i>
+                            <span id="reviewChatMode">Everyone</span>
+                        </div>
+                        <div class="review-meta-item" id="reviewScheduleMeta" style="display:none;">
+                            <i class="fa-solid fa-calendar"></i>
+                            <span id="reviewScheduleText">—</span>
+                        </div>
+                    </div>
+                    <div class="review-desc" id="reviewDesc">Your stream description will appear here...</div>
+                    <div class="review-tags" id="reviewTags"></div>
+                </div>
+            </div>
+
+            <!-- Settings Summary -->
+            <div style="background:rgba(18,26,42,0.5); border:1.5px solid rgba(77,163,255,0.08); border-radius:16px; padding:16px; margin-bottom:20px;">
+                <div style="font-size:12px; font-weight:600; color:#A1A1AA; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:12px;">
+                    <i class="fa-solid fa-circle-check" style="color:#34D399;"></i> Stream Settings
+                </div>
+                <div id="settingsSummary" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div id="goLiveSection">
+                <!-- Rendered dynamically -->
+            </div>
+
+            <!-- Back -->
+            <div style="margin-top:12px;">
+                <button class="btn-back-step" onclick="goToStep(2)" style="width:100%; justify-content:center;">
+                    <i class="fa-solid fa-arrow-left"></i> Edit Settings
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav">
+    <div class="nav-inner">
+        <button class="nav-item" onclick="window.location.href='home.html'">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='search.html'">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span>Search</span>
+        </button>
+        <button class="nav-item go-live active">
+            <div class="go-live-icon">
+                <i class="fa-solid fa-microphone-lines"></i>
+            </div>
+            <span>Go Live</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='messages.html'">
+            <i class="fa-solid fa-comment-dots"></i>
+            <span>Messages</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='profile.html'">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </button>
+    </div>
+</nav>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+
+<script>
+    // ========== FIREBASE ==========
+    const firebaseConfig = {
+apiKey: "AIzaSyATqi4oZTu5j5ZNJKN6dBRCN64c_zfzwVs",
+  authDomain: "ooooo-a0f87.firebaseapp.com",
+  projectId: "ooooo-a0f87",
+  storageBucket: "ooooo-a0f87.firebasestorage.app",
+  messagingSenderId: "427620508727",
+  appId: "1:427620508727:web:360997dac7362780940bb2"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    let currentUser = null;
+    let currentUserData = null;
+    let currentStep = 1;
+    let coverImageBase64 = '';
+    let selectedGradient = 'linear-gradient(135deg,#667eea,#764ba2)';
+    let tags = [];
+
+    // ========== AUTH CHECK ==========
+    auth.onAuthStateChanged(async (user) => {
+        if (!user) { window.location.href = 'index.html'; return; }
+        currentUser = user;
+        const doc = await db.collection('users').doc(user.uid).get();
+        if (!doc.exists || doc.data().role !== 'streamer') {
+            showToast('Streamers only!', 'error');
+            setTimeout(() => window.location.href = 'home.html', 1500);
+            return;
+        }
+        currentUserData = doc.data();
+        setMinDate();
+        loadDraft();
+        generateParticles();
+    });
+
+    // ========== PARTICLES ==========
+    function generateParticles() {
+        const container = document.getElementById('particles');
+        const count = window.innerWidth < 480 ? 15 : 25;
+        for (let i = 0; i < count; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const colors = ['rgba(77,163,255,0.5)', 'rgba(168,85,247,0.5)', 'rgba(255,77,141,0.4)'];
+            p.style.cssText = `
+                left: ${Math.random() * 100}%;
+                width: ${Math.random() * 3 + 1}px;
+                height: ${Math.random() * 3 + 1}px;
+                background: ${colors[Math.floor(Math.random() * colors.length)]};
+                animation-duration: ${Math.random() * 12 + 8}s;
+                animation-delay: ${Math.random() * 10}s;
+            `;
+            container.appendChild(p);
+        }
+    }
+
+    // ========== STEP NAVIGATION ==========
+    function goToStep(step, isBack = false) {
+        if (step === 2 && currentStep === 1) {
+            if (!validateStep1()) return;
+        }
+
+        const oldStep = document.getElementById(`step${currentStep}`);
+        oldStep.classList.remove('active');
+
+        const indicators = ['step1Indicator', 'step2Indicator', 'step3Indicator'];
+        indicators.forEach((id, i) => {
+            const el = document.getElementById(id);
+            el.classList.remove('active', 'completed');
+            if (i + 1 < step) el.classList.add('completed');
+            else if (i + 1 === step) el.classList.add('active');
+        });
+
+        currentStep = step;
+        const newStep = document.getElementById(`step${currentStep}`);
+        if (isBack) newStep.classList.add('back-anim');
+        else newStep.classList.remove('back-anim');
+        newStep.classList.add('active');
+
+        const subtitles = ['Step 1 of 3 — Details', 'Step 2 of 3 — Settings', 'Step 3 of 3 — Review'];
+        document.getElementById('stepSubtitle').textContent = subtitles[step - 1];
+
+        if (step === 3) buildReview();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ========== STEP 1 VALIDATION ==========
+    function validateStep1() {
+        const title = document.getElementById('streamTitle').value.trim();
+        if (!title) { showToast('Please enter a stream title', 'warning'); return false; }
+        if (title.length < 3) { showToast('Title must be at least 3 characters', 'warning'); return false; }
+        const cat = document.querySelector('input[name="category"]:checked');
+        if (!cat) { showToast('Please select a category', 'warning'); return false; }
+        return true;
+    }
+
+    // ========== CHAR COUNT ==========
+    function updateCharCount(inputId, countId, max) {
+        const val = document.getElementById(inputId).value.length;
+        const el = document.getElementById(countId);
+        el.textContent = `${val}/${max}`;
+        el.className = 'char-count';
+        if (val > max * 0.85) el.classList.add('warn');
+        if (val >= max) el.classList.add('limit');
+    }
+
+    // ========== COVER IMAGE ==========
+    function triggerCoverInput() {
+        if (!document.getElementById('coverDropZone').classList.contains('has-image')) {
+            document.getElementById('coverInput').click();
+        }
+    }
+
+    function handleCoverFile(input) {
+        if (!input.files || !input.files[0]) return;
+        const file = input.files[0];
+        if (file.size > 2 * 1024 * 1024) {
+            showToast('Image must be under 2MB', 'warning');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            compressImage(e.target.result, 800, 0.75).then(compressed => {
+                coverImageBase64 = compressed;
+                showCoverPreview(compressed);
+            });
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function showCoverPreview(src) {
+        const zone = document.getElementById('coverDropZone');
+        const preview = document.getElementById('coverPreview');
+        const dropIcon = document.getElementById('dropIcon');
+        const dropText = document.getElementById('dropText');
+        const overlay = document.getElementById('coverOverlay');
+        const colorSection = document.getElementById('colorPaletteSection');
+
+        preview.src = src;
+        preview.style.display = 'block';
+        dropIcon.style.display = 'none';
+        dropText.style.display = 'none';
+        overlay.style.display = 'flex';
+        zone.classList.add('has-image');
+        colorSection.style.display = 'none';
+    }
+
+    function removeCover() {
+        const zone = document.getElementById('coverDropZone');
+        const preview = document.getElementById('coverPreview');
+        const dropIcon = document.getElementById('dropIcon');
+        const dropText = document.getElementById('dropText');
+        const overlay = document.getElementById('coverOverlay');
+        const colorSection = document.getElementById('colorPaletteSection');
+
+        coverImageBase64 = '';
+        preview.src = '';
+        preview.style.display = 'none';
+        dropIcon.style.display = 'flex';
+        dropText.style.display = 'block';
+        overlay.style.display = 'none';
+        zone.classList.remove('has-image');
+        colorSection.style.display = 'block';
+        document.getElementById('coverInput').value = '';
+    }
+
+    // Drag & Drop
+    function handleDragOver(e) {
+        e.preventDefault();
+        document.getElementById('coverDropZone').classList.add('dragging');
+    }
+
+    function handleDragLeave(e) {
+        document.getElementById('coverDropZone').classList.remove('dragging');
+    }
+
+    function handleDrop(e) {
+        e.preventDefault();
+        document.getElementById('coverDropZone').classList.remove('dragging');
+        const file = e.dataTransfer.files[0];
+        if (!file || !file.type.startsWith('image/')) {
+            showToast('Please drop an image file', 'warning');
+            return;
+        }
+        if (file.size > 2 * 1024 * 1024) {
+            showToast('Image must be under 2MB', 'warning');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            compressImage(ev.target.result, 800, 0.75).then(compressed => {
+                coverImageBase64 = compressed;
+                showCoverPreview(compressed);
+            });
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Gradient selection
+    function selectGradient(el) {
+        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedGradient = el.dataset.gradient;
+    }
+
+    // ========== TAGS ==========
+    document.addEventListener('DOMContentLoaded', () => {
+        const tagInput = document.getElementById('tagInput');
+        if (tagInput) {
+            tagInput.addEventListener('keydown', (e) => {
+                if ((e.key === 'Enter' || e.key === ',') && tagInput.value.trim()) {
+                    e.preventDefault();
+                    addTag(tagInput.value.trim().replace(/,/g, '').replace(/#/g, ''));
+                    tagInput.value = '';
+                }
+                if (e.key === 'Backspace' && !tagInput.value && tags.length > 0) {
+                    removeTag(tags[tags.length - 1]);
+                }
+            });
+        }
+    });
+
+    function addTag(name) {
+        if (!name || tags.includes(name) || tags.length >= 5) {
+            if (tags.length >= 5) showToast('Maximum 5 tags allowed', 'warning');
+            return;
+        }
+        if (name.length > 20) { showToast('Tag too long (max 20 chars)', 'warning'); return; }
+        tags.push(name);
+        renderTags();
+    }
+
+    function removeTag(name) {
+        tags = tags.filter(t => t !== name);
+        renderTags();
+    }
+
+    function renderTags() {
+        const container = document.getElementById('tagsContainer');
+        const input = document.getElementById('tagInput');
+        container.innerHTML = '';
+        tags.forEach(tag => {
+            const el = document.createElement('div');
+            el.className = 'tag-item';
+            el.innerHTML = `#${escapeHtml(tag)} <button class="tag-remove" onclick="removeTag('${escapeHtml(tag)}')"><i class="fa-solid fa-xmark"></i></button>`;
+            container.appendChild(el);
+        });
+        container.appendChild(input);
+        input.placeholder = tags.length >= 5 ? 'Max 5 tags' : 'Add tag, press Enter...';
+        input.disabled = tags.length >= 5;
+    }
+
+    // ========== SCHEDULE TOGGLE ==========
+    function toggleSchedule() {
+        const isChecked = document.getElementById('scheduleToggle').checked;
+        const fields = document.getElementById('scheduleFields');
+        const card = document.getElementById('scheduleToggleCard');
+
+        if (isChecked) {
+            fields.classList.add('open');
+            card.classList.add('active');
+        } else {
+            fields.classList.remove('open');
+            card.classList.remove('active');
+        }
+    }
+
+    function setMinDate() {
+        const now = new Date();
+        const dateStr = now.toISOString().split('T')[0];
+        const timeStr = now.toTimeString().slice(0, 5);
+        const dateInput = document.getElementById('scheduleDate');
+        const timeInput = document.getElementById('scheduleTime');
+        if (dateInput) dateInput.min = dateStr;
+        if (timeInput) timeInput.min = timeStr;
+    }
+
+    // ========== BUILD REVIEW ==========
+    function buildReview() {
+        const title = document.getElementById('streamTitle').value.trim() || 'Untitled Stream';
+        const desc = document.getElementById('streamDesc').value.trim() || 'No description provided.';
+        const category = document.querySelector('input[name="category"]:checked')?.value || 'music';
+        const chatMode = document.getElementById('chatMode').value;
+        const isScheduled = document.getElementById('scheduleToggle').checked;
+
+        document.getElementById('reviewTitle').textContent = title;
+        document.getElementById('reviewDesc').textContent = desc;
+        document.getElementById('reviewCategory').textContent = capitalize(category);
+        document.getElementById('reviewChatMode').textContent = capitalize(chatMode.replace('-',' '));
+
+        // Cover
+        const reviewCoverImg = document.getElementById('reviewCoverImg');
+        const reviewCoverPlaceholder = document.getElementById('reviewCoverPlaceholder');
+        const reviewCoverEl = document.getElementById('reviewCover');
+
+        if (coverImageBase64) {
+            reviewCoverImg.src = coverImageBase64;
+            reviewCoverImg.style.display = 'block';
+            reviewCoverPlaceholder.style.display = 'none';
+        } else {
+            reviewCoverImg.style.display = 'none';
+            reviewCoverPlaceholder.style.display = 'flex';
+            reviewCoverEl.style.background = selectedGradient;
+        }
+
+        // Badge
+        const badge = document.getElementById('reviewBadge');
+        if (isScheduled) {
+            badge.className = 'review-live-badge scheduled';
+            badge.innerHTML = '<i class="fa-solid fa-clock"></i> Scheduled';
+        } else {
+            badge.className = 'review-live-badge live';
+            badge.innerHTML = '<span class="review-live-dot"></span> LIVE';
+        }
+
+        // Schedule
+        const scheduleMeta = document.getElementById('reviewScheduleMeta');
+        const scheduleText = document.getElementById('reviewScheduleText');
+        if (isScheduled) {
+            const date = document.getElementById('scheduleDate').value;
+            const time = document.getElementById('scheduleTime').value;
+            if (date && time) {
+                const dt = new Date(`${date}T${time}`);
+                scheduleText.textContent = dt.toLocaleString('en-US', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+                scheduleMeta.style.display = 'flex';
+            }
+        } else {
+            scheduleMeta.style.display = 'none';
+        }
+
+        // Tags
+        const reviewTagsEl = document.getElementById('reviewTags');
+        reviewTagsEl.innerHTML = '';
+        tags.forEach(tag => {
+            const el = document.createElement('span');
+            el.className = 'review-tag';
+            el.textContent = `#${tag}`;
+            reviewTagsEl.appendChild(el);
+        });
+
+        // Settings Summary
+        const settingsData = [
+            { icon: 'fa-users', color: '#34D399', label: 'Co-hosts', val: document.getElementById('coHostToggle').checked ? 'Allowed' : 'Disabled' },
+            { icon: 'fa-hand', color: '#FBBF24', label: 'Raise Hand', val: document.getElementById('raiseHandToggle').checked ? 'On' : 'Off' },
+            { icon: 'fa-gift', color: '#FF4D8D', label: 'Gifts', val: document.getElementById('giftsToggle').checked ? 'Enabled' : 'Disabled' },
+            { icon: 'fa-trophy', color: '#4DA3FF', label: 'Leaderboard', val: document.getElementById('leaderboardToggle').checked ? 'Visible' : 'Hidden' },
+            { icon: 'fa-globe', color: '#A855F7', label: 'Visibility', val: capitalize(document.getElementById('visibility').value) },
+            { icon: 'fa-face-smile', color: '#FBBF24', label: 'Emojis', val: document.getElementById('emojiToggle').checked ? 'On' : 'Off' },
+        ];
+
+        const summaryEl = document.getElementById('settingsSummary');
+        summaryEl.innerHTML = '';
+        settingsData.forEach(item => {
+            const div = document.createElement('div');
+            div.style.cssText = 'display:flex; align-items:center; gap:8px;';
+            div.innerHTML = `
+                <i class="fa-solid ${item.icon}" style="color:${item.color}; font-size:13px; width:16px; text-align:center;"></i>
+                <div>
+                    <div style="font-size:11px; color:#6B7280;">${item.label}</div>
+                    <div style="font-size:12px; font-weight:600;">${item.val}</div>
+                </div>
+            `;
+            summaryEl.appendChild(div);
+        });
+
+        // Action button
+        const actionEl = document.getElementById('goLiveSection');
+        if (isScheduled) {
+            actionEl.innerHTML = `
+                <button class="schedule-confirm-btn" id="scheduleConfirmBtn" onclick="submitStream(true)">
+                    <span class="btn-text"><i class="fa-solid fa-calendar-check"></i> Schedule Stream</span>
+                    <div class="spinner"></div>
+                </button>
+            `;
+        } else {
+            actionEl.innerHTML = `
+                <button class="go-live-btn" id="goLiveConfirmBtn" onclick="submitStream(false)">
+                    <span class="btn-ripple"></span>
+                    <span class="btn-text"><i class="fa-solid fa-tower-broadcast"></i> Go Live Now!</span>
+                    <div class="spinner"></div>
+                </button>
+            `;
+        }
+    }
+
+    // ========== SUBMIT STREAM ==========
+    async function submitStream(isScheduled) {
+        const btnId = isScheduled ? 'scheduleConfirmBtn' : 'goLiveConfirmBtn';
+        const btn = document.getElementById(btnId);
+        if (!btn || !currentUser) return;
+
+        btn.classList.add('loading');
+        btn.disabled = true;
+
+        try {
+            const title = document.getElementById('streamTitle').value.trim();
+            const desc = document.getElementById('streamDesc').value.trim();
+            const category = document.querySelector('input[name="category"]:checked')?.value || 'other';
+            const chatMode = document.getElementById('chatMode').value;
+            const visibility = document.getElementById('visibility').value;
+
+            let scheduledAt = null;
+            if (isScheduled) {
+                const date = document.getElementById('scheduleDate').value;
+                const time = document.getElementById('scheduleTime').value;
+                if (!date || !time) {
+                    showToast('Please set date and time', 'warning');
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                    return;
+                }
+                scheduledAt = new Date(`${date}T${time}`);
+                if (scheduledAt <= new Date()) {
+                    showToast('Please choose a future time', 'warning');
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                    return;
+                }
+            }
+
+            const streamData = {
+                hostId: currentUser.uid,
+                hostName: currentUserData.fullName || 'Unknown',
+                hostUsername: currentUserData.username || '',
+                hostAvatar: currentUserData.avatar || '',
+                hostVerified: currentUserData.isVerified || false,
+                title,
+                description: desc,
+                category,
+                tags,
+                coverImage: coverImageBase64 || '',
+                coverGradient: coverImageBase64 ? '' : selectedGradient,
+                status: isScheduled ? 'scheduled' : 'live',
+                scheduledAt: scheduledAt ? firebase.firestore.Timestamp.fromDate(scheduledAt) : null,
+                listenerCount: 0,
+                peakListeners: 0,
+                totalGifts: 0,
+                totalGiftValue: 0,
+                totalEarnings: 0,
+                chatMode,
+                emojiEnabled: document.getElementById('emojiToggle').checked,
+                coHostsAllowed: document.getElementById('coHostToggle').checked,
+                raiseHandEnabled: document.getElementById('raiseHandToggle').checked,
+                giftsEnabled: document.getElementById('giftsToggle').checked,
+                leaderboardVisible: document.getElementById('leaderboardToggle').checked,
+                visibility,
+                isPinned: false,
+                startedAt: isScheduled ? null : firebase.firestore.FieldValue.serverTimestamp(),
+                endedAt: null,
+                duration: 0,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            };
+
+            const streamRef = await db.collection('streams').add(streamData);
+
+            // Update user isLive status
+            if (!isScheduled) {
+                await db.collection('users').doc(currentUser.uid).update({ isLive: true });
+            }
+
+            // Clear draft
+            localStorage.removeItem('chaterra_draft');
+
+            showToast(isScheduled ? 'Stream scheduled! 📅' : 'You\'re live! 🎙️', 'success');
+
+            setTimeout(() => {
+                if (isScheduled) {
+                    window.location.href = `streamer-dashboard.html`;
+                } else {
+                    window.location.href = `stream-room.html?id=${streamRef.id}&host=true`;
+                }
+            }, 1200);
+
+        } catch (err) {
+            console.error('Stream create error:', err);
+            showToast('Failed to create stream. Try again.', 'error');
+            btn.classList.remove('loading');
+            btn.disabled = false;
+        }
+    }
+
+    // ========== DRAFT ==========
+    function saveDraft() {
+        const draft = {
+            title: document.getElementById('streamTitle').value,
+            desc: document.getElementById('streamDesc').value,
+            category: document.querySelector('input[name="category"]:checked')?.value || 'music',
+            tags,
+            coverGradient: selectedGradient,
+        };
+        localStorage.setItem('chaterra_draft', JSON.stringify(draft));
+        showToast('Draft saved! ✅', 'success');
+    }
+
+    function loadDraft() {
+        const draft = JSON.parse(localStorage.getItem('chaterra_draft') || 'null');
+        if (!draft) return;
+
+        if (draft.title) document.getElementById('streamTitle').value = draft.title;
+        if (draft.desc) document.getElementById('streamDesc').value = draft.desc;
+        if (draft.tags?.length) {
+            tags = draft.tags;
+            renderTags();
+        }
+        if (draft.category) {
+            const el = document.getElementById(`cat${capitalize(draft.category)}`);
+            if (el) el.checked = true;
+        }
+        if (draft.coverGradient) {
+            selectedGradient = draft.coverGradient;
+            document.querySelectorAll('.color-swatch').forEach(s => {
+                s.classList.toggle('selected', s.dataset.gradient === selectedGradient);
+            });
+        }
+        showToast('Draft restored ✨', 'info');
+    }
+
+    // ========== UTILS ==========
+    function goBack() {
+        if (currentStep > 1) {
+            goToStep(currentStep - 1, true);
+        } else {
+            window.history.back();
+        }
+    }
+
+    function capitalize(str) {
+        if (!str) return '';
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function escapeHtml(str) {
+        const d = document.createElement('div');
+        d.textContent = str;
+        return d.innerHTML;
+    }
+
+    function compressImage(src, maxSize, quality) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let w = img.width, h = img.height;
+                if (w > maxSize) { h = Math.round(h * maxSize / w); w = maxSize; }
+                if (h > maxSize) { w = Math.round(w * maxSize / h); h = maxSize; }
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                resolve(canvas.toDataURL('image/jpeg', quality));
+            };
+            img.onerror = () => resolve('');
+            img.src = src;
+        });
+    }
+
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        const icons = { success:'fa-circle-check', error:'fa-circle-xmark', warning:'fa-triangle-exclamation', info:'fa-circle-info' };
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i> ${message}`;
+        container.appendChild(toast);
+        setTimeout(() => { if (toast.parentNode) toast.remove(); }, 4000);
+    }
+</script>
+</body>
+</html>

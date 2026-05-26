@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chaterra — Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* ========== RESET & BASE ========== */
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:'Poppins','Inter',sans-serif;background:#0B0F1A;color:#FFF;min-height:100vh;overflow-x:hidden;padding-bottom:40px}
+        ::-webkit-scrollbar{width:4px}
+        ::-webkit-scrollbar-track{background:transparent}
+        ::-webkit-scrollbar-thumb{background:rgba(77,163,255,0.3);border-radius:4px}
+
+        /* ========== ANIMATED BG ========== */
+        .bg-glow{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:hidden}
+        .bg-orb{position:absolute;border-radius:50%;filter:blur(100px);opacity:0.08;animation:orbDrift ease-in-out infinite}
+        .bg-orb:nth-child(1){width:500px;height:500px;background:#A855F7;top:-200px;left:-100px;animation-duration:18s}
+        .bg-orb:nth-child(2){width:400px;height:400px;background:#4DA3FF;bottom:-150px;right:-100px;animation-duration:22s;animation-delay:5s}
+        .bg-orb:nth-child(3){width:300px;height:300px;background:#FF4D8D;top:40%;left:55%;animation-duration:14s;animation-delay:8s}
+        @keyframes orbDrift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-50px,60px) scale(1.1)}66%{transform:translate(40px,-40px) scale(0.95)}}
+
+        /* ========== LAYOUT ========== */
+        .admin-shell{position:relative;z-index:1;display:flex;min-height:100vh}
+
+        /* ========== SIDEBAR ========== */
+        .sidebar{
+            width:260px;min-width:260px;
+            background:rgba(12,17,29,0.9);
+            backdrop-filter:blur(20px);
+            -webkit-backdrop-filter:blur(20px);
+            border-right:1px solid rgba(77,163,255,0.08);
+            display:flex;flex-direction:column;
+            position:fixed;left:0;top:0;bottom:0;
+            z-index:100;
+            transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+
+        .sidebar.collapsed{transform:translateX(-260px)}
+
+        .sidebar-logo{
+            padding:20px 16px;
+            display:flex;align-items:center;gap:10px;
+            border-bottom:1px solid rgba(77,163,255,0.08);
+        }
+
+        .sidebar-logo-icon{
+            width:40px;height:40px;border-radius:12px;
+            background:linear-gradient(135deg,#A855F7,#4DA3FF);
+            display:flex;align-items:center;justify-content:center;
+            font-size:18px;
+            animation:logoFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+        .sidebar-logo-text{
+            font-size:16px;font-weight:800;
+            background:linear-gradient(135deg,#4DA3FF,#A855F7);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+            letter-spacing:1px;
+        }
+
+        .sidebar-logo-sub{font-size:10px;color:#6B7280;margin-top:1px}
+
+        .sidebar-nav{flex:1;padding:16px 10px;overflow-y:auto}
+
+        .nav-section-label{
+            font-size:10px;font-weight:700;color:#6B7280;
+            text-transform:uppercase;letter-spacing:1px;
+            padding:8px 6px 4px;margin-top:8px;
+        }
+
+        .nav-link{
+            display:flex;align-items:center;gap:10px;
+            padding:11px 12px;border-radius:12px;
+            border:none;background:transparent;
+            color:#A1A1AA;font-family:'Poppins',sans-serif;
+            font-size:13px;font-weight:500;
+            cursor:pointer;width:100%;text-align:left;
+            transition:all 0.3s ease;
+            position:relative;
+            margin-bottom:2px;
+            -webkit-tap-highlight-color:transparent;
+        }
+
+        .nav-link i{width:18px;text-align:center;font-size:15px;flex-shrink:0}
+        .nav-link:hover{background:rgba(77,163,255,0.08);color:#FFFFFF}
+        .nav-link:active{transform:scale(0.97)}
+
+        .nav-link.active{
+            background:linear-gradient(135deg,rgba(77,163,255,0.15),rgba(168,85,247,0.1));
+            color:#4DA3FF;
+            border:1px solid rgba(77,163,255,0.15);
+        }
+
+        .nav-link .nav-badge{
+            margin-left:auto;
+            min-width:20px;height:18px;
+            background:#FF3B30;border-radius:9px;
+            font-size:10px;font-weight:800;
+            display:flex;align-items:center;justify-content:center;
+            padding:0 5px;
+        }
+
+        .sidebar-footer{
+            padding:16px;
+            border-top:1px solid rgba(77,163,255,0.08);
+        }
+
+        .admin-profile-mini{
+            display:flex;align-items:center;gap:10px;
+            padding:10px 12px;
+            background:rgba(26,36,56,0.5);
+            border-radius:12px;
+            cursor:pointer;
+            transition:all 0.3s ease;
+        }
+
+        .admin-profile-mini:hover{background:rgba(77,163,255,0.08)}
+
+        .admin-avatar-mini{
+            width:36px;height:36px;border-radius:10px;
+            background:linear-gradient(135deg,#A855F7,#4DA3FF);
+            display:flex;align-items:center;justify-content:center;
+            font-size:14px;font-weight:700;flex-shrink:0;
+        }
+
+        .admin-name-mini{font-size:13px;font-weight:600}
+        .admin-role-mini{font-size:10px;color:#A855F7;margin-top:1px}
+
+        /* ========== MAIN CONTENT ========== */
+        .main-content{
+            flex:1;
+            margin-left:260px;
+            display:flex;flex-direction:column;
+            min-height:100vh;
+            transition:margin-left 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+
+        .main-content.expanded{margin-left:0}
+
+        /* ========== TOP BAR ========== */
+        .topbar{
+            position:sticky;top:0;z-index:90;
+            background:rgba(11,15,26,0.92);
+            backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+            border-bottom:1px solid rgba(77,163,255,0.08);
+            padding:12px 20px;
+            display:flex;align-items:center;justify-content:space-between;
+            gap:12px;
+        }
+
+        .topbar-left{display:flex;align-items:center;gap:12px}
+
+        .sidebar-toggle{
+            width:38px;height:38px;border-radius:11px;border:none;
+            background:rgba(26,36,56,0.7);color:#A1A1AA;font-size:16px;
+            cursor:pointer;display:flex;align-items:center;justify-content:center;
+            transition:all 0.3s ease;-webkit-tap-highlight-color:transparent;
+        }
+
+        .sidebar-toggle:hover{background:rgba(77,163,255,0.15);color:#4DA3FF}
+        .sidebar-toggle:active{transform:scale(0.88)}
+
+        .topbar-title{font-size:16px;font-weight:700;color:#FFFFFF}
+        .topbar-sub{font-size:11px;color:#6B7280;margin-top:1px}
+
+        .topbar-right{display:flex;align-items:center;gap:8px}
+
+        .topbar-btn{
+            width:38px;height:38px;border-radius:11px;border:none;
+            background:rgba(26,36,56,0.7);color:#A1A1AA;font-size:15px;
+            cursor:pointer;display:flex;align-items:center;justify-content:center;
+            transition:all 0.3s ease;-webkit-tap-highlight-color:transparent;position:relative;
+        }
+
+        .topbar-btn:hover{background:rgba(77,163,255,0.15);color:#4DA3FF}
+        .topbar-btn:active{transform:scale(0.88)}
+
+        .topbar-notif-dot{
+            position:absolute;top:7px;right:7px;
+            width:8px;height:8px;background:#FF3B30;
+            border-radius:50%;border:2px solid #0B0F1A;
+            animation:notifPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes notifPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+
+        /* ========== PAGE SECTIONS ========== */
+        .page-section{display:none;animation:fadeUp 0.4s ease}
+        .page-section.active{display:block}
+
+        @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+        .section-inner{padding:20px}
+
+        /* ========== STATS CARDS GRID ========== */
+        .stats-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+            gap:14px;
+            margin-bottom:24px;
+        }
+
+        .stat-card{
+            background:rgba(18,26,42,0.7);
+            border:1.5px solid rgba(77,163,255,0.08);
+            border-radius:18px;padding:18px 16px;
+            transition:all 0.4s ease;
+            animation:cardUp 0.5s ease backwards;
+            cursor:default;
+        }
+
+        @keyframes cardUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        .stat-card:hover{transform:translateY(-4px);border-color:rgba(77,163,255,0.2);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+
+        .stat-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+        .stat-card-icon{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:18px}
+        .stat-card-trend{font-size:11px;font-weight:600;display:flex;align-items:center;gap:3px}
+        .stat-card-trend.up{color:#34D399}
+        .stat-card-trend.down{color:#FF3B30}
+        .stat-value{font-size:28px;font-weight:800;line-height:1;margin-bottom:4px}
+        .stat-label{font-size:12px;color:#6B7280}
+
+        /* ========== DATA TABLE ========== */
+        .table-card{
+            background:rgba(18,26,42,0.6);
+            border:1.5px solid rgba(77,163,255,0.08);
+            border-radius:20px;
+            overflow:hidden;
+            margin-bottom:20px;
+            animation:cardUp 0.5s ease backwards;
+        }
+
+        .table-header{
+            display:flex;align-items:center;justify-content:space-between;
+            padding:16px 20px;
+            border-bottom:1px solid rgba(77,163,255,0.06);
+            gap:12px;
+            flex-wrap:wrap;
+        }
+
+        .table-title{
+            font-size:15px;font-weight:700;
+            display:flex;align-items:center;gap:8px;
+        }
+
+        .table-title i{font-size:14px}
+
+        .table-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+        .table-search{
+            padding:8px 14px 8px 34px;
+            background:rgba(11,15,26,0.7);
+            border:1.5px solid rgba(77,163,255,0.1);
+            border-radius:10px;color:#FFF;
+            font-family:'Inter',sans-serif;font-size:12px;
+            outline:none;transition:all 0.3s ease;
+            width:180px;
+        }
+
+        .table-search::placeholder{color:#6B7280}
+        .table-search:focus{border-color:rgba(77,163,255,0.3);width:220px}
+
+        .table-search-wrap{position:relative}
+        .table-search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#6B7280;font-size:11px;pointer-events:none}
+
+        .action-btn{
+            padding:8px 14px;border-radius:10px;border:none;
+            font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;
+            cursor:pointer;transition:all 0.3s ease;
+            display:flex;align-items:center;gap:6px;
+            -webkit-tap-highlight-color:transparent;
+        }
+
+        .action-btn:active{transform:scale(0.93)}
+        .action-btn.primary{background:linear-gradient(135deg,#4DA3FF,#A855F7);color:#FFF}
+        .action-btn.primary:hover{box-shadow:0 4px 14px rgba(77,163,255,0.3)}
+        .action-btn.success{background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.25);color:#34D399}
+        .action-btn.success:hover{background:rgba(52,211,153,0.2)}
+        .action-btn.danger{background:rgba(255,59,48,0.12);border:1px solid rgba(255,59,48,0.25);color:#FF3B30}
+        .action-btn.danger:hover{background:rgba(255,59,48,0.2)}
+        .action-btn.warning{background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.25);color:#FBBF24}
+        .action-btn.warning:hover{background:rgba(251,191,36,0.2)}
+        .action-btn.ghost{background:rgba(26,36,56,0.6);border:1px solid rgba(77,163,255,0.1);color:#A1A1AA}
+        .action-btn.ghost:hover{color:#FFF;border-color:rgba(77,163,255,0.25)}
+
+        .table-wrap{overflow-x:auto}
+
+        table{width:100%;border-collapse:collapse;min-width:600px}
+        thead tr{background:rgba(11,15,26,0.5)}
+        th{padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:0.6px;white-space:nowrap}
+        td{padding:13px 16px;font-size:13px;border-top:1px solid rgba(77,163,255,0.05);vertical-align:middle}
+
+        tbody tr{transition:background 0.2s ease}
+        tbody tr:hover{background:rgba(77,163,255,0.04)}
+
+        /* ========== STATUS BADGES ========== */
+        .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:700}
+        .badge.live{background:rgba(255,59,48,0.15);color:#FF3B30}
+        .badge.active{background:rgba(52,211,153,0.12);color:#34D399}
+        .badge.pending{background:rgba(251,191,36,0.12);color:#FBBF24}
+        .badge.banned{background:rgba(255,59,48,0.12);color:#FF3B30}
+        .badge.completed{background:rgba(52,211,153,0.12);color:#34D399}
+        .badge.processing{background:rgba(77,163,255,0.12);color:#4DA3FF}
+        .badge.ended{background:rgba(107,114,128,0.15);color:#9CA3AF}
+        .badge.streamer{background:rgba(255,77,141,0.12);color:#FF4D8D}
+        .badge.listener{background:rgba(77,163,255,0.1);color:#4DA3FF}
+        .badge.scheduled{background:rgba(168,85,247,0.12);color:#A855F7}
+
+        .badge-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+        .badge.live .badge-dot{animation:badgeDotPulse 1.5s ease-in-out infinite}
+        @keyframes badgeDotPulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+        /* ========== USER AVATAR IN TABLE ========== */
+        .user-cell{display:flex;align-items:center;gap:10px}
+        .user-cell-avatar{width:34px;height:34px;border-radius:10px;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,#4DA3FF,#A855F7)}
+        .user-cell-avatar img{width:100%;height:100%;object-fit:cover}
+        .uca-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+        .user-cell-name{font-size:13px;font-weight:600}
+        .user-cell-username{font-size:11px;color:#A1A1AA}
+
+        /* ========== TABLE ROW ACTIONS ========== */
+        .row-actions{display:flex;gap:5px}
+        .row-btn{width:28px;height:28px;border-radius:8px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all 0.3s ease;-webkit-tap-highlight-color:transparent}
+        .row-btn:active{transform:scale(0.85)}
+        .row-btn.view{background:rgba(77,163,255,0.12);color:#4DA3FF}
+        .row-btn.view:hover{background:rgba(77,163,255,0.22)}
+        .row-btn.edit{background:rgba(251,191,36,0.12);color:#FBBF24}
+        .row-btn.edit:hover{background:rgba(251,191,36,0.22)}
+        .row-btn.ban{background:rgba(255,59,48,0.12);color:#FF3B30}
+        .row-btn.ban:hover{background:rgba(255,59,48,0.22)}
+        .row-btn.approve{background:rgba(52,211,153,0.12);color:#34D399}
+        .row-btn.approve:hover{background:rgba(52,211,153,0.22)}
+        .row-btn.delete{background:rgba(255,59,48,0.12);color:#FF3B30}
+        .row-btn.delete:hover{background:rgba(255,59,48,0.22)}
+
+        /* ========== PAGINATION ========== */
+        .pagination{
+            display:flex;align-items:center;justify-content:space-between;
+            padding:12px 20px;
+            border-top:1px solid rgba(77,163,255,0.06);
+            gap:10px;flex-wrap:wrap;
+        }
+
+        .pagination-info{font-size:12px;color:#6B7280}
+
+        .pagination-btns{display:flex;gap:4px}
+
+        .page-btn{
+            width:32px;height:32px;border-radius:8px;border:1.5px solid rgba(77,163,255,0.1);
+            background:transparent;color:#A1A1AA;font-family:'Poppins',sans-serif;
+            font-size:12px;font-weight:600;cursor:pointer;
+            display:flex;align-items:center;justify-content:center;
+            transition:all 0.3s ease;
+        }
+
+        .page-btn:hover{border-color:rgba(77,163,255,0.3);color:#FFF}
+        .page-btn.active{background:linear-gradient(135deg,#4DA3FF,#A855F7);border-color:transparent;color:#FFF}
+        .page-btn:disabled{opacity:0.4;cursor:not-allowed}
+        .page-btn:active{transform:scale(0.88)}
+
+        /* ========== MODAL ========== */
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+        .modal-overlay.open{display:flex}
+        .modal-card{background:rgba(18,26,42,0.97);backdrop-filter:blur(20px);border:1px solid rgba(77,163,255,0.12);border-radius:24px;padding:28px 24px;width:100%;max-width:480px;animation:modalPop 0.4s cubic-bezier(0.25,0.46,0.45,0.94);max-height:90vh;overflow-y:auto}
+        @keyframes modalPop{from{transform:scale(0.85);opacity:0}to{transform:scale(1);opacity:1}}
+
+        .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+        .modal-title{font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px}
+        .modal-close{width:32px;height:32px;border-radius:8px;border:none;background:rgba(26,36,56,0.7);color:#A1A1AA;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s ease}
+        .modal-close:hover{background:rgba(255,59,48,0.15);color:#FF3B30}
+
+        .modal-label{font-size:11px;font-weight:600;color:#A1A1AA;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;margin-top:14px;display:block}
+        .modal-input{width:100%;padding:12px 14px;background:rgba(11,15,26,0.8);border:1.5px solid rgba(77,163,255,0.12);border-radius:12px;color:#FFF;font-family:'Poppins',sans-serif;font-size:13px;outline:none;transition:all 0.3s ease;-webkit-appearance:none}
+        .modal-input:focus{border-color:#4DA3FF;box-shadow:0 0 0 3px rgba(77,163,255,0.1)}
+        .modal-input option{background:#121A2A}
+
+        .modal-select{width:100%;padding:12px 14px;background:rgba(11,15,26,0.8);border:1.5px solid rgba(77,163,255,0.12);border-radius:12px;color:#FFF;font-family:'Poppins',sans-serif;font-size:13px;outline:none;transition:all 0.3s ease;cursor:pointer;-webkit-appearance:none}
+        .modal-select:focus{border-color:#4DA3FF}
+        .modal-select option{background:#121A2A}
+
+        .modal-btns{display:flex;gap:10px;margin-top:20px}
+        .modal-cancel{flex:1;padding:13px;border-radius:12px;border:1.5px solid rgba(77,163,255,0.15);background:transparent;color:#A1A1AA;font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.3s ease}
+        .modal-cancel:hover{border-color:rgba(77,163,255,0.3);color:#FFF}
+
+        .modal-confirm{flex:1;padding:13px;border-radius:12px;border:none;color:#FFF;font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s ease;display:flex;align-items:center;justify-content:center;gap:6px}
+        .modal-confirm.green{background:linear-gradient(135deg,#34D399,#10B981);color:#0B0F1A}
+        .modal-confirm.green:hover{box-shadow:0 6px 20px rgba(52,211,153,0.3)}
+        .modal-confirm.blue{background:linear-gradient(135deg,#4DA3FF,#A855F7)}
+        .modal-confirm.blue:hover{box-shadow:0 6px 20px rgba(77,163,255,0.3)}
+        .modal-confirm.red{background:linear-gradient(135deg,#FF3B30,#FF4D8D)}
+        .modal-confirm.red:hover{box-shadow:0 6px 20px rgba(255,59,48,0.3)}
+        .modal-confirm:active{transform:scale(0.96)}
+        .modal-confirm .spinner{display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#FFF;border-radius:50%;animation:spin 0.8s linear infinite}
+        .modal-confirm.loading .btn-text{display:none}
+        .modal-confirm.loading .spinner{display:block}
+        @keyframes spin{to{transform:rotate(360deg)}}
+
+        /* ========== CHARTS SECTION ========== */
+        .chart-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:20px}
+
+        .chart-card{background:rgba(18,26,42,0.6);border:1.5px solid rgba(77,163,255,0.08);border-radius:20px;padding:18px;animation:cardUp 0.5s ease backwards}
+
+        .chart-card-title{font-size:14px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .chart-card-title i{color:#4DA3FF}
+
+        .mini-bar-chart{display:flex;align-items:flex-end;gap:5px;height:80px}
+        .mbc-bar{flex:1;border-radius:4px 4px 0 0;background:linear-gradient(180deg,#4DA3FF,rgba(77,163,255,0.2));transition:height 1s cubic-bezier(0.25,0.46,0.45,0.94);cursor:pointer;position:relative}
+        .mbc-bar:hover{background:linear-gradient(180deg,#A855F7,rgba(168,85,247,0.2))}
+        .mbc-bar-tooltip{position:absolute;top:-28px;left:50%;transform:translateX(-50%);background:rgba(18,26,42,0.95);border:1px solid rgba(77,163,255,0.2);border-radius:6px;padding:2px 6px;font-size:10px;font-weight:600;color:#4DA3FF;white-space:nowrap;display:none}
+        .mbc-bar:hover .mbc-bar-tooltip{display:block}
+        .mbc-labels{display:flex;gap:5px;margin-top:6px}
+        .mbc-label{flex:1;text-align:center;font-size:9px;color:#6B7280}
+
+        /* Donut chart */
+        .donut-chart-wrap{display:flex;align-items:center;gap:16px}
+        .donut-svg{width:80px;height:80px;flex-shrink:0}
+        .donut-legend{flex:1}
+        .donut-legend-item{display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:12px}
+        .donut-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+        /* ========== ACTIVITY LOG ========== */
+        .activity-log-item{
+            display:flex;align-items:flex-start;gap:12px;
+            padding:12px 0;
+            border-bottom:1px solid rgba(77,163,255,0.05);
+            animation:fadeSlide 0.3s ease backwards;
+        }
+
+        @keyframes fadeSlide{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+        .activity-log-item:last-child{border-bottom:none}
+        .al-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+        .al-info{flex:1}
+        .al-text{font-size:13px;line-height:1.4}
+        .al-text strong{color:#FFF}
+        .al-time{font-size:11px;color:#6B7280;margin-top:3px;display:flex;align-items:center;gap:4px}
+        .al-time i{font-size:9px}
+
+        /* ========== SETTINGS FORM ========== */
+        .settings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:20px}
+
+        .settings-card{background:rgba(18,26,42,0.6);border:1.5px solid rgba(77,163,255,0.08);border-radius:18px;padding:20px;animation:cardUp 0.5s ease backwards}
+        .settings-card-title{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;color:#A1A1AA;text-transform:uppercase;font-size:11px;letter-spacing:0.5px}
+        .settings-card-title i{color:#4DA3FF;font-size:13px}
+
+        .settings-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(77,163,255,0.05)}
+        .settings-row:last-child{border-bottom:none}
+        .settings-row-label{font-size:13px;font-weight:500}
+        .settings-row-desc{font-size:11px;color:#6B7280;margin-top:2px}
+
+        .toggle-sw{position:relative;width:46px;height:24px}
+        .toggle-sw input{display:none}
+        .toggle-slider{position:absolute;inset:0;background:rgba(77,163,255,0.1);border:1.5px solid rgba(77,163,255,0.15);border-radius:24px;cursor:pointer;transition:all 0.3s ease}
+        .toggle-slider::before{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#6B7280;top:2px;left:2px;transition:all 0.3s cubic-bezier(0.25,0.46,0.45,0.94)}
+        .toggle-sw input:checked+.toggle-slider{background:rgba(77,163,255,0.2);border-color:#4DA3FF}
+        .toggle-sw input:checked+.toggle-slider::before{background:#4DA3FF;transform:translateX(22px);box-shadow:0 0 6px rgba(77,163,255,0.4)}
+
+        /* ========== EMPTY STATE ========== */
+        .empty-state-admin{text-align:center;padding:48px 20px}
+        .empty-icon-admin{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;animation:emptyFloat 3s ease-in-out infinite}
+        @keyframes emptyFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+        .empty-title-admin{font-size:15px;font-weight:600;margin-bottom:5px}
+        .empty-text-admin{font-size:12px;color:#6B7280}
+
+        /* ========== SKELETON ========== */
+        .sk{background:linear-gradient(90deg,#1A2438 25%,#243050 50%,#1A2438 75%);background-size:200% 100%;animation:shimmer 1.5s ease-in-out infinite;border-radius:8px}
+        @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+
+        /* ========== TOAST ========== */
+        .toast-container{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+        .toast{padding:12px 16px;border-radius:12px;font-size:13px;font-family:'Poppins',sans-serif;font-weight:500;display:flex;align-items:center;gap:8px;max-width:360px;animation:toastIn 0.4s ease,toastOut 0.4s ease 3.6s forwards;backdrop-filter:blur(10px)}
+        .toast.success{background:rgba(52,211,153,0.15);border:1px solid rgba(52,211,153,0.3);color:#34D399}
+        .toast.error{background:rgba(255,59,48,0.15);border:1px solid rgba(255,59,48,0.3);color:#FF3B30}
+        .toast.info{background:rgba(77,163,255,0.15);border:1px solid rgba(77,163,255,0.3);color:#4DA3FF}
+        .toast.warning{background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);color:#FBBF24}
+        @keyframes toastIn{from{opacity:0;transform:translateX(80px)}to{opacity:1;transform:translateX(0)}}
+        @keyframes toastOut{to{opacity:0;transform:translateX(80px)}}
+
+        /* ========== RESPONSIVE ========== */
+        @media(max-width:900px){
+            .sidebar{transform:translateX(-260px)}
+            .sidebar.open{transform:translateX(0)}
+            .main-content{margin-left:0}
+            .stats-grid{grid-template-columns:repeat(2,1fr)}
+            .chart-row{grid-template-columns:1fr}
+        }
+
+        @media(max-width:600px){
+            .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+            .table-search{width:140px}
+            .table-search:focus{width:160px}
+            .section-inner{padding:14px}
+            .topbar{padding:10px 14px}
+            .stat-value{font-size:22px}
+            .toast-container{right:10px;left:10px}
+            .toast{max-width:calc(100vw - 32px)}
+            .modal-card{padding:20px 16px}
+            .settings-grid{grid-template-columns:1fr}
+            .chart-row{grid-template-columns:1fr}
+        }
+
+        @media(max-width:400px){
+            .stats-grid{grid-template-columns:1fr}
+            .table-actions{flex-direction:column;align-items:flex-start}
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-glow"><div class="bg-orb"></div><div class="bg-orb"></div><div class="bg-orb"></div></div>
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ====== CREDIT COINS MODAL ====== -->
+<div class="modal-overlay" id="creditModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <div class="modal-title" style="color:#FBBF24"><i class="fa-solid fa-coins"></i> Credit Coins</div>
+            <button class="modal-close" onclick="closeModal('creditModal')"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <label class="modal-label"><i class="fa-solid fa-user" style="color:#4DA3FF;margin-right:4px"></i> User</label>
+        <input type="text" class="modal-input" id="creditUserDisplay" readonly>
+        <label class="modal-label"><i class="fa-solid fa-coins" style="color:#FBBF24;margin-right:4px"></i> Coins to Credit</label>
+        <input type="number" class="modal-input" id="creditAmount" placeholder="Enter coin amount" min="1">
+        <label class="modal-label"><i class="fa-solid fa-note-sticky" style="color:#4DA3FF;margin-right:4px"></i> Note</label>
+        <input type="text" class="modal-input" id="creditNote" placeholder="e.g. Purchase reference: OPY12345">
+        <div class="modal-btns">
+            <button class="modal-cancel" onclick="closeModal('creditModal')">Cancel</button>
+            <button class="modal-confirm green" id="creditConfirmBtn" onclick="confirmCreditCoins()">
+                <span class="btn-text"><i class="fa-solid fa-check"></i> Credit</span>
+                <div class="spinner"></div>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ====== APPROVE PAYOUT MODAL ====== -->
+<div class="modal-overlay" id="payoutModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <div class="modal-title" style="color:#34D399"><i class="fa-solid fa-money-bill-transfer"></i> Approve Payout</div>
+            <button class="modal-close" onclick="closeModal('payoutModal')"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="payoutModalInfo" style="background:rgba(11,15,26,0.6);border-radius:14px;padding:14px;margin-bottom:4px;font-size:13px;line-height:1.8;color:#A1A1AA"></div>
+        <label class="modal-label"><i class="fa-solid fa-list-check" style="color:#34D399;margin-right:4px"></i> Status</label>
+        <select class="modal-select" id="payoutStatusSelect">
+            <option value="processing">Processing</option>
+            <option value="completed">Completed</option>
+            <option value="rejected">Rejected</option>
+        </select>
+        <label class="modal-label"><i class="fa-solid fa-note-sticky" style="color:#4DA3FF;margin-right:4px"></i> Admin Note</label>
+        <input type="text" class="modal-input" id="payoutAdminNote" placeholder="Transfer reference or reason">
+        <div class="modal-btns">
+            <button class="modal-cancel" onclick="closeModal('payoutModal')">Cancel</button>
+            <button class="modal-confirm green" id="payoutConfirmBtn" onclick="confirmPayoutUpdate()">
+                <span class="btn-text"><i class="fa-solid fa-check"></i> Update</span>
+                <div class="spinner"></div>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ====== BAN USER MODAL ====== -->
+<div class="modal-overlay" id="banModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <div class="modal-title" style="color:#FF3B30"><i class="fa-solid fa-ban"></i> Ban User</div>
+            <button class="modal-close" onclick="closeModal('banModal')"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <p style="font-size:13px;color:#A1A1AA;margin-bottom:14px">This will prevent the user from accessing Chaterra.</p>
+        <label class="modal-label">User</label>
+        <input type="text" class="modal-input" id="banUserDisplay" readonly>
+        <label class="modal-label"><i class="fa-solid fa-circle-exclamation" style="color:#FF3B30;margin-right:4px"></i> Reason</label>
+        <input type="text" class="modal-input" id="banReason" placeholder="Enter reason for ban">
+        <div class="modal-btns">
+            <button class="modal-cancel" onclick="closeModal('banModal')">Cancel</button>
+            <button class="modal-confirm red" id="banConfirmBtn" onclick="confirmBanUser()">
+                <span class="btn-text"><i class="fa-solid fa-ban"></i> Ban User</span>
+                <div class="spinner"></div>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ====== END STREAM MODAL ====== -->
+<div class="modal-overlay" id="endStreamModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <div class="modal-title" style="color:#FF3B30"><i class="fa-solid fa-stop"></i> Force End Stream</div>
+            <button class="modal-close" onclick="closeModal('endStreamModal')"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <p style="font-size:13px;color:#A1A1AA;margin-bottom:14px">Are you sure you want to force end this stream? This cannot be undone.</p>
+        <input type="text" class="modal-input" id="endStreamDisplay" readonly style="margin-bottom:14px">
+        <label class="modal-label">Reason</label>
+        <input type="text" class="modal-input" id="endStreamReason" placeholder="Reason for ending stream">
+        <div class="modal-btns">
+            <button class="modal-cancel" onclick="closeModal('endStreamModal')">Cancel</button>
+            <button class="modal-confirm red" id="endStreamConfirmBtn" onclick="confirmEndStream()">
+                <span class="btn-text"><i class="fa-solid fa-stop"></i> Force End</span>
+                <div class="spinner"></div>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ====== MAIN ADMIN SHELL ====== -->
+<div class="admin-shell">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="sidebar-logo-icon"><i class="fa-solid fa-headphones-simple"></i></div>
+            <div>
+                <div class="sidebar-logo-text">CHATERRA</div>
+                <div class="sidebar-logo-sub">Admin Dashboard</div>
+            </div>
+        </div>
+
+        <div class="sidebar-nav">
+            <div class="nav-section-label">Overview</div>
+            <button class="nav-link active" id="nav-overview" onclick="switchSection('overview',this)">
+                <i class="fa-solid fa-chart-pie"></i> Overview
+            </button>
+
+            <div class="nav-section-label">Management</div>
+            <button class="nav-link" id="nav-users" onclick="switchSection('users',this)">
+                <i class="fa-solid fa-users"></i> Users
+                <span class="nav-badge" id="navBadgeUsers" style="display:none"></span>
+            </button>
+            <button class="nav-link" id="nav-streams" onclick="switchSection('streams',this)">
+                <i class="fa-solid fa-tower-broadcast"></i> Streams
+                <span class="nav-badge" id="navBadgeStreams" style="display:none"></span>
+            </button>
+            <button class="nav-link" id="nav-payouts" onclick="switchSection('payouts',this)">
+                <i class="fa-solid fa-money-bill-transfer"></i> Payouts
+                <span class="nav-badge" id="navBadgePayouts" style="display:none">0</span>
+            </button>
+            <button class="nav-link" id="nav-purchases" onclick="switchSection('purchases',this)">
+                <i class="fa-solid fa-coins"></i> Coin Purchases
+                <span class="nav-badge" id="navBadgePurchases" style="display:none">0</span>
+            </button>
+
+            <div class="nav-section-label">Platform</div>
+            <button class="nav-link" id="nav-activity" onclick="switchSection('activity',this)">
+                <i class="fa-solid fa-clock-rotate-left"></i> Activity Log
+            </button>
+            <button class="nav-link" id="nav-settings" onclick="switchSection('settings',this)">
+                <i class="fa-solid fa-sliders"></i> Settings
+            </button>
+
+            <div class="nav-section-label">Access</div>
+            <button class="nav-link" onclick="window.location.href='home.html'">
+                <i class="fa-solid fa-arrow-left"></i> Back to App
+            </button>
+            <button class="nav-link" onclick="handleLogout()" style="color:#FF3B30">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile-mini" onclick="switchSection('settings',document.getElementById('nav-settings'))">
+                <div class="admin-avatar-mini" id="adminAvatarMini">A</div>
+                <div>
+                    <div class="admin-name-mini" id="adminNameMini">Admin</div>
+                    <div class="admin-role-mini"><i class="fa-solid fa-shield-halved" style="margin-right:3px"></i>Super Admin</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content" id="mainContent">
+
+        <!-- TOP BAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars" id="toggleIcon"></i></button>
+                <div>
+                    <div class="topbar-title" id="topbarTitle">Overview</div>
+                    <div class="topbar-sub" id="topbarSub">Platform at a glance</div>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="topbar-btn" onclick="refreshCurrentSection()" title="Refresh"><i class="fa-solid fa-rotate" id="refreshIcon"></i></button>
+                <button class="topbar-btn" onclick="switchSection('activity',document.getElementById('nav-activity'))" title="Activity">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span class="topbar-notif-dot" id="topbarDot" style="display:none"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ====== OVERVIEW SECTION ====== -->
+        <div class="page-section active" id="section-overview">
+            <div class="section-inner">
+                <div class="stats-grid" id="overviewStats"></div>
+                <div class="chart-row" id="overviewCharts"></div>
+                <div class="table-card">
+                    <div class="table-header">
+                        <div class="table-title"><i class="fa-solid fa-clock-rotate-left" style="color:#A855F7"></i> Recent Activity</div>
+                    </div>
+                    <div style="padding:0 16px 8px" id="recentActivity"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== USERS SECTION ====== -->
+        <div class="page-section" id="section-users">
+            <div class="section-inner">
+                <div class="table-card">
+                    <div class="table-header">
+                        <div class="table-title"><i class="fa-solid fa-users" style="color:#4DA3FF"></i> All Users</div>
+                        <div class="table-actions">
+                            <div class="table-search-wrap">
+                                <i class="fa-solid fa-magnifying-glass table-search-icon"></i>
+                                <input type="text" class="table-search" id="userSearch" placeholder="Search users..." oninput="filterUsersTable(this.value)">
+                            </div>
+                            <select class="table-search" id="userRoleFilter" style="padding-left:10px" onchange="filterUsersTable(document.getElementById('userSearch').value)">
+                                <option value="">All Roles</option>
+                                <option value="streamer">Streamer</option>
+                                <option value="listener">Listener</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table id="usersTable">
+                            <thead><tr>
+                                <th>User</th><th>Role</th><th>Coins</th>
+                                <th>Followers</th><th>Status</th><th>Joined</th><th>Actions</th>
+                            </tr></thead>
+                            <tbody id="usersTableBody">
+                                <tr><td colspan="7" style="text-align:center;padding:24px;color:#6B7280">
+                                    <i class="fa-solid fa-rotate fa-spin" style="color:#4DA3FF;margin-right:8px"></i>Loading users...
+                                </td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" id="usersPagination"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== STREAMS SECTION ====== -->
+        <div class="page-section" id="section-streams">
+            <div class="section-inner">
+                <div class="table-card">
+                    <div class="table-header">
+                        <div class="table-title"><i class="fa-solid fa-tower-broadcast" style="color:#FF3B30"></i> All Streams</div>
+                        <div class="table-actions">
+                            <div class="table-search-wrap">
+                                <i class="fa-solid fa-magnifying-glass table-search-icon"></i>
+                                <input type="text" class="table-search" id="streamSearch" placeholder="Search streams..." oninput="filterStreamsTable(this.value)">
+                            </div>
+                            <select class="table-search" id="streamStatusFilter" style="padding-left:10px" onchange="filterStreamsTable(document.getElementById('streamSearch').value)">
+                                <option value="">All Status</option>
+                                <option value="live">Live</option>
+                                <option value="ended">Ended</option>
+                                <option value="scheduled">Scheduled</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table id="streamsTable">
+                            <thead><tr>
+                                <th>Stream</th><th>Host</th><th>Category</th>
+                                <th>Listeners</th><th>Gifts</th><th>Status</th><th>Actions</th>
+                            </tr></thead>
+                            <tbody id="streamsTableBody">
+                                <tr><td colspan="7" style="text-align:center;padding:24px;color:#6B7280">
+                                    <i class="fa-solid fa-rotate fa-spin" style="color:#4DA3FF;margin-right:8px"></i>Loading streams...
+                                </td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" id="streamsPagination"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== PAYOUTS SECTION ====== -->
+        <div class="page-section" id="section-payouts">
+            <div class="section-inner">
+                <div class="table-card">
+                    <div class="table-header">
+                        <div class="table-title"><i class="fa-solid fa-money-bill-transfer" style="color:#34D399"></i> Payout Requests</div>
+                        <div class="table-actions">
+                            <select class="table-search" id="payoutStatusFilter" style="padding-left:10px" onchange="loadPayouts()">
+                                <option value="">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="processing">Processing</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr>
+                                <th>Streamer</th><th>Amount</th><th>Method</th>
+                                <th>Account</th><th>Status</th><th>Date</th><th>Actions</th>
+                            </tr></thead>
+                            <tbody id="payoutsTableBody">
+                                <tr><td colspan="7" style="text-align:center;padding:24px;color:#6B7280">
+                                    <i class="fa-solid fa-rotate fa-spin" style="color:#4DA3FF;margin-right:8px"></i>Loading...
+                                </td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== COIN PURCHASES SECTION ====== -->
+        <div class="page-section" id="section-purchases">
+            <div class="section-inner">
+                <div class="table-card">
+                    <div class="table-header">
+                        <div class="table-title"><i class="fa-solid fa-coins" style="color:#FBBF24"></i> Coin Purchase Requests</div>
+                        <div class="table-actions">
+                            <select class="table-search" id="purchaseStatusFilter" style="padding-left:10px" onchange="loadPurchases()">
+                                <option value="">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr>
+                                <th>User</th><th>Package</th><th>Amount</th>
+                                <th>Method</th><th>Status</th><th>Date</th><th>Actions</th>
+                            </tr></thead>
+                            <tbody id="purchasesTableBody">
+                                <tr><td colspan="7" style="text-align:center;padding:24px;color:#6B7280">
+                                    <i class="fa-solid fa-rotate fa-spin" style="color:#4DA3FF;margin-right:8px"></i>Loading...
+                                </td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== ACTIVITY LOG ====== -->
+        <div class="page-section" id="section-activity">
+            <div class="section-inner">
+                <div class="table-card">
+                    <div class="table-header">
+                        <div class="table-title"><i class="fa-solid fa-clock-rotate-left" style="color:#A855F7"></i> Activity Log</div>
+                        <button class="action-btn ghost" onclick="loadActivity()">
+                            <i class="fa-solid fa-rotate"></i> Refresh
+                        </button>
+                    </div>
+                    <div style="padding:8px 16px" id="activityLogList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== SETTINGS ====== -->
+        <div class="page-section" id="section-settings">
+            <div class="section-inner">
+                <div class="settings-grid" id="settingsGrid"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig={apiKey: "AIzaSyATqi4oZTu5j5ZNJKN6dBRCN64c_zfzwVs",
+  authDomain: "ooooo-a0f87.firebaseapp.com",
+  projectId: "ooooo-a0f87",
+  storageBucket: "ooooo-a0f87.firebasestorage.app",
+  messagingSenderId: "427620508727",
+  appId: "1:427620508727:web:360997dac7362780940bb2"};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(),db=firebase.firestore();
+
+// ====== STATE ======
+let currentAdmin=null,currentAdminData=null;
+let allUsers=[],allStreams=[],allPayouts=[],allPurchases=[];
+let filteredUsers=[],filteredStreams=[];
+let userPage=1,streamPage=1;
+let activeModal=null,modalTargetId=null,modalTargetData=null;
+const PAGE_SIZE=15;
+const ADMIN_EMAILS=['admin@chaterra.com']; // Add your admin emails here
+
+// ====== AUTH ======
+auth.onAuthStateChanged(async user=>{
+    if(!user){window.location.href='index.html';return}
+    if(!ADMIN_EMAILS.includes(user.email)){
+        showToast('Access denied. Admins only.','error');
+        setTimeout(()=>window.location.href='home.html',2000);
+        return;
+    }
+    currentAdmin=user;
+    try{
+        const doc=await db.collection('users').doc(user.uid).get();
+        if(doc.exists)currentAdminData=doc.data();
+        document.getElementById('adminNameMini').textContent=currentAdminData?.fullName||'Admin';
+        if(currentAdminData?.avatar)document.getElementById('adminAvatarMini').innerHTML=`<img src="${currentAdminData.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:10px">`;
+        loadOverview();
+        checkPendingBadges();
+    }catch(err){console.error(err);showToast('Failed to load admin data','error')}
+});
+
+// ====== SIDEBAR TOGGLE ======
+let sidebarOpen=window.innerWidth>=900;
+
+function toggleSidebar(){
+    const sidebar=document.getElementById('sidebar');
+    const main=document.getElementById('mainContent');
+    const icon=document.getElementById('toggleIcon');
+    sidebarOpen=!sidebarOpen;
+    if(window.innerWidth>=900){
+        sidebar.classList.toggle('collapsed',!sidebarOpen);
+        main.classList.toggle('expanded',!sidebarOpen);
+    }else{
+        sidebar.classList.toggle('open',sidebarOpen);
+    }
+    icon.className=sidebarOpen?'fa-solid fa-xmark':'fa-solid fa-bars';
+}
+
+// Close sidebar on mobile when clicking outside
+document.addEventListener('click',e=>{
+    if(window.innerWidth<900&&sidebarOpen){
+        const sidebar=document.getElementById('sidebar');
+        if(!sidebar.contains(e.target)&&!e.target.closest('.sidebar-toggle')){
+            sidebarOpen=false;
+            sidebar.classList.remove('open');
+            document.getElementById('toggleIcon').className='fa-solid fa-bars';
+        }
+    }
+});
+
+// ====== SECTION SWITCHING ======
+let currentSection='overview';
+
+function switchSection(name,btn){
+    document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+    document.getElementById(`section-${name}`).classList.add('active');
+    if(btn)btn.classList.add('active');
+    currentSection=name;
+
+    const titles={
+        overview:['Overview','Platform at a glance'],
+        users:['Users','Manage all accounts'],
+        streams:['Streams','Monitor live content'],
+        payouts:['Payouts','Process earnings'],
+        purchases:['Coin Purchases','Credit coins to users'],
+        activity:['Activity Log','All platform events'],
+        settings:['Settings','Platform configuration'],
+    };
+
+    const t=titles[name]||['Admin',''];
+    document.getElementById('topbarTitle').textContent=t[0];
+    document.getElementById('topbarSub').textContent=t[1];
+
+    // Load section data
+    const loaders={
+        users:loadUsers,streams:loadStreams,payouts:loadPayouts,
+        purchases:loadPurchases,activity:loadActivity,
+        settings:buildSettings,
+    };
+    if(loaders[name])loaders[name]();
+
+    // Close sidebar on mobile
+    if(window.innerWidth<900){
+        sidebarOpen=false;
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('toggleIcon').className='fa-solid fa-bars';
+    }
+}
+
+function refreshCurrentSection(){
+    const icon=document.getElementById('refreshIcon');
+    icon.classList.add('fa-spin');
+    const loaders={
+        overview:loadOverview,users:loadUsers,streams:loadStreams,
+        payouts:loadPayouts,purchases:loadPurchases,activity:loadActivity,
+    };
+    if(loaders[currentSection])loaders[currentSection]();
+    setTimeout(()=>icon.classList.remove('fa-spin'),800);
+}
+
+// ====== CHECK PENDING BADGES ======
+async function checkPendingBadges(){
+    try{
+        const [paySnap,buySnap]=await Promise.all([
+            db.collection('payouts').where('status','==','pending').get(),
+            db.collection('coin_purchases').where('status','==','pending').get(),
+        ]);
+
+        const pCount=paySnap.size,bCount=buySnap.size;
+
+        updateNavBadge('navBadgePayouts',pCount);
+        updateNavBadge('navBadgePurchases',bCount);
+
+        if(pCount+bCount>0){
+            document.getElementById('topbarDot').style.display='block';
+        }
+    }catch(err){console.error(err)}
+}
+
+function updateNavBadge(id,count){
+    const el=document.getElementById(id);
+    if(!el)return;
+    if(count>0){el.textContent=count>99?'99+':count;el.style.display='flex'}
+    else el.style.display='none';
+}
+
+// ====== OVERVIEW ======
+async function loadOverview(){
+    try{
+        const [usersSnap,streamsSnap,paySnap,txSnap]=await Promise.all([
+            db.collection('users').get(),
+            db.collection('streams').get(),
+            db.collection('payouts').where('status','==','pending').get(),
+            db.collection('transactions').orderBy('createdAt','desc').limit(5).get(),
+        ]);
+
+        const totalUsers=usersSnap.size;
+        const totalStreamers=usersSnap.docs.filter(d=>d.data().role==='streamer').length;
+        const liveStreams=streamsSnap.docs.filter(d=>d.data().status==='live').length;
+        const totalTx=txSnap.size;
+        const totalGiftValue=txSnap.docs.reduce((s,d)=>s+(d.data().coinsSpent||0),0);
+        const pendingPayouts=paySnap.size;
+
+        const stats=[
+            {icon:'fa-users',color:'#4DA3FF',bg:'rgba(77,163,255,0.12)',label:'Total Users',value:formatCount(totalUsers),trend:'+12%',up:true},
+            {icon:'fa-tower-broadcast',color:'#FF3B30',bg:'rgba(255,59,48,0.12)',label:'Live Now',value:liveStreams,trend:'Active',up:true},
+            {icon:'fa-microphone',color:'#FF4D8D',bg:'rgba(255,77,141,0.12)',label:'Streamers',value:formatCount(totalStreamers),trend:'+5%',up:true},
+            {icon:'fa-coins',color:'#FBBF24',bg:'rgba(251,191,36,0.12)',label:'Coins in Gifts',value:formatCount(totalGiftValue),trend:'Total',up:true},
+            {icon:'fa-money-bill-transfer',color:'#34D399',bg:'rgba(52,211,153,0.12)',label:'Pending Payouts',value:pendingPayouts,trend:'Awaiting',up:false},
+            {icon:'fa-chart-line',color:'#A855F7',bg:'rgba(168,85,247,0.12)',label:'Total Streams',value:formatCount(streamsSnap.size),trend:'All time',up:true},
+        ];
+
+        const grid=document.getElementById('overviewStats');
+        grid.innerHTML='';
+        stats.forEach((s,i)=>{
+            const card=document.createElement('div');
+            card.className='stat-card';
+            card.style.animationDelay=`${i*0.07}s`;
+            card.innerHTML=`
+                <div class="stat-card-top">
+                    <div class="stat-card-icon" style="background:${s.bg};color:${s.color}">
+                        <i class="fa-solid ${s.icon}"></i>
+                    </div>
+                    <span class="stat-card-trend ${s.up?'up':'down'}">
+                        <i class="fa-solid ${s.up?'fa-arrow-trend-up':'fa-arrow-trend-down'}"></i> ${s.trend}
+                    </span>
+                </div>
+                <div class="stat-value" style="color:${s.color}">${s.value}</div>
+                <div class="stat-label">${s.label}</div>`;
+            grid.appendChild(card);
+        });
+
+        // Charts
+        buildOverviewCharts(usersSnap.docs,streamsSnap.docs);
+
+        // Recent activity
+        buildRecentActivity(txSnap.docs);
+
+    }catch(err){
+        console.error('Overview error:',err);
+        showToast('Failed to load overview','error');
+    }
+}
+
+function buildOverviewCharts(userDocs,streamDocs){
+    const chartsEl=document.getElementById('overviewCharts');
+    chartsEl.innerHTML='';
+
+    // Bar chart: streams per day (last 7 days)
+    const barCard=document.createElement('div');
+    barCard.className='chart-card';
+    const days=[],counts=[];
+    for(let i=6;i>=0;i--){
+        const d=new Date();d.setDate(d.getDate()-i);
+        const ds=d.toDateString();
+        days.push(d.toLocaleDateString('en-US',{weekday:'short'}));
+        counts.push(streamDocs.filter(doc=>{
+            const sd=doc.data().createdAt?.toDate?doc.data().createdAt.toDate():new Date(0);
+            return sd.toDateString()===ds;
+        }).length);
+    }
+    const maxC=Math.max(...counts,1);
+    const barsHtml=counts.map((c,i)=>`
+        <div class="mbc-bar" style="height:0" data-h="${Math.max(c/maxC*100,c>0?4:0)}%">
+            <div class="mbc-bar-tooltip">${c} streams</div>
+        </div>`).join('');
+    const labelsHtml=days.map(d=>`<div class="mbc-label">${d}</div>`).join('');
+
+    barCard.innerHTML=`
+        <div class="chart-card-title"><i class="fa-solid fa-chart-column"></i> Streams This Week</div>
+        <div class="mini-bar-chart">${barsHtml}</div>
+        <div class="mbc-labels">${labelsHtml}</div>`;
+    chartsEl.appendChild(barCard);
+
+    // Animate bars
+    setTimeout(()=>{
+        barCard.querySelectorAll('.mbc-bar').forEach(b=>{b.style.height=b.dataset.h});
+    },200);
+
+    // Donut: user roles
+    const streamers=userDocs.filter(d=>d.data().role==='streamer').length;
+    const listeners=userDocs.length-streamers;
+    const total=userDocs.length||1;
+    const sPercent=Math.round(streamers/total*100);
+    const lPercent=100-sPercent;
+
+    const donutCard=document.createElement('div');
+    donutCard.className='chart-card';
+    const r=30,circ=2*Math.PI*r;
+    const sDash=circ*sPercent/100;
+
+    donutCard.innerHTML=`
+        <div class="chart-card-title"><i class="fa-solid fa-chart-pie"></i> User Roles</div>
+        <div class="donut-chart-wrap">
+            <svg class="donut-svg" viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="${r}" fill="none" stroke="rgba(77,163,255,0.1)" stroke-width="14"/>
+                <circle cx="40" cy="40" r="${r}" fill="none" stroke="#FF4D8D" stroke-width="14"
+                    stroke-dasharray="${sDash} ${circ}" stroke-linecap="round"
+                    transform="rotate(-90 40 40)" style="transition:stroke-dasharray 1s ease"/>
+                <circle cx="40" cy="40" r="${r}" fill="none" stroke="#4DA3FF" stroke-width="14"
+                    stroke-dasharray="${circ-sDash} ${circ}" stroke-dashoffset="${-(sDash)}"
+                    stroke-linecap="round" transform="rotate(-90 40 40)" style="transition:stroke-dasharray 1s ease"/>
+                <text x="40" y="44" text-anchor="middle" fill="#FFF" font-size="12" font-weight="800">${total}</text>
+            </svg>
+            <div class="donut-legend">
+                <div class="donut-legend-item"><div class="donut-dot" style="background:#FF4D8D"></div><span>Streamers: ${streamers} (${sPercent}%)</span></div>
+                <div class="donut-legend-item"><div class="donut-dot" style="background:#4DA3FF"></div><span>Listeners: ${listeners} (${lPercent}%)</span></div>
+            </div>
+        </div>`;
+    chartsEl.appendChild(donutCard);
+}
+
+function buildRecentActivity(docs){
+    const el=document.getElementById('recentActivity');
+    el.innerHTML='';
+    if(!docs.length){
+        el.innerHTML='<div class="empty-state-admin"><div class="empty-title-admin">No Recent Activity</div></div>';
+        return;
+    }
+    docs.forEach((doc,i)=>{
+        const d=doc.data();
+        const item=document.createElement('div');
+        item.className='activity-log-item';
+        item.style.animationDelay=`${i*0.06}s`;
+        const date=d.createdAt?.toDate?d.createdAt.toDate():new Date();
+        const timeStr=date.toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+        item.innerHTML=`
+            <div class="al-icon" style="background:rgba(255,77,141,0.12);color:#FF4D8D"><i class="fa-solid fa-gift"></i></div>
+            <div class="al-info">
+                <div class="al-text"><strong>${escapeHtml(d.senderName||'User')}</strong> sent ${d.qty||1}x ${escapeHtml(d.giftName||'gift')} to <strong>${escapeHtml(d.receiverName||'Streamer')}</strong></div>
+                <div class="al-time"><i class="fa-solid fa-clock"></i>${timeStr} · ${d.coinsSpent||0} coins</div>
+            </div>`;
+        el.appendChild(item);
+    });
+}
+
+// ====== USERS ======
+async function loadUsers(){
+    const tbody=document.getElementById('usersTableBody');
+    tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:24px;color:#6B7280"><i class="fa-solid fa-rotate fa-spin" style="color:#4DA3FF;margin-right:8px"></i>Loading users...</td></tr>`;
+    try{
+        const snap=await db.collection('users').orderBy('createdAt','desc').limit(200).get();
+        allUsers=snap.docs.map(d=>({id:d.id,...d.data()}));
+        filteredUsers=allUsers;
+        userPage=1;
+        renderUsersTable();
+    }catch(err){
+        console.error(err);
+        tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;color:#FF3B30;padding:24px">Failed to load users</td></tr>`;
+    }
+}
+
+function filterUsersTable(query){
+    const role=document.getElementById('userRoleFilter').value;
+    const q=query.toLowerCase().trim();
+    filteredUsers=allUsers.filter(u=>{
+        const matchRole=!role||u.role===role;
+        const matchQ=!q||(u.fullName||'').toLowerCase().includes(q)||(u.username||'').toLowerCase().includes(q)||(u.email||'').toLowerCase().includes(q);
+        return matchRole&&matchQ;
+    });
+    userPage=1;
+    renderUsersTable();
+}
+
+function renderUsersTable(){
+    const tbody=document.getElementById('usersTableBody');
+    tbody.innerHTML='';
+    const start=(userPage-1)*PAGE_SIZE;
+    const page=filteredUsers.slice(start,start+PAGE_SIZE);
+
+    if(!page.length){
+        tbody.innerHTML=`<tr><td colspan="7"><div class="empty-state-admin"><div class="empty-icon-admin" style="background:rgba(77,163,255,0.08);color:rgba(77,163,255,0.3)"><i class="fa-solid fa-users"></i></div><div class="empty-title-admin">No Users Found</div></div></td></tr>`;
+        return;
+    }
+
+    const grads=['linear-gradient(135deg,#4DA3FF,#A855F7)','linear-gradient(135deg,#FF4D8D,#FBBF24)','linear-gradient(135deg,#34D399,#4DA3FF)'];
+
+    page.forEach((u,i)=>{
+        const initial=(u.fullName||'U').charAt(0).toUpperCase();
+        const grad=grads[i%grads.length];
+        const avatarHtml=u.avatar?`<img src="${u.avatar}" alt="" style="width:100%;height:100%;object-fit:cover">`:`<div class="uca-placeholder" style="background:${grad}">${initial}</div>`;
+        const joinDate=u.createdAt?.toDate?u.createdAt.toDate().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';
+        const status=u.isBanned?'banned':'active';
+
+        const tr=document.createElement('tr');
+        tr.innerHTML=`
+            <td><div class="user-cell">
+                <div class="user-cell-avatar">${avatarHtml}</div>
+                <div><div class="user-cell-name">${escapeHtml(u.fullName||'User')}</div><div class="user-cell-username">@${escapeHtml(u.username||'—')} · ${escapeHtml(u.email||'')}</div></div>
+            </div></td>
+            <td><span class="badge ${u.role||'listener'}"><span class="badge-dot"></span>${capitalize(u.role||'listener')}</span></td>
+            <td>${formatCount(u.coins||0)}</td>
+            <td>${formatCount(u.followers||0)}</td>
+            <td><span class="badge ${status}"><span class="badge-dot"></span>${capitalize(status)}</span></td>
+            <td>${joinDate}</td>
+            <td><div class="row-actions">
+                <button class="row-btn view" onclick="viewUserProfile('${u.id}')" title="View Profile"><i class="fa-solid fa-eye"></i></button>
+                <button class="row-btn edit" onclick="openCreditModal('${u.id}','${escapeHtml(u.fullName||'')}')" title="Credit Coins"><i class="fa-solid fa-coins"></i></button>
+                <button class="row-btn ban" onclick="openBanModal('${u.id}','${escapeHtml(u.fullName||'')}','${u.isBanned||false}')" title="${u.isBanned?'Unban':'Ban'} User">
+                    <i class="fa-solid ${u.isBanned?'fa-check':'fa-ban'}"></i>
+                </button>
+            </div></td>`;
+        tbody.appendChild(tr);
+    });
+
+    buildPagination('usersPagination',filteredUsers.length,userPage,p=>{userPage=p;renderUsersTable()});
+}
+
+// ====== STREAMS ======
+async function loadStreams(){
+    const tbody=document.getElementById('streamsTableBody');
+    tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:24px;color:#6B7280"><i class="fa-solid fa-rotate fa-spin" style="color:#4DA3FF;margin-right:8px"></i>Loading streams...</td></tr>`;
+    try{
+        const snap=await db.collection('streams').orderBy('createdAt','desc').limit(200).get();
+        allStreams=snap.docs.map(d=>({id:d.id,...d.data()}));
+        filteredStreams=allStreams;
+        streamPage=1;
+        renderStreamsTable();
+    }catch(err){
+        console.error(err);
+        tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;color:#FF3B30;padding:24px">Failed to load streams</td></tr>`;
+    }
+}
+
+function filterStreamsTable(query){
+    const status=document.getElementById('streamStatusFilter').value;
+    const q=query.toLowerCase().trim();
+    filteredStreams=allStreams.filter(s=>{
+        const matchStatus=!status||s.status===status;
+        const matchQ=!q||(s.title||'').toLowerCase().includes(q)||(s.hostName||'').toLowerCase().includes(q);
+        return matchStatus&&matchQ;
+    });
+    streamPage=1;
+    renderStreamsTable();
+}
+
+function renderStreamsTable(){
+    const tbody=document.getElementById('streamsTableBody');
+    tbody.innerHTML='';
+    const start=(streamPage-1)*PAGE_SIZE;
+    const page=filteredStreams.slice(start,start+PAGE_SIZE);
+
+    if(!page.length){
+        tbody.innerHTML=`<tr><td colspan="7"><div class="empty-state-admin"><div class="empty-icon-admin" style="background:rgba(255,59,48,0.08);color:rgba(255,59,48,0.3)"><i class="fa-solid fa-tower-broadcast"></i></div><div class="empty-title-admin">No Streams Found</div></div></td></tr>`;
+        return;
+    }
+
+    page.forEach(s=>{
+        const date=s.createdAt?.toDate?s.createdAt.toDate().toLocaleDateString('en-US',{month:'short',day:'numeric'}):'—';
+        const tr=document.createElement('tr');
+        tr.innerHTML=`
+            <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(s.title||'Untitled')}</td>
+            <td>${escapeHtml(s.hostName||'Unknown')}</td>
+            <td>${escapeHtml(s.category||'General')}</td>
+            <td>${formatCount(s.listenerCount||0)}</td>
+            <td>${formatCount(s.totalGifts||0)}</td>
+            <td><span class="badge ${s.status||'ended'}">
+                ${s.status==='live'?'<span class="badge-dot"></span>':''}
+                ${capitalize(s.status||'ended')}
+            </span></td>
+            <td><div class="row-actions">
+                ${s.status==='live'?`<button class="row-btn ban" onclick="openEndStreamModal('${s.id}','${escapeHtml(s.title||'')}')" title="Force End"><i class="fa-solid fa-stop"></i></button>`:''}
+                <button class="row-btn delete" onclick="deleteStream('${s.id}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
+            </div></td>`;
+        tbody.appendChild(tr);
+    });
+
+    buildPagination('streamsPagination',filteredStreams.length,streamPage,p=>{streamPage=p;renderStreamsTable()});
+}
+
+// ====== PAYOUTS ======
+async function loadPayouts(){
+    const tbody=document.getElementById('payoutsTableBody');
+    tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:24px;color:#6B7280"><i class="fa-solid fa-rotate fa-spin" style="color:#4DA3FF;margin-right:8px"></i>Loading...</td></tr>`;
+    try{
+        const status=document.getElementById('payoutStatusFilter').value;
+        let query=db.collection('payouts').orderBy('createdAt','desc').limit(50);
+        if(status)query=db.collection('payouts').where('status','==',status).orderBy('createdAt','desc').limit(50);
+        const snap=await query.get();
+        allPayouts=snap.docs.map(d=>({id:d.id,...d.data()}));
+        renderPayoutsTable();
+        updateNavBadge('navBadgePayouts',allPayouts.filter(p=>p.status==='pending').length);
+    }catch(err){
+        console.error(err);
+        tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;color:#FF3B30;padding:24px">Failed to load</td></tr>`;
+    }
+}
+
+function renderPayoutsTable(){
+    const tbody=document.getElementById('payoutsTableBody');
+    tbody.innerHTML='';
+    if(!allPayouts.length){
+        tbody.innerHTML=`<tr><td colspan="7"><div class="empty-state-admin"><div class="empty-icon-admin" style="background:rgba(52,211,153,0.08);color:rgba(52,211,153,0.3)"><i class="fa-solid fa-money-bill-transfer"></i></div><div class="empty-title-admin">No Payout Requests</div></div></td></tr>`;
+        return;
+    }
+    allPayouts.forEach(p=>{
+        const date=p.createdAt?.toDate?p.createdAt.toDate().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';
+        const tr=document.createElement('tr');
+        tr.innerHTML=`
+            <td><div class="user-cell-name">${escapeHtml(p.streamerName||'Streamer')}</div></td>
+            <td style="color:#34D399;font-weight:700">₦${formatCurrency(p.amount||0)}</td>
+            <td>${escapeHtml(p.method||'—')}</td>
+            <td style="font-size:12px">${escapeHtml(p.account||'—')}<br><span style="color:#6B7280">${escapeHtml(p.accountName||'')}</span></td>
+            <td><span class="badge ${p.status||'pending'}"><span class="badge-dot"></span>${capitalize(p.status||'pending')}</span></td>
+            <td>${date}</td>
+            <td><div class="row-actions">
+                <button class="row-btn approve" onclick="openPayoutModal('${p.id}',${JSON.stringify(p).split('"').join("'")})" title="Update">
+                    <i class="fa-solid fa-check"></i>
+                </button>
+            </div></td>`;
+        tbody.appendChild(tr);
+    });
+}
+
+// ====== PURCHASES ======
+async function loadPurchases(){
+    const tbody=document.getElementById('purchasesTableBody');
+    tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:24px;color:#6B7280"><i class="fa-solid fa-rotate fa-spin" style="color:#4DA3FF;margin-right:8px"></i>Loading...</td></tr>`;
+    try{
+        const status=document.getElementById('purchaseStatusFilter').value;
+        let query=db.collection('coin_purchases').orderBy('createdAt','desc').limit(50);
+        if(status)query=db.collection('coin_purchases').where('status','==',status).orderBy('createdAt','desc').limit(50);
+        const snap=await query.get();
+        allPurchases=snap.docs.map(d=>({id:d.id,...d.data()}));
+        renderPurchasesTable();
+        updateNavBadge('navBadgePurchases',allPurchases.filter(p=>p.status==='pending').length);
+    }catch(err){
+        console.error(err);
+        tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;color:#FF3B30;padding:24px">Failed to load</td></tr>`;
+    }
+}
+
+function renderPurchasesTable(){
+    const tbody=document.getElementById('purchasesTableBody');
+    tbody.innerHTML='';
+    if(!allPurchases.length){
+        tbody.innerHTML=`<tr><td colspan="7"><div class="empty-state-admin"><div class="empty-icon-admin" style="background:rgba(251,191,36,0.08);color:rgba(251,191,36,0.3)"><i class="fa-solid fa-coins"></i></div><div class="empty-title-admin">No Purchase Requests</div></div></td></tr>`;
+        return;
+    }
+    allPurchases.forEach(p=>{
+        const date=p.createdAt?.toDate?p.createdAt.toDate().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';
+        const tr=document.createElement('tr');
+        tr.innerHTML=`
+            <td><div class="user-cell-name">${escapeHtml(p.userName||'User')}</div><div style="font-size:11px;color:#6B7280">@${escapeHtml(p.userUsername||'')}</div></td>
+            <td style="color:#FBBF24;font-weight:700">${formatCount(p.coins||0)} coins</td>
+            <td>${escapeHtml(p.price||'—')}</td>
+            <td>${escapeHtml(p.method||'—')}</td>
+            <td><span class="badge ${p.status==='completed'?'completed':'pending'}"><span class="badge-dot"></span>${capitalize(p.status||'pending')}</span></td>
+            <td>${date}</td>
+            <td><div class="row-actions">
+                ${p.status==='pending'?`<button class="row-btn approve" onclick="openCreditFromPurchase('${p.id}','${p.userId}','${escapeHtml(p.userName||'')}',${p.coins||0})" title="Credit Coins">
+                    <i class="fa-solid fa-coins"></i>
+                </button>`:'<span style="color:#34D399;font-size:11px"><i class="fa-solid fa-check"></i> Done</span>'}
+            </div></td>`;
+        tbody.appendChild(tr);
+    });
+}
+
+// ====== ACTIVITY LOG ======
+async function loadActivity(){
+    const el=document.getElementById('activityLogList');
+    el.innerHTML='<div style="text-align:center;padding:24px;color:#6B7280"><i class="fa-solid fa-rotate fa-spin" style="color:#4DA3FF;margin-right:8px"></i>Loading...</div>';
+    try{
+        const snap=await db.collection('admin_notifications').orderBy('createdAt','desc').limit(50).get();
+        el.innerHTML='';
+
+        if(snap.empty){
+            el.innerHTML='<div class="empty-state-admin"><div class="empty-icon-admin" style="background:rgba(168,85,247,0.08);color:rgba(168,85,247,0.3)"><i class="fa-solid fa-clock-rotate-left"></i></div><div class="empty-title-admin">No Activity Yet</div></div>';
+            return;
+        }
+
+        const typeConfig={
+            coin_purchase:{icon:'fa-coins',color:'#FBBF24',bg:'rgba(251,191,36,0.12)'},
+            payout_request:{icon:'fa-money-bill-transfer',color:'#34D399',bg:'rgba(52,211,153,0.12)'},
+            report:{icon:'fa-flag',color:'#FF3B30',bg:'rgba(255,59,48,0.12)'},
+        };
+
+        snap.forEach((doc,i)=>{
+            const d=doc.data();
+            const cfg=typeConfig[d.type]||{icon:'fa-bell',color:'#4DA3FF',bg:'rgba(77,163,255,0.12)'};
+            const date=d.createdAt?.toDate?d.createdAt.toDate():new Date();
+            const dateStr=date.toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+
+            let text='Admin notification';
+            if(d.type==='coin_purchase')text=`<strong>${escapeHtml(d.userName||'User')}</strong> requested <strong>${formatCount(d.coins||0)} coins</strong> via ${d.method||'—'} (${d.price||'—'})`;
+            else if(d.type==='payout_request')text=`<strong>${escapeHtml(d.streamerName||'Streamer')}</strong> requested payout of <strong>₦${formatCurrency(d.amount||0)}</strong> via ${d.method||'—'}`;
+            else text=escapeHtml(d.message||'Notification');
+
+            const item=document.createElement('div');
+            item.className='activity-log-item';
+            item.style.animationDelay=`${i*0.04}s`;
+            item.innerHTML=`
+                <div class="al-icon" style="background:${cfg.bg};color:${cfg.color}"><i class="fa-solid ${cfg.icon}"></i></div>
+                <div class="al-info">
+                    <div class="al-text">${text}</div>
+                    <div class="al-time"><i class="fa-solid fa-clock"></i>${dateStr}</div>
+                </div>
+                ${!d.read?`<button class="row-btn view" onclick="markActivityRead('${doc.id}',this)" title="Mark read"><i class="fa-solid fa-check"></i></button>`:''}`;
+            el.appendChild(item);
+        });
+    }catch(err){
+        console.error(err);
+        el.innerHTML='<div style="text-align:center;color:#FF3B30;padding:24px">Failed to load activity</div>';
+    }
+}
+
+async function markActivityRead(id,btn){
+    try{
+        await db.collection('admin_notifications').doc(id).update({read:true});
+        btn.parentNode.removeChild(btn);
+    }catch(err){console.error(err)}
+}
+
+// ====== SETTINGS ======
+function buildSettings(){
+    const grid=document.getElementById('settingsGrid');
+    grid.innerHTML='';
+
+    const settingsData=[
+        {
+            title:'Platform Controls',icon:'fa-sliders',
+            rows:[
+                {label:'Allow New Registrations',desc:'Users can create accounts',key:'allowRegistration',default:true},
+                {label:'Allow Streaming',desc:'Streamers can go live',key:'allowStreaming',default:true},
+                {label:'Gifts Enabled',desc:'Users can send virtual gifts',key:'giftsEnabled',default:true},
+            ]
+        },
+        {
+            title:'Moderation',icon:'fa-shield-halved',
+            rows:[
+                {label:'Auto-Moderate Chat',desc:'Filter offensive messages',key:'autoModerate',default:false},
+                {label:'Require Approval',desc:'Approve new streamers',key:'requireApproval',default:false},
+            ]
+        },
+        {
+            title:'Payout Settings',icon:'fa-money-bill-transfer',
+            rows:[
+                {label:'Auto Payouts',desc:'Automatic payout processing',key:'autoPayouts',default:false},
+                {label:'Payout Notifications',desc:'Email admin on payout request',key:'payoutNotif',default:true},
+            ]
+        },
+        {
+            title:'Notifications',icon:'fa-bell',
+            rows:[
+                {label:'New User Alerts',desc:'Notify admin on signup',key:'newUserAlert',default:false},
+                {label:'Stream Alerts',desc:'Notify admin when stream starts',key:'streamAlert',default:false},
+            ]
+        },
+    ];
+
+    const savedSettings=JSON.parse(localStorage.getItem('chaterra_admin_settings')||'{}');
+
+    settingsData.forEach((section,si)=>{
+        const card=document.createElement('div');
+        card.className='settings-card';
+        card.style.animationDelay=`${si*0.08}s`;
+
+        const rowsHtml=section.rows.map(row=>{
+            const checked=savedSettings[row.key]!==undefined?savedSettings[row.key]:row.default;
+            return `
+                <div class="settings-row">
+                    <div><div class="settings-row-label">${row.label}</div><div class="settings-row-desc">${row.desc}</div></div>
+                    <label class="toggle-sw">
+                        <input type="checkbox" ${checked?'checked':''} onchange="saveSetting('${row.key}',this.checked)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>`;
+        }).join('');
+
+        card.innerHTML=`
+            <div class="settings-card-title"><i class="fa-solid ${section.icon}"></i>${section.title}</div>
+            ${rowsHtml}`;
+        grid.appendChild(card);
+    });
+
+    // Admin info card
+    const infoCard=document.createElement('div');
+    infoCard.className='settings-card';
+    infoCard.style.animationDelay='0.32s';
+    infoCard.innerHTML=`
+        <div class="settings-card-title"><i class="fa-solid fa-circle-info"></i>Platform Info</div>
+        <div class="settings-row"><div><div class="settings-row-label">Version</div></div><span style="color:#4DA3FF;font-weight:700">v1.0.0</span></div>
+        <div class="settings-row"><div><div class="settings-row-label">Admin Email</div></div><span style="color:#A1A1AA;font-size:12px">${currentAdmin?.email||'—'}</span></div>
+        <div class="settings-row"><div><div class="settings-row-label">Sign In Method</div></div><span style="color:#A1A1AA;font-size:12px">Email/Password</span></div>`;
+    grid.appendChild(infoCard);
+}
+
+function saveSetting(key,value){
+    const s=JSON.parse(localStorage.getItem('chaterra_admin_settings')||'{}');
+    s[key]=value;
+    localStorage.setItem('chaterra_admin_settings',JSON.stringify(s));
+    showToast(`Setting updated: ${key} = ${value}`,'success');
+}
+
+// ====== MODAL ACTIONS ======
+function openCreditModal(userId,userName){
+    modalTargetId=userId;
+    document.getElementById('creditUserDisplay').value=userName;
+    document.getElementById('creditAmount').value='';
+    document.getElementById('creditNote').value='';
+    openModal('creditModal');
+}
+
+function openCreditFromPurchase(purchaseId,userId,userName,coins){
+    modalTargetId=userId;
+    modalTargetData={purchaseId,coins};
+    document.getElementById('creditUserDisplay').value=userName;
+    document.getElementById('creditAmount').value=coins;
+    document.getElementById('creditNote').value=`Purchase ID: ${purchaseId}`;
+    openModal('creditModal');
+}
+
+async function confirmCreditCoins(){
+    const amount=parseInt(document.getElementById('creditAmount').value);
+    const note=document.getElementById('creditNote').value.trim();
+    if(!amount||amount<1)return showToast('Enter a valid coin amount','warning');
+
+    const btn=document.getElementById('creditConfirmBtn');
+    btn.classList.add('loading');btn.disabled=true;
+
+    try{
+        const batch=db.batch();
+
+        // Credit coins to user
+        batch.update(db.collection('users').doc(modalTargetId),{
+            coins:firebase.firestore.FieldValue.increment(amount)
+        });
+
+        // Log transaction
+        batch.set(db.collection('coin_purchases').doc(),{
+            userId:modalTargetId,
+            coins:amount,
+            method:'admin_credit',
+            status:'completed',
+            note:note||'Admin credit',
+            creditedBy:currentAdmin.uid,
+            createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+        });
+
+        // Notify user
+        batch.set(db.collection('notifications').doc(),{
+            userId:modalTargetId,
+            type:'coin',
+            coins:amount,
+            message:`${amount} coins have been credited to your wallet`,
+            read:false,
+            createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+        });
+
+        // Mark purchase as completed if came from purchase
+        if(modalTargetData?.purchaseId){
+            batch.update(db.collection('coin_purchases').doc(modalTargetData.purchaseId),{
+                status:'completed',
+                completedAt:firebase.firestore.FieldValue.serverTimestamp(),
+                completedBy:currentAdmin.uid,
+            });
+        }
+
+        await batch.commit();
+        closeModal('creditModal');
+        showToast(`${amount} coins credited successfully! ✅`,'success');
+        loadPurchases();
+        checkPendingBadges();
+    }catch(err){
+        console.error(err);
+        showToast('Failed to credit coins','error');
+    }finally{btn.classList.remove('loading');btn.disabled=false}
+}
+
+function openPayoutModal(payoutId,payoutData){
+    modalTargetId=payoutId;
+    modalTargetData=typeof payoutData==='string'?{}:payoutData;
+    const info=document.getElementById('payoutModalInfo');
+    info.innerHTML=`
+        <strong>Streamer:</strong> ${escapeHtml(modalTargetData?.streamerName||'—')}<br>
+        <strong>Amount:</strong> ₦${formatCurrency(modalTargetData?.amount||0)}<br>
+        <strong>Method:</strong> ${escapeHtml(modalTargetData?.method||'—')}<br>
+        <strong>Account:</strong> ${escapeHtml(modalTargetData?.account||'—')}<br>
+        <strong>Account Name:</strong> ${escapeHtml(modalTargetData?.accountName||'—')}`;
+    document.getElementById('payoutAdminNote').value='';
+    openModal('payoutModal');
+}
+
+async function confirmPayoutUpdate(){
+    const status=document.getElementById('payoutStatusSelect').value;
+    const note=document.getElementById('payoutAdminNote').value.trim();
+    const btn=document.getElementById('payoutConfirmBtn');
+    btn.classList.add('loading');btn.disabled=true;
+
+    try{
+        const batch=db.batch();
+        batch.update(db.collection('payouts').doc(modalTargetId),{
+            status,
+            adminNote:note,
+            processedAt:firebase.firestore.FieldValue.serverTimestamp(),
+            processedBy:currentAdmin.uid,
+        });
+
+        // Notify streamer
+        if(modalTargetData?.streamerId){
+            batch.set(db.collection('notifications').doc(),{
+                userId:modalTargetData.streamerId,
+                type:'payout',
+                status,
+                amount:modalTargetData?.amount||0,
+                message:`Your payout of ₦${formatCurrency(modalTargetData?.amount||0)} is now ${status}`,
+                read:false,
+                createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+            });
+        }
+
+        await batch.commit();
+        closeModal('payoutModal');
+        showToast(`Payout ${status}! ✅`,'success');
+        loadPayouts();
+        checkPendingBadges();
+    }catch(err){
+        console.error(err);
+        showToast('Failed to update payout','error');
+    }finally{btn.classList.remove('loading');btn.disabled=false}
+}
+
+function openBanModal(userId,userName,isBanned){
+    modalTargetId=userId;
+    modalTargetData={isBanned:isBanned==='true'||isBanned===true};
+    document.getElementById('banUserDisplay').value=userName;
+    document.getElementById('banReason').value='';
+    const btn=document.getElementById('banConfirmBtn');
+    btn.querySelector('.btn-text').innerHTML=modalTargetData.isBanned?'<i class="fa-solid fa-check"></i> Unban User':'<i class="fa-solid fa-ban"></i> Ban User';
+    openModal('banModal');
+}
+
+async function confirmBanUser(){
+    const reason=document.getElementById('banReason').value.trim();
+    if(!modalTargetData?.isBanned&&!reason)return showToast('Enter a reason for the ban','warning');
+    const btn=document.getElementById('banConfirmBtn');
+    btn.classList.add('loading');btn.disabled=true;
+    try{
+        const newBanState=!modalTargetData.isBanned;
+        await db.collection('users').doc(modalTargetId).update({
+            isBanned:newBanState,
+            banReason:reason||'',
+            bannedAt:newBanState?firebase.firestore.FieldValue.serverTimestamp():null,
+        });
+        closeModal('banModal');
+        showToast(`User ${newBanState?'banned':'unbanned'} successfully`,'success');
+        loadUsers();
+    }catch(err){
+        console.error(err);
+        showToast('Failed to update user','error');
+    }finally{btn.classList.remove('loading');btn.disabled=false}
+}
+
+function openEndStreamModal(streamId,streamTitle){
+    modalTargetId=streamId;
+    document.getElementById('endStreamDisplay').value=streamTitle;
+    document.getElementById('endStreamReason').value='';
+    openModal('endStreamModal');
+}
+
+async function confirmEndStream(){
+    const reason=document.getElementById('endStreamReason').value.trim();
+    const btn=document.getElementById('endStreamConfirmBtn');
+    btn.classList.add('loading');btn.disabled=true;
+    try{
+        await db.collection('streams').doc(modalTargetId).update({
+            status:'ended',
+            endedAt:firebase.firestore.FieldValue.serverTimestamp(),
+            endedBy:'admin',
+            endReason:reason||'Admin ended stream',
+        });
+        // Update host's isLive
+        const streamDoc=await db.collection('streams').doc(modalTargetId).get();
+        if(streamDoc.exists&&streamDoc.data().hostId){
+            await db.collection('users').doc(streamDoc.data().hostId).update({isLive:false});
+        }
+        closeModal('endStreamModal');
+        showToast('Stream ended by admin','success');
+        loadStreams();
+    }catch(err){
+        console.error(err);
+        showToast('Failed to end stream','error');
+    }finally{btn.classList.remove('loading');btn.disabled=false}
+}
+
+async function deleteStream(streamId){
+    if(!confirm('Delete this stream permanently?'))return;
+    try{
+        await db.collection('streams').doc(streamId).delete();
+        showToast('Stream deleted','success');
+        loadStreams();
+    }catch(err){
+        console.error(err);
+        showToast('Failed to delete stream','error');
+    }
+}
+
+function viewUserProfile(uid){
+    window.open(`profile.html?uid=${uid}`,'_blank');
+}
+
+// ====== MODAL HELPERS ======
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')})});
+
+// ====== PAGINATION ======
+function buildPagination(containerId,total,currentPage,onPage){
+    const el=document.getElementById(containerId);
+    if(!el)return;
+    const totalPages=Math.ceil(total/PAGE_SIZE);
+    if(totalPages<=1){el.innerHTML='';return}
+
+    const start=(currentPage-1)*PAGE_SIZE+1;
+    const end=Math.min(currentPage*PAGE_SIZE,total);
+
+    let btnsHtml='';
+    for(let p=Math.max(1,currentPage-2);p<=Math.min(totalPages,currentPage+2);p++){
+        btnsHtml+=`<button class="page-btn ${p===currentPage?'active':''}" onclick="(${onPage.toString()})(${p})">${p}</button>`;
+    }
+
+    el.innerHTML=`
+        <div class="pagination-info">Showing ${start}–${end} of ${total}</div>
+        <div class="pagination-btns">
+            <button class="page-btn" onclick="(${onPage.toString()})(${currentPage-1})" ${currentPage===1?'disabled':''}><i class="fa-solid fa-chevron-left"></i></button>
+            ${btnsHtml}
+            <button class="page-btn" onclick="(${onPage.toString()})(${currentPage+1})" ${currentPage===totalPages?'disabled':''}><i class="fa-solid fa-chevron-right"></i></button>
+        </div>`;
+}
+
+// ====== LOGOUT ======
+async function handleLogout(){
+    try{await auth.signOut();window.location.href='index.html'}
+    catch(err){showToast('Logout failed','error')}
+}
+
+// ====== UTILS ======
+function formatCount(n){n=parseInt(n)||0;if(n>=1000000)return(n/1000000).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(1)+'K';return n.toString()}
+function formatCurrency(n){return parseInt(n||0).toLocaleString('en-NG')}
+function capitalize(s){return s?s.charAt(0).toUpperCase()+s.slice(1):''}
+function escapeHtml(str){const d=document.createElement('div');d.textContent=str||'';return d.innerHTML}
+
+function showToast(message,type='info'){
+    const container=document.getElementById('toastContainer');
+    const icons={success:'fa-circle-check',error:'fa-circle-xmark',warning:'fa-triangle-exclamation',info:'fa-circle-info'};
+    const toast=document.createElement('div');
+    toast.className=`toast ${type}`;
+    toast.innerHTML=`<i class="fa-solid ${icons[type]}"></i> ${message}`;
+    container.appendChild(toast);
+    setTimeout(()=>{if(toast.parentNode)toast.remove()},4000);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,2027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chaterra — Wallet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* ========== RESET & BASE ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Poppins', 'Inter', sans-serif;
+            background: #0B0F1A;
+            color: #FFFFFF;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
+
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(77,163,255,0.3); border-radius: 3px; }
+
+        /* ========== ANIMATED BG ========== */
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.12;
+            animation: orbFloat ease-in-out infinite;
+        }
+
+        .bg-orb:nth-child(1) {
+            width: 420px; height: 420px;
+            background: #FBBF24;
+            top: -160px; right: -100px;
+            animation-duration: 16s;
+        }
+
+        .bg-orb:nth-child(2) {
+            width: 360px; height: 360px;
+            background: #4DA3FF;
+            bottom: -120px; left: -80px;
+            animation-duration: 20s;
+            animation-delay: 4s;
+        }
+
+        .bg-orb:nth-child(3) {
+            width: 280px; height: 280px;
+            background: #A855F7;
+            top: 45%; left: 50%;
+            animation-duration: 13s;
+            animation-delay: 2s;
+        }
+
+        @keyframes orbFloat {
+            0%,100% { transform: translate(0,0) scale(1); }
+            33% { transform: translate(-40px,50px) scale(1.08); }
+            66% { transform: translate(40px,-30px) scale(0.94); }
+        }
+
+        /* ========== FLOATING COINS ========== */
+        .floating-coins {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .fcoin {
+            position: absolute;
+            font-size: 16px;
+            opacity: 0;
+            animation: coinFloat linear infinite;
+        }
+
+        @keyframes coinFloat {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-60px) rotate(360deg); opacity: 0; }
+        }
+
+        /* ========== CONTENT ========== */
+        .content {
+            position: relative;
+            z-index: 1;
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        /* ========== TOP HEADER ========== */
+        .top-header {
+            position: sticky;
+            top: 0; z-index: 100;
+            background: rgba(11,15,26,0.88);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(77,163,255,0.08);
+            padding: 14px 16px;
+            transition: all 0.3s ease;
+        }
+
+        .top-header.scrolled {
+            background: rgba(11,15,26,0.96);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .back-btn {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(26,36,56,0.7);
+            color: #A1A1AA;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .back-btn:hover { background: rgba(77,163,255,0.15); color: #4DA3FF; transform: translateX(-2px); }
+        .back-btn:active { transform: scale(0.9); }
+
+        .header-center { text-align: center; }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FBBF24, #F59E0B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-subtitle { font-size: 11px; color: #6B7280; }
+
+        .header-right-btn {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(26,36,56,0.7);
+            color: #A1A1AA;
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .header-right-btn:hover { background: rgba(251,191,36,0.15); color: #FBBF24; }
+        .header-right-btn:active { transform: scale(0.9); }
+
+        /* ========== COIN BALANCE CARD ========== */
+        .balance-card {
+            margin: 16px;
+            border-radius: 28px;
+            padding: 28px 24px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeUp 0.5s ease;
+            background: linear-gradient(135deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%);
+            border: 1px solid rgba(251,191,36,0.15);
+        }
+
+        .balance-card-glow {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg,
+                rgba(251,191,36,0.08) 0%,
+                rgba(77,163,255,0.05) 50%,
+                rgba(168,85,247,0.08) 100%
+            );
+            animation: cardGlow 6s ease-in-out infinite;
+        }
+
+        @keyframes cardGlow {
+            0%,100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .balance-card-pattern {
+            position: absolute;
+            top: -30px; right: -30px;
+            width: 180px; height: 180px;
+            border-radius: 50%;
+            border: 40px solid rgba(251,191,36,0.05);
+            animation: patternSpin 20s linear infinite;
+        }
+
+        .balance-card-pattern2 {
+            position: absolute;
+            bottom: -50px; left: -50px;
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            border: 30px solid rgba(77,163,255,0.04);
+            animation: patternSpin 25s linear infinite reverse;
+        }
+
+        @keyframes patternSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .balance-card-content { position: relative; z-index: 2; }
+
+        .balance-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .coin-icon-wrap {
+            width: 48px; height: 48px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #FBBF24, #F59E0B);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #0B0F1A;
+            box-shadow: 0 6px 20px rgba(251,191,36,0.35);
+            animation: coinSpin 4s ease-in-out infinite;
+        }
+
+        @keyframes coinSpin {
+            0%,100% { transform: rotateY(0deg); box-shadow: 0 6px 20px rgba(251,191,36,0.35); }
+            50% { transform: rotateY(20deg); box-shadow: 0 6px 30px rgba(251,191,36,0.5); }
+        }
+
+        .balance-label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+            font-weight: 500;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .balance-label i { color: #FBBF24; font-size: 11px; }
+
+        .balance-amount {
+            font-size: 44px;
+            font-weight: 800;
+            line-height: 1;
+            color: #FFFFFF;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .balance-amount .coin-unit {
+            font-size: 16px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .balance-sub {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 4px;
+        }
+
+        .balance-card-bottom {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .balance-quick-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 14px;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .balance-quick-btn.buy {
+            background: linear-gradient(135deg, #FBBF24, #F59E0B);
+            color: #0B0F1A;
+        }
+
+        .balance-quick-btn.buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(251,191,36,0.4);
+        }
+
+        .balance-quick-btn.history {
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .balance-quick-btn.history:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .balance-quick-btn:active { transform: scale(0.95); }
+
+        /* ========== COIN PACKAGES ========== */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 16px 12px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            width: 34px; height: 34px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .section-title h2 { font-size: 16px; font-weight: 700; }
+        .section-sub { font-size: 11px; color: #6B7280; margin-top: 1px; }
+
+        /* ========== COIN PACKAGES GRID ========== */
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 0 16px;
+        }
+
+        .package-card {
+            background: rgba(18,26,42,0.7);
+            border: 1.5px solid rgba(77,163,255,0.08);
+            border-radius: 20px;
+            padding: 18px 14px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: cardAppear 0.5s ease backwards;
+        }
+
+        .package-card:nth-child(1) { animation-delay: 0.05s; }
+        .package-card:nth-child(2) { animation-delay: 0.1s; }
+        .package-card:nth-child(3) { animation-delay: 0.15s; }
+        .package-card:nth-child(4) { animation-delay: 0.2s; }
+        .package-card:nth-child(5) { animation-delay: 0.25s; }
+        .package-card:nth-child(6) { animation-delay: 0.3s; }
+
+        @keyframes cardAppear {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .package-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(251,191,36,0.3);
+            box-shadow: 0 12px 32px rgba(251,191,36,0.12);
+        }
+
+        .package-card:active { transform: scale(0.96); }
+
+        .package-card.popular {
+            border-color: rgba(251,191,36,0.3);
+            background: rgba(251,191,36,0.04);
+        }
+
+        .popular-tag {
+            position: absolute;
+            top: 0; right: 0;
+            background: linear-gradient(135deg, #FBBF24, #F59E0B);
+            color: #0B0F1A;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 0 20px 0 12px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .best-value-tag {
+            position: absolute;
+            top: 0; right: 0;
+            background: linear-gradient(135deg, #34D399, #10B981);
+            color: #0B0F1A;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 0 20px 0 12px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .pkg-coin-icon {
+            font-size: 36px;
+            margin-bottom: 8px;
+            display: block;
+            animation: pkgIconBounce 2s ease-in-out infinite;
+        }
+
+        .package-card:hover .pkg-coin-icon { animation-play-state: paused; }
+
+        @keyframes pkgIconBounce {
+            0%,100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-4px) scale(1.05); }
+        }
+
+        .pkg-coins {
+            font-size: 22px;
+            font-weight: 800;
+            color: #FBBF24;
+            margin-bottom: 2px;
+        }
+
+        .pkg-coins-label {
+            font-size: 11px;
+            color: #A1A1AA;
+            margin-bottom: 10px;
+        }
+
+        .pkg-bonus {
+            font-size: 10px;
+            color: #34D399;
+            background: rgba(52,211,153,0.1);
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .pkg-price {
+            font-size: 16px;
+            font-weight: 800;
+            color: #FFFFFF;
+            margin-bottom: 4px;
+        }
+
+        .pkg-per-coin {
+            font-size: 10px;
+            color: #6B7280;
+        }
+
+        /* ========== PAYMENT METHODS ========== */
+        .payment-methods {
+            padding: 0 16px;
+        }
+
+        .payment-method-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            background: rgba(18,26,42,0.6);
+            border: 1.5px solid rgba(77,163,255,0.06);
+            border-radius: 16px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: cardAppear 0.4s ease backwards;
+        }
+
+        .payment-method-card:hover {
+            border-color: rgba(77,163,255,0.2);
+            background: rgba(26,36,56,0.6);
+            transform: translateX(4px);
+        }
+
+        .payment-method-card:active { transform: scale(0.97); }
+
+        .payment-method-card.selected {
+            border-color: #4DA3FF;
+            background: rgba(77,163,255,0.08);
+        }
+
+        .pm-icon {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .pm-info { flex: 1; }
+        .pm-name { font-size: 14px; font-weight: 600; }
+        .pm-desc { font-size: 11px; color: #6B7280; margin-top: 2px; }
+
+        .pm-check {
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            border: 2px solid rgba(77,163,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #FFFFFF;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method-card.selected .pm-check {
+            background: #4DA3FF;
+            border-color: #4DA3FF;
+        }
+
+        /* ========== HOW TO BUY ========== */
+        .how-to-card {
+            margin: 0 16px;
+            background: rgba(18,26,42,0.5);
+            border: 1.5px solid rgba(77,163,255,0.08);
+            border-radius: 20px;
+            padding: 18px;
+            animation: fadeUp 0.6s ease;
+        }
+
+        .how-to-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .how-to-title i { color: #4DA3FF; }
+
+        .how-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .how-step:last-child { margin-bottom: 0; }
+
+        .step-num {
+            width: 28px; height: 28px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .step-connector {
+            position: relative;
+        }
+
+        .step-text h4 { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+        .step-text p { font-size: 11px; color: #6B7280; line-height: 1.4; }
+
+        /* ========== TRANSACTION HISTORY ========== */
+        .tx-filter-row {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 0 16px 12px;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .tx-filter-row::-webkit-scrollbar { display: none; }
+
+        .tx-filter-pill {
+            padding: 7px 16px;
+            border-radius: 20px;
+            border: 1.5px solid rgba(77,163,255,0.12);
+            background: transparent;
+            color: #A1A1AA;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tx-filter-pill.active {
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            border-color: transparent;
+            color: #FFFFFF;
+        }
+
+        .tx-filter-pill:active { transform: scale(0.95); }
+
+        .tx-list { padding: 0 16px; }
+
+        .tx-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(77,163,255,0.06);
+            animation: txSlide 0.4s ease backwards;
+            transition: all 0.3s ease;
+        }
+
+        .tx-item:last-child { border-bottom: none; }
+
+        @keyframes txSlide {
+            from { opacity: 0; transform: translateX(-16px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .tx-item:hover { padding-left: 4px; }
+
+        .tx-icon {
+            width: 44px; height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .tx-icon.purchase { background: rgba(251,191,36,0.12); color: #FBBF24; }
+        .tx-icon.gift-sent { background: rgba(255,77,141,0.12); color: #FF4D8D; }
+        .tx-icon.gift-recv { background: rgba(52,211,153,0.12); color: #34D399; }
+        .tx-icon.payout { background: rgba(77,163,255,0.12); color: #4DA3FF; }
+        .tx-icon.refund { background: rgba(168,85,247,0.12); color: #A855F7; }
+
+        .tx-info { flex: 1; min-width: 0; }
+        .tx-title { font-size: 13px; font-weight: 600; }
+        .tx-desc { font-size: 11px; color: #6B7280; margin-top: 2px; display: flex; align-items: center; gap: 4px; }
+        .tx-desc i { font-size: 9px; }
+
+        .tx-amount-wrap { text-align: right; }
+
+        .tx-amount {
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .tx-amount.debit { color: #FF4D8D; }
+        .tx-amount.credit { color: #34D399; }
+
+        .tx-coins {
+            font-size: 10px;
+            color: #6B7280;
+            margin-top: 2px;
+        }
+
+        /* ========== BUY CONFIRMATION SHEET ========== */
+        .buy-sheet-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.65);
+            z-index: 200;
+            display: none;
+            align-items: flex-end;
+        }
+
+        .buy-sheet-overlay.open { display: flex; }
+
+        .buy-sheet {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(18,26,42,0.98);
+            backdrop-filter: blur(24px);
+            border-radius: 28px 28px 0 0;
+            border: 1px solid rgba(251,191,36,0.12);
+            padding: 24px 20px;
+            padding-bottom: max(24px, env(safe-area-inset-bottom));
+            animation: sheetUp 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+
+        @keyframes sheetUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .sheet-handle {
+            width: 40px; height: 4px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 4px;
+            margin: 0 auto 20px;
+        }
+
+        .sheet-title {
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .sheet-subtitle {
+            font-size: 12px;
+            color: #A1A1AA;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Selected package summary */
+        .sheet-pkg-summary {
+            background: rgba(251,191,36,0.06);
+            border: 1px solid rgba(251,191,36,0.15);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .sheet-pkg-emoji { font-size: 36px; }
+
+        .sheet-pkg-info { flex: 1; }
+        .sheet-pkg-name { font-size: 16px; font-weight: 700; }
+        .sheet-pkg-coins { font-size: 13px; color: #FBBF24; margin-top: 2px; }
+
+        .sheet-pkg-price {
+            font-size: 22px;
+            font-weight: 800;
+            color: #FFFFFF;
+        }
+
+        /* Payment method select inside sheet */
+        .sheet-method-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #A1A1AA;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sheet-method-label i { color: #4DA3FF; font-size: 11px; }
+
+        .sheet-methods-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .sheet-method-btn {
+            padding: 12px 8px;
+            border-radius: 12px;
+            border: 1.5px solid rgba(77,163,255,0.1);
+            background: rgba(11,15,26,0.6);
+            color: #A1A1AA;
+            font-family: 'Poppins', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .sheet-method-btn i {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .sheet-method-btn.active {
+            border-color: #4DA3FF;
+            background: rgba(77,163,255,0.1);
+            color: #4DA3FF;
+        }
+
+        .sheet-method-btn:active { transform: scale(0.93); }
+
+        /* Admin account info */
+        .admin-account-box {
+            background: rgba(11,15,26,0.7);
+            border: 1px solid rgba(77,163,255,0.12);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .admin-account-box.show { display: block; }
+
+        .admin-account-label {
+            font-size: 11px;
+            color: #6B7280;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .admin-account-label i { color: #4DA3FF; }
+
+        .admin-account-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .admin-account-row:last-child { margin-bottom: 0; }
+
+        .admin-account-key {
+            font-size: 12px;
+            color: #A1A1AA;
+        }
+
+        .admin-account-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .copy-btn {
+            width: 24px; height: 24px;
+            border-radius: 6px;
+            border: none;
+            background: rgba(77,163,255,0.15);
+            color: #4DA3FF;
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover { background: rgba(77,163,255,0.25); }
+        .copy-btn:active { transform: scale(0.85); }
+
+        .sheet-confirm-note {
+            font-size: 11px;
+            color: #6B7280;
+            text-align: center;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            line-height: 1.5;
+        }
+
+        .sheet-confirm-note i { color: #FBBF24; margin-top: 1px; flex-shrink: 0; }
+
+        .sheet-proceed-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 16px;
+            border: none;
+            background: linear-gradient(135deg, #FBBF24, #F59E0B);
+            color: #0B0F1A;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sheet-proceed-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .sheet-proceed-btn:hover::before { left: 100%; }
+        .sheet-proceed-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(251,191,36,0.45); }
+        .sheet-proceed-btn:active { transform: scale(0.97); }
+
+        .sheet-cancel-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            border: 1.5px solid rgba(255,255,255,0.08);
+            background: transparent;
+            color: #6B7280;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .sheet-cancel-btn:hover { color: #A1A1AA; border-color: rgba(255,255,255,0.15); }
+        .sheet-cancel-btn:active { transform: scale(0.97); }
+
+        /* ========== REFERRAL CARD ========== */
+        .referral-card {
+            margin: 0 16px;
+            background: linear-gradient(135deg, rgba(168,85,247,0.1), rgba(77,163,255,0.08));
+            border: 1.5px solid rgba(168,85,247,0.2);
+            border-radius: 20px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            animation: fadeUp 0.7s ease;
+        }
+
+        .referral-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(168,85,247,0.15);
+            border-color: rgba(168,85,247,0.35);
+        }
+
+        .referral-card:active { transform: scale(0.97); }
+
+        .referral-icon {
+            width: 50px; height: 50px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #A855F7, #4DA3FF);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+            animation: referralPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes referralPulse {
+            0%,100% { box-shadow: 0 4px 16px rgba(168,85,247,0.3); }
+            50% { box-shadow: 0 4px 24px rgba(168,85,247,0.5); }
+        }
+
+        .referral-info { flex: 1; }
+        .referral-title { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+        .referral-desc { font-size: 11px; color: #A1A1AA; }
+
+        .referral-coins {
+            font-size: 18px;
+            font-weight: 800;
+            color: #FBBF24;
+        }
+
+        /* ========== EMPTY STATE ========== */
+        .empty-state {
+            text-align: center;
+            padding: 32px 20px;
+        }
+
+        .empty-icon-wrap {
+            width: 64px; height: 64px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin: 0 auto 14px;
+            animation: emptyFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes emptyFloat {
+            0%,100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .empty-title { font-size: 15px; font-weight: 600; margin-bottom: 5px; }
+        .empty-text { font-size: 12px; color: #6B7280; }
+
+        /* ========== TOAST ========== */
+        .toast-container {
+            position: fixed;
+            top: 20px; right: 16px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast {
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 340px;
+            animation: toastIn 0.4s ease, toastOut 0.4s ease 3.6s forwards;
+            backdrop-filter: blur(10px);
+        }
+
+        .toast.success { background: rgba(52,211,153,0.15); border: 1px solid rgba(52,211,153,0.3); color: #34D399; }
+        .toast.error { background: rgba(255,59,48,0.15); border: 1px solid rgba(255,59,48,0.3); color: #FF3B30; }
+        .toast.info { background: rgba(77,163,255,0.15); border: 1px solid rgba(77,163,255,0.3); color: #4DA3FF; }
+        .toast.warning { background: rgba(251,191,36,0.15); border: 1px solid rgba(251,191,36,0.3); color: #FBBF24; }
+
+        @keyframes toastIn { from { opacity: 0; transform: translateX(80px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes toastOut { to { opacity: 0; transform: translateX(80px); } }
+
+        /* ========== BOTTOM NAV ========== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0;
+            width: 100%;
+            z-index: 100;
+            background: rgba(11,15,26,0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(77,163,255,0.08);
+            padding: 8px 0;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+        }
+
+        .nav-inner {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 6px 12px;
+            border: none;
+            background: none;
+            color: #6B7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .nav-item i { font-size: 20px; transition: all 0.3s ease; }
+        .nav-item span { font-size: 10px; font-weight: 500; }
+        .nav-item.active { color: #4DA3FF; }
+        .nav-item.active i { transform: translateY(-2px); }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            top: -8px; left: 50%;
+            transform: translateX(-50%);
+            width: 20px; height: 3px;
+            background: #4DA3FF;
+            border-radius: 3px;
+        }
+
+        .nav-item.go-live .go-live-icon {
+            width: 48px; height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #FF3B30, #FF4D8D);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #FFFFFF;
+            margin-top: -20px;
+            box-shadow: 0 6px 24px rgba(255,59,48,0.35);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.go-live:hover .go-live-icon { transform: translateY(-4px); }
+        .nav-item.go-live span { color: #FF4D8D; margin-top: 2px; }
+
+        /* ========== ANIMATE ON SCROLL ========== */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 360px) {
+            .balance-amount { font-size: 34px; }
+            .packages-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .pkg-coin-icon { font-size: 28px; }
+            .pkg-coins { font-size: 18px; }
+            .sheet-methods-row { grid-template-columns: repeat(3, 1fr); }
+            .toast { max-width: calc(100vw - 32px); }
+            .toast-container { right: 10px; left: 10px; }
+        }
+
+        @media (min-width: 481px) {
+            .packages-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (min-width: 600px) {
+            .packages-grid { grid-template-columns: repeat(3, 1fr); }
+            .balance-amount { font-size: 52px; }
+        }
+
+        @media (min-width: 768px) {
+            body { padding-bottom: 40px; }
+            .bottom-nav { display: none; }
+        }
+
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-glow">
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+</div>
+<div class="floating-coins" id="floatingCoins"></div>
+
+<!-- Toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Buy Sheet -->
+<div class="buy-sheet-overlay" id="buySheetOverlay" onclick="closeBuySheetOutside(event)">
+    <div class="buy-sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-title">Complete Purchase</div>
+        <div class="sheet-subtitle">Pay to the admin account below, then confirm</div>
+
+        <!-- Package Summary -->
+        <div class="sheet-pkg-summary">
+            <span class="sheet-pkg-emoji" id="sheetPkgEmoji">🪙</span>
+            <div class="sheet-pkg-info">
+                <div class="sheet-pkg-name" id="sheetPkgName">Package</div>
+                <div class="sheet-pkg-coins" id="sheetPkgCoins">0 coins</div>
+            </div>
+            <div class="sheet-pkg-price" id="sheetPkgPrice">₦0</div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="sheet-method-label">
+            <i class="fa-solid fa-credit-card"></i> Choose Payment
+        </div>
+        <div class="sheet-methods-row">
+            <button class="sheet-method-btn active" onclick="selectSheetMethod(this,'opay')">
+                <i class="fa-solid fa-mobile-screen"></i> OPay
+            </button>
+            <button class="sheet-method-btn" onclick="selectSheetMethod(this,'paystack')">
+                <i class="fa-solid fa-p"></i> Paystack
+            </button>
+            <button class="sheet-method-btn" onclick="selectSheetMethod(this,'bank')">
+                <i class="fa-solid fa-building-columns"></i> Bank
+            </button>
+        </div>
+
+        <!-- Admin Account Info -->
+        <div class="admin-account-box show" id="adminAccountBox">
+            <div class="admin-account-label">
+                <i class="fa-solid fa-circle-info"></i>
+                Pay to this account:
+            </div>
+            <div id="adminAccountDetails">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- Note -->
+        <div class="sheet-confirm-note">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            After payment, your coins will be credited within 5–30 minutes by admin. Keep your transaction reference.
+        </div>
+
+        <button class="sheet-proceed-btn" onclick="confirmPurchase()">
+            <i class="fa-solid fa-check-circle"></i> I've Completed Payment
+        </button>
+        <button class="sheet-cancel-btn" onclick="closeBuySheet()">Cancel</button>
+    </div>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="content">
+
+    <!-- Header -->
+    <div class="top-header" id="topHeader">
+        <div class="header-inner">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="header-center">
+                <div class="header-title">
+                    <i class="fa-solid fa-coins" style="margin-right:6px;"></i> Wallet
+                </div>
+                <div class="header-subtitle">Coins & Transactions</div>
+            </div>
+            <button class="header-right-btn" onclick="refreshWallet()" title="Refresh">
+                <i class="fa-solid fa-rotate" id="refreshIcon"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Balance Card -->
+    <div class="balance-card">
+        <div class="balance-card-glow"></div>
+        <div class="balance-card-pattern"></div>
+        <div class="balance-card-pattern2"></div>
+        <div class="balance-card-content">
+            <div class="balance-card-top">
+                <div>
+                    <div class="balance-label">
+                        <i class="fa-solid fa-coins"></i> Coin Balance
+                    </div>
+                    <div class="balance-amount">
+                        <span id="balanceDisplay">0</span>
+                        <span class="coin-unit">coins</span>
+                    </div>
+                    <div class="balance-sub" id="balanceSub">≈ ₦0 in gifts</div>
+                </div>
+                <div class="coin-icon-wrap">
+                    <i class="fa-solid fa-coins"></i>
+                </div>
+            </div>
+            <div class="balance-card-bottom">
+                <button class="balance-quick-btn buy" onclick="scrollToPackages()">
+                    <i class="fa-solid fa-plus"></i> Buy Coins
+                </button>
+                <button class="balance-quick-btn history" onclick="scrollToHistory()">
+                    <i class="fa-solid fa-clock-rotate-left"></i> History
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Coin Packages -->
+    <div class="section-header" id="packagesSection">
+        <div class="section-title">
+            <div class="section-icon" style="background:rgba(251,191,36,0.12); color:#FBBF24;">
+                <i class="fa-solid fa-bag-shopping"></i>
+            </div>
+            <div>
+                <h2>Buy Coins</h2>
+                <div class="section-sub">Choose a coin package</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="packages-grid animate-on-scroll">
+        <!-- Package 1 -->
+        <div class="package-card" onclick="openBuySheet(100,'₦100','🪙',100)">
+            <span class="pkg-coin-icon">🪙</span>
+            <div class="pkg-coins">100</div>
+            <div class="pkg-coins-label">coins</div>
+            <div class="pkg-price">₦100</div>
+            <div class="pkg-per-coin">₦1/coin</div>
+        </div>
+
+        <!-- Package 2 -->
+        <div class="package-card popular" onclick="openBuySheet(500,'₦450','💰',500)">
+            <div class="popular-tag">🔥 Popular</div>
+            <span class="pkg-coin-icon">💰</span>
+            <div class="pkg-coins">500</div>
+            <div class="pkg-coins-label">coins</div>
+            <div class="pkg-bonus">+50 FREE</div>
+            <div class="pkg-price">₦450</div>
+            <div class="pkg-per-coin">₦0.90/coin</div>
+        </div>
+
+        <!-- Package 3 -->
+        <div class="package-card" onclick="openBuySheet(1000,'₦850','💎',1000)">
+            <span class="pkg-coin-icon">💎</span>
+            <div class="pkg-coins">1,000</div>
+            <div class="pkg-coins-label">coins</div>
+            <div class="pkg-bonus">+150 FREE</div>
+            <div class="pkg-price">₦850</div>
+            <div class="pkg-per-coin">₦0.85/coin</div>
+        </div>
+
+        <!-- Package 4 -->
+        <div class="package-card" onclick="openBuySheet(2500,'₦2,000','👑',2500)">
+            <span class="pkg-coin-icon">👑</span>
+            <div class="pkg-coins">2,500</div>
+            <div class="pkg-coins-label">coins</div>
+            <div class="pkg-bonus">+500 FREE</div>
+            <div class="pkg-price">₦2,000</div>
+            <div class="pkg-per-coin">₦0.80/coin</div>
+        </div>
+
+        <!-- Package 5 -->
+        <div class="package-card" onclick="openBuySheet(5000,'₦3,800','🚀',5000)">
+            <span class="pkg-coin-icon">🚀</span>
+            <div class="pkg-coins">5,000</div>
+            <div class="pkg-coins-label">coins</div>
+            <div class="pkg-bonus">+1,000 FREE</div>
+            <div class="pkg-price">₦3,800</div>
+            <div class="pkg-per-coin">₦0.76/coin</div>
+        </div>
+
+        <!-- Package 6 -->
+        <div class="package-card popular" onclick="openBuySheet(10000,'₦7,000','🌟',10000)">
+            <div class="best-value-tag">Best Value</div>
+            <span class="pkg-coin-icon">🌟</span>
+            <div class="pkg-coins">10,000</div>
+            <div class="pkg-coins-label">coins</div>
+            <div class="pkg-bonus">+2,500 FREE</div>
+            <div class="pkg-price">₦7,000</div>
+            <div class="pkg-per-coin">₦0.70/coin</div>
+        </div>
+    </div>
+
+    <!-- How to Buy -->
+    <div class="section-header">
+        <div class="section-title">
+            <div class="section-icon" style="background:rgba(77,163,255,0.12); color:#4DA3FF;">
+                <i class="fa-solid fa-circle-question"></i>
+            </div>
+            <div>
+                <h2>How to Buy</h2>
+                <div class="section-sub">Simple 3-step process</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="how-to-card animate-on-scroll">
+        <div class="how-step">
+            <div class="step-num">1</div>
+            <div class="step-text">
+                <h4><i class="fa-solid fa-bag-shopping" style="color:#FBBF24; margin-right:5px;"></i> Choose a Package</h4>
+                <p>Select any coin package above that suits your budget</p>
+            </div>
+        </div>
+        <div class="how-step">
+            <div class="step-num">2</div>
+            <div class="step-text">
+                <h4><i class="fa-solid fa-mobile-screen" style="color:#4DA3FF; margin-right:5px;"></i> Make Payment</h4>
+                <p>Pay via OPay, Paystack, or Bank Transfer to the admin account shown</p>
+            </div>
+        </div>
+        <div class="how-step">
+            <div class="step-num">3</div>
+            <div class="step-text">
+                <h4><i class="fa-solid fa-coins" style="color:#34D399; margin-right:5px;"></i> Coins Credited</h4>
+                <p>Admin manually verifies and credits your coins within 5–30 minutes</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Referral Card -->
+    <div style="margin: 16px 0;">
+        <div class="referral-card" onclick="shareReferral()">
+            <div class="referral-icon">
+                <i class="fa-solid fa-user-plus"></i>
+            </div>
+            <div class="referral-info">
+                <div class="referral-title">Invite Friends</div>
+                <div class="referral-desc">Earn coins for every friend who joins</div>
+            </div>
+            <div class="referral-coins">
+                <i class="fa-solid fa-coins" style="font-size:14px;"></i> +50
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction History -->
+    <div class="section-header" id="historySection">
+        <div class="section-title">
+            <div class="section-icon" style="background:rgba(77,163,255,0.12); color:#4DA3FF;">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div>
+                <h2>Transaction History</h2>
+                <div class="section-sub" id="txCount">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Pills -->
+    <div class="tx-filter-row">
+        <button class="tx-filter-pill active" onclick="filterTx('all', this)">
+            <i class="fa-solid fa-list"></i> All
+        </button>
+        <button class="tx-filter-pill" onclick="filterTx('purchase', this)">
+            <i class="fa-solid fa-coins"></i> Purchases
+        </button>
+        <button class="tx-filter-pill" onclick="filterTx('gift_sent', this)">
+            <i class="fa-solid fa-gift"></i> Gifts Sent
+        </button>
+        <button class="tx-filter-pill" onclick="filterTx('gift_recv', this)">
+            <i class="fa-solid fa-heart"></i> Gifts Received
+        </button>
+        <button class="tx-filter-pill" onclick="filterTx('payout', this)">
+            <i class="fa-solid fa-money-bill"></i> Payouts
+        </button>
+    </div>
+
+    <div class="tx-list animate-on-scroll" id="txList">
+        <div style="text-align:center; padding:24px; color:#6B7280;">
+            <i class="fa-solid fa-rotate fa-spin" style="color:#4DA3FF; font-size:20px; display:block; margin-bottom:8px;"></i>
+            Loading transactions...
+        </div>
+    </div>
+
+    <div style="height:20px;"></div>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav">
+    <div class="nav-inner">
+        <button class="nav-item" onclick="window.location.href='home.html'">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='search.html'">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span>Search</span>
+        </button>
+        <button class="nav-item go-live" id="goLiveNav" style="display:none;" onclick="window.location.href='create-stream.html'">
+            <div class="go-live-icon">
+                <i class="fa-solid fa-microphone-lines"></i>
+            </div>
+            <span>Go Live</span>
+        </button>
+        <button class="nav-item active">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Wallet</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='profile.html'">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </button>
+    </div>
+</nav>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+
+<script>
+// ========== FIREBASE ==========
+const firebaseConfig = {
+    apiKey: "AIzaSyATqi4oZTu5j5ZNJKN6dBRCN64c_zfzwVs",
+  authDomain: "ooooo-a0f87.firebaseapp.com",
+  projectId: "ooooo-a0f87",
+  storageBucket: "ooooo-a0f87.firebasestorage.app",
+  messagingSenderId: "427620508727",
+  appId: "1:427620508727:web:360997dac7362780940bb2"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+// ========== ADMIN ACCOUNT DETAILS ==========
+// Replace with your real admin payment accounts
+const ADMIN_ACCOUNTS = {
+    opay: {
+        name:    'Chaterra Admin',
+        number:  '08012345678',
+        label:   'OPay Number'
+    },
+    paystack: {
+        name:    'Chaterra Ltd',
+        number:  'Use the payment link',
+        link:    'https://paystack.com/pay/chaterra',
+        label:   'Paystack Link'
+    },
+    bank: {
+        name:    'Chaterra Ltd',
+        number:  '0123456789',
+        bank:    'Access Bank',
+        label:   'Account Number'
+    }
+};
+
+// ========== STATE ==========
+let currentUser     = null;
+let currentUserData = null;
+let allTransactions = [];
+let currentFilter   = 'all';
+let selectedPkg     = null;
+let selectedMethod  = 'opay';
+
+// ========== AUTH ==========
+auth.onAuthStateChanged(async (user) => {
+    if (!user) { window.location.href = 'index.html'; return; }
+    currentUser = user;
+
+    try {
+        const uDoc = await db.collection('users').doc(user.uid).get();
+        if (uDoc.exists) {
+            currentUserData = uDoc.data();
+            updateBalanceDisplay(currentUserData.coins || 0);
+
+            if (currentUserData.role === 'streamer') {
+                document.getElementById('goLiveNav').style.display = 'flex';
+            }
+        }
+
+        generateFloatingCoins();
+        loadTransactions();
+        setupScrollObserver();
+        setupScrollHeader();
+
+    } catch(err) {
+        console.error('Wallet init error:', err);
+        showToast('Failed to load wallet', 'error');
+    }
+});
+
+// ========== UPDATE BALANCE ==========
+function updateBalanceDisplay(coins) {
+    animateNumber('balanceDisplay', 0, coins, 800);
+    document.getElementById('balanceSub').textContent =
+        `≈ ₦${formatCurrency(coins)} in gift value`;
+}
+
+function animateNumber(elId, from, to, duration) {
+    const el  = document.getElementById(elId);
+    const diff = to - from;
+    const step = 16;
+    const steps = duration / step;
+    let current = from;
+    const increment = diff / steps;
+
+    const timer = setInterval(() => {
+        current += increment;
+        if ((increment > 0 && current >= to) || (increment < 0 && current <= to)) {
+            el.textContent = formatCount(Math.round(to));
+            clearInterval(timer);
+        } else {
+            el.textContent = formatCount(Math.round(current));
+        }
+    }, step);
+}
+
+// ========== FLOATING COINS ANIMATION ==========
+function generateFloatingCoins() {
+    const container = document.getElementById('floatingCoins');
+    const emojis = ['🪙','💰','💎','✨','⭐'];
+    const count  = window.innerWidth < 480 ? 8 : 14;
+
+    for (let i = 0; i < count; i++) {
+        const coin = document.createElement('div');
+        coin.className = 'fcoin';
+        coin.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        coin.style.cssText = `
+            left: ${Math.random()*100}%;
+            font-size: ${Math.random()*12+10}px;
+            animation-duration: ${Math.random()*14+10}s;
+            animation-delay: ${Math.random()*12}s;
+        `;
+        container.appendChild(coin);
+    }
+}
+
+// ========== LOAD TRANSACTIONS ==========
+async function loadTransactions() {
+    const listEl = document.getElementById('txList');
+    try {
+        const snap = await db.collection('transactions')
+            .where('senderId', '==', currentUser.uid)
+            .orderBy('createdAt', 'desc')
+            .limit(50)
+            .get();
+
+        // Also get received gifts
+        const recvSnap = await db.collection('transactions')
+            .where('receiverId', '==', currentUser.uid)
+            .orderBy('createdAt', 'desc')
+            .limit(30)
+            .get();
+
+        // Also get purchases
+        const purchaseSnap = await db.collection('coin_purchases')
+            .where('userId', '==', currentUser.uid)
+            .orderBy('createdAt', 'desc')
+            .limit(20)
+            .get();
+
+        allTransactions = [];
+
+        snap.forEach(doc => {
+            allTransactions.push({ id: doc.id, direction: 'sent', ...doc.data() });
+        });
+
+        recvSnap.forEach(doc => {
+            // Avoid duplicates
+            if (!allTransactions.find(t => t.id === doc.id)) {
+                allTransactions.push({ id: doc.id, direction: 'received', ...doc.data() });
+            }
+        });
+
+        purchaseSnap.forEach(doc => {
+            allTransactions.push({ id: doc.id, type: 'purchase', direction: 'credit', ...doc.data() });
+        });
+
+        // Sort by date
+        allTransactions.sort((a, b) => {
+            const da = a.createdAt?.toDate?.() || new Date(0);
+            const db2 = b.createdAt?.toDate?.() || new Date(0);
+            return db2 - da;
+        });
+
+        document.getElementById('txCount').textContent = `${allTransactions.length} transactions`;
+        renderTransactions(allTransactions);
+
+    } catch(err) {
+        console.error('Transactions error:', err);
+        listEl.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon-wrap" style="background:rgba(255,59,48,0.1); color:#FF3B30;">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                </div>
+                <div class="empty-title">Failed to Load</div>
+                <div class="empty-text">Could not load transaction history</div>
+            </div>`;
+    }
+}
+
+function renderTransactions(txList) {
+    const listEl = document.getElementById('txList');
+    listEl.innerHTML = '';
+
+    if (!txList.length) {
+        listEl.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon-wrap" style="background:rgba(251,191,36,0.1); color:#FBBF24;">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                </div>
+                <div class="empty-title">No Transactions Yet</div>
+                <div class="empty-text">Buy coins or send gifts to see history here</div>
+            </div>`;
+        return;
+    }
+
+    txList.forEach((tx, i) => {
+        const item = buildTxItem(tx, i);
+        if (item) listEl.appendChild(item);
+    });
+}
+
+function buildTxItem(tx, index) {
+    const item = document.createElement('div');
+    item.className = 'tx-item';
+    item.style.animationDelay = `${index * 0.04}s`;
+
+    const date = tx.createdAt?.toDate
+        ? tx.createdAt.toDate().toLocaleDateString('en-US', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })
+        : 'Recently';
+
+    let iconClass  = 'purchase';
+    let iconEl     = '<i class="fa-solid fa-coins"></i>';
+    let title      = 'Transaction';
+    let desc       = '';
+    let amountText = '';
+    let amountClass = 'debit';
+    let coinsText  = '';
+
+    if (tx.type === 'purchase' || tx.direction === 'credit') {
+        iconClass   = 'purchase';
+        iconEl      = '<i class="fa-solid fa-coins"></i>';
+        title       = 'Coin Purchase';
+        desc        = `+${tx.coins || tx.coinsSpent || 0} coins added`;
+        amountText  = `+₦${formatCurrency(tx.amount || 0)}`;
+        amountClass = 'credit';
+        coinsText   = `+${formatCount(tx.coins || 0)} coins`;
+    } else if (tx.type === 'gift_sent' && tx.direction !== 'received') {
+        iconClass   = 'gift-sent';
+        iconEl      = '<i class="fa-solid fa-gift"></i>';
+        title       = `${tx.giftEmoji || '🎁'} ${tx.giftName || 'Gift'} × ${tx.qty || 1}`;
+        desc        = `To: ${escapeHtml(tx.receiverName || 'Streamer')}`;
+        amountText  = `-${formatCount(tx.coinsSpent || 0)}`;
+        amountClass = 'debit';
+        coinsText   = 'coins';
+    } else if (tx.direction === 'received' || tx.receiverId === currentUser.uid) {
+        iconClass   = 'gift-recv';
+        iconEl      = '<i class="fa-solid fa-heart"></i>';
+        title       = `${tx.giftEmoji || '🎁'} ${tx.giftName || 'Gift'} × ${tx.qty || 1}`;
+        desc        = `From: ${escapeHtml(tx.senderName || 'Fan')}`;
+        amountText  = `+${formatCount(tx.streamerEarning || 0)}`;
+        amountClass = 'credit';
+        coinsText   = 'coins earned';
+    } else if (tx.type === 'payout') {
+        iconClass   = 'payout';
+        iconEl      = '<i class="fa-solid fa-money-bill-wave"></i>';
+        title       = 'Payout';
+        desc        = `Via ${tx.method || 'Bank'}`;
+        amountText  = `₦${formatCurrency(tx.amount || 0)}`;
+        amountClass = 'credit';
+        coinsText   = 'paid out';
+    }
+
+    item.innerHTML = `
+        <div class="tx-icon ${iconClass}">${iconEl}</div>
+        <div class="tx-info">
+            <div class="tx-title">${title}</div>
+            <div class="tx-desc">
+                <i class="fa-solid fa-clock"></i> ${date}
+                ${desc ? `<span style="margin-left:6px;">• ${desc}</span>` : ''}
+            </div>
+        </div>
+        <div class="tx-amount-wrap">
+            <div class="tx-amount ${amountClass}">${amountText}</div>
+            <div class="tx-coins">${coinsText}</div>
+        </div>`;
+
+    return item;
+}
+
+// ========== FILTER TRANSACTIONS ==========
+function filterTx(filter, btn) {
+    document.querySelectorAll('.tx-filter-pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = filter;
+
+    let filtered = allTransactions;
+    if (filter === 'purchase') {
+        filtered = allTransactions.filter(t => t.type === 'purchase' || t.direction === 'credit');
+    } else if (filter === 'gift_sent') {
+        filtered = allTransactions.filter(t => t.type === 'gift_sent' && t.senderId === currentUser.uid);
+    } else if (filter === 'gift_recv') {
+        filtered = allTransactions.filter(t => t.receiverId === currentUser.uid && t.type === 'gift_sent');
+    } else if (filter === 'payout') {
+        filtered = allTransactions.filter(t => t.type === 'payout');
+    }
+
+    renderTransactions(filtered);
+}
+
+// ========== BUY SHEET ==========
+function openBuySheet(coins, price, emoji, rawCoins) {
+    selectedPkg = { coins, price, emoji, rawCoins };
+
+    document.getElementById('sheetPkgEmoji').textContent = emoji;
+    document.getElementById('sheetPkgName').textContent  = `${formatCount(rawCoins)} Coins Package`;
+    document.getElementById('sheetPkgCoins').textContent = `${formatCount(rawCoins)} coins`;
+    document.getElementById('sheetPkgPrice').textContent = price;
+
+    renderAdminAccount('opay');
+    document.getElementById('buySheetOverlay').classList.add('open');
+
+    // Reset method buttons
+    document.querySelectorAll('.sheet-method-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.sheet-method-btn')[0].classList.add('active');
+    selectedMethod = 'opay';
+}
+
+function closeBuySheet() {
+    document.getElementById('buySheetOverlay').classList.remove('open');
+}
+
+function closeBuySheetOutside(e) {
+    if (e.target === document.getElementById('buySheetOverlay')) closeBuySheet();
+}
+
+function selectSheetMethod(btn, method) {
+    document.querySelectorAll('.sheet-method-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedMethod = method;
+    renderAdminAccount(method);
+}
+
+function renderAdminAccount(method) {
+    const box  = document.getElementById('adminAccountBox');
+    const det  = document.getElementById('adminAccountDetails');
+    const acct = ADMIN_ACCOUNTS[method];
+
+    if (!acct) { box.classList.remove('show'); return; }
+    box.classList.add('show');
+
+    if (method === 'paystack') {
+        det.innerHTML = `
+            <div class="admin-account-row">
+                <span class="admin-account-key">Payment Link:</span>
+                <span class="admin-account-value">
+                    <a href="${acct.link}" target="_blank"
+                       style="color:#4DA3FF; font-size:12px; text-decoration:none;">
+                        Open Paystack <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </a>
+                </span>
+            </div>
+            <div class="admin-account-row">
+                <span class="admin-account-key">Name:</span>
+                <span class="admin-account-value">${acct.name}</span>
+            </div>`;
+    } else if (method === 'bank') {
+        det.innerHTML = `
+            <div class="admin-account-row">
+                <span class="admin-account-key">Bank:</span>
+                <span class="admin-account-value">${acct.bank}</span>
+            </div>
+            <div class="admin-account-row">
+                <span class="admin-account-key">${acct.label}:</span>
+                <span class="admin-account-value">
+                    ${acct.number}
+                    <button class="copy-btn" onclick="copyToClipboard('${acct.number}')">
+                        <i class="fa-solid fa-copy"></i>
+                    </button>
+                </span>
+            </div>
+            <div class="admin-account-row">
+                <span class="admin-account-key">Name:</span>
+                <span class="admin-account-value">${acct.name}</span>
+            </div>`;
+    } else {
+        det.innerHTML = `
+            <div class="admin-account-row">
+                <span class="admin-account-key">${acct.label}:</span>
+                <span class="admin-account-value">
+                    ${acct.number}
+                    <button class="copy-btn" onclick="copyToClipboard('${acct.number}')">
+                        <i class="fa-solid fa-copy"></i>
+                    </button>
+                </span>
+            </div>
+            <div class="admin-account-row">
+                <span class="admin-account-key">Name:</span>
+                <span class="admin-account-value">${acct.name}</span>
+            </div>`;
+    }
+}
+
+async function confirmPurchase() {
+    if (!selectedPkg || !currentUser) return;
+
+    try {
+        // Log purchase request — admin will manually credit
+        await db.collection('coin_purchases').add({
+            userId:        currentUser.uid,
+            userName:      currentUserData?.fullName || 'User',
+            userUsername:  currentUserData?.username || '',
+            coins:         selectedPkg.rawCoins,
+            price:         selectedPkg.price,
+            method:        selectedMethod,
+            status:        'pending',
+            createdAt:     firebase.firestore.FieldValue.serverTimestamp(),
+        });
+
+        // Notify admin
+        await db.collection('admin_notifications').add({
+            type:        'coin_purchase',
+            userId:      currentUser.uid,
+            userName:    currentUserData?.fullName || 'User',
+            coins:       selectedPkg.rawCoins,
+            price:       selectedPkg.price,
+            method:      selectedMethod,
+            read:        false,
+            createdAt:   firebase.firestore.FieldValue.serverTimestamp(),
+        });
+
+        closeBuySheet();
+        showToast('Purchase logged! Admin will credit coins soon ✅', 'success');
+
+        // Reload transactions
+        setTimeout(() => loadTransactions(), 1000);
+
+    } catch(err) {
+        console.error('Purchase error:', err);
+        showToast('Failed to log purchase. Try again.', 'error');
+    }
+}
+
+// ========== REFERRAL ==========
+function shareReferral() {
+    const link = `${window.location.origin}/index.html?ref=${currentUser?.uid}`;
+    if (navigator.share) {
+        navigator.share({
+            title: 'Join Chaterra!',
+            text:  'Join me on Chaterra — the best audio live streaming app! Get 50 free coins when you sign up!',
+            url:   link
+        }).catch(() => {});
+    } else {
+        copyToClipboard(link);
+        showToast('Referral link copied! 🔗 Share with friends', 'success');
+    }
+}
+
+// ========== UTILITIES ==========
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('Copied to clipboard! 📋', 'success');
+    }).catch(() => {
+        showToast('Could not copy. Please copy manually.', 'info');
+    });
+}
+
+function scrollToPackages() {
+    document.getElementById('packagesSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+function scrollToHistory() {
+    document.getElementById('historySection').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function refreshWallet() {
+    const icon = document.getElementById('refreshIcon');
+    icon.classList.add('fa-spin');
+
+    try {
+        const uDoc = await db.collection('users').doc(currentUser.uid).get();
+        if (uDoc.exists) {
+            const coins = uDoc.data().coins || 0;
+            updateBalanceDisplay(coins);
+        }
+        await loadTransactions();
+        showToast('Wallet refreshed ✨', 'success');
+    } catch(err) {
+        showToast('Refresh failed', 'error');
+    } finally {
+        setTimeout(() => icon.classList.remove('fa-spin'), 800);
+    }
+}
+
+function goBack() {
+    if (window.history.length > 1) window.history.back();
+    else window.location.href = 'home.html';
+}
+
+function setupScrollObserver() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+}
+
+function setupScrollHeader() {
+    window.addEventListener('scroll', () => {
+        const header = document.getElementById('topHeader');
+        header.classList.toggle('scrolled', window.scrollY > 30);
+    });
+}
+
+function formatCount(n) {
+    n = parseInt(n) || 0;
+    if (n >= 1000000) return (n/1000000).toFixed(1)+'M';
+    if (n >= 1000)    return (n/1000).toFixed(1)+'K';
+    return n.toLocaleString();
+}
+
+function formatCurrency(n) {
+    return parseInt(n||0).toLocaleString('en-NG');
+}
+
+function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str || '';
+    return d.innerHTML;
+}
+
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    const icons = {
+        success:'fa-circle-check',
+        error:'fa-circle-xmark',
+        warning:'fa-triangle-exclamation',
+        info:'fa-circle-info'
+    };
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i> ${message}`;
+    container.appendChild(toast);
+    setTimeout(() => { if (toast.parentNode) toast.remove(); }, 4000);
+}
+</script>
+</body>
+</html>

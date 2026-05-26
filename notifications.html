@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chaterra — Notifications</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* ========== RESET & BASE ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Poppins', 'Inter', sans-serif;
+            background: #0B0F1A;
+            color: #FFFFFF;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
+
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(77,163,255,0.3); border-radius: 3px; }
+
+        /* ========== ANIMATED BG ========== */
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.08;
+            animation: orbDrift ease-in-out infinite;
+        }
+
+        .bg-orb:nth-child(1) {
+            width: 380px; height: 380px;
+            background: #4DA3FF;
+            top: -120px; right: -80px;
+            animation-duration: 16s;
+        }
+
+        .bg-orb:nth-child(2) {
+            width: 320px; height: 320px;
+            background: #A855F7;
+            bottom: -100px; left: -60px;
+            animation-duration: 20s;
+            animation-delay: 4s;
+        }
+
+        .bg-orb:nth-child(3) {
+            width: 240px; height: 240px;
+            background: #FF4D8D;
+            top: 40%; left: 55%;
+            animation-duration: 13s;
+            animation-delay: 7s;
+        }
+
+        @keyframes orbDrift {
+            0%,100% { transform: translate(0,0) scale(1); }
+            33% { transform: translate(-40px,50px) scale(1.1); }
+            66% { transform: translate(30px,-30px) scale(0.95); }
+        }
+
+        /* ========== CONTENT ========== */
+        .content {
+            position: relative;
+            z-index: 1;
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        /* ========== TOP HEADER ========== */
+        .top-header {
+            position: sticky;
+            top: 0; z-index: 100;
+            background: rgba(11,15,26,0.9);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(77,163,255,0.08);
+            padding: 14px 16px;
+            transition: all 0.3s ease;
+        }
+
+        .top-header.scrolled {
+            box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .back-btn {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(26,36,56,0.7);
+            color: #A1A1AA;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .back-btn:hover {
+            background: rgba(77,163,255,0.15);
+            color: #4DA3FF;
+            transform: translateX(-2px);
+        }
+
+        .back-btn:active { transform: scale(0.9); }
+
+        .header-center {
+            flex: 1;
+            text-align: center;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-subtitle {
+            font-size: 11px;
+            color: #6B7280;
+            margin-top: 1px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-action-btn {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(26,36,56,0.7);
+            color: #A1A1AA;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .header-action-btn:hover {
+            background: rgba(77,163,255,0.15);
+            color: #4DA3FF;
+        }
+
+        .header-action-btn:active { transform: scale(0.9); }
+
+        /* ========== UNREAD BANNER ========== */
+        .unread-banner {
+            margin: 14px 16px 0;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, rgba(77,163,255,0.08), rgba(168,85,247,0.06));
+            border: 1px solid rgba(77,163,255,0.15);
+            border-radius: 14px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            animation: fadeUp 0.4s ease;
+        }
+
+        .unread-banner.show { display: flex; }
+
+        .unread-banner-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .unread-count-badge {
+            width: 32px; height: 32px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(77,163,255,0.4); }
+            50% { box-shadow: 0 0 0 6px rgba(77,163,255,0); }
+        }
+
+        .unread-banner-text {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .unread-banner-sub {
+            font-size: 11px;
+            color: #A1A1AA;
+            margin-top: 1px;
+        }
+
+        .mark-all-btn {
+            padding: 7px 14px;
+            border-radius: 10px;
+            border: 1.5px solid rgba(77,163,255,0.2);
+            background: rgba(77,163,255,0.08);
+            color: #4DA3FF;
+            font-family: 'Poppins', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .mark-all-btn:hover {
+            background: rgba(77,163,255,0.15);
+            border-color: #4DA3FF;
+        }
+
+        .mark-all-btn:active { transform: scale(0.93); }
+
+        /* ========== FILTER TABS ========== */
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 14px 16px 0;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .filter-tabs::-webkit-scrollbar { display: none; }
+
+        .filter-tab {
+            padding: 8px 16px;
+            border-radius: 24px;
+            border: 1.5px solid rgba(77,163,255,0.1);
+            background: transparent;
+            color: #6B7280;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+        }
+
+        .filter-tab .tab-badge {
+            position: absolute;
+            top: -4px; right: -4px;
+            min-width: 16px; height: 16px;
+            background: #FF3B30;
+            border-radius: 8px;
+            font-size: 9px;
+            font-weight: 800;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 0 3px;
+            border: 2px solid #0B0F1A;
+        }
+
+        .filter-tab .tab-badge.show { display: flex; }
+
+        .filter-tab.active {
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            border-color: transparent;
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(77,163,255,0.25);
+        }
+
+        .filter-tab:hover:not(.active) {
+            border-color: rgba(77,163,255,0.25);
+            color: #A1A1AA;
+        }
+
+        .filter-tab:active { transform: scale(0.93); }
+
+        /* ========== NOTIFICATION LIST ========== */
+        .notif-list {
+            padding: 14px 16px 0;
+        }
+
+        /* Date group header */
+        .date-group-header {
+            font-size: 11px;
+            font-weight: 700;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 8px 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .date-group-header::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(77,163,255,0.06);
+        }
+
+        /* Notification card */
+        .notif-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px;
+            border-radius: 16px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+            position: relative;
+            animation: notifSlide 0.4s ease backwards;
+            border: 1.5px solid transparent;
+        }
+
+        @keyframes notifSlide {
+            from { opacity: 0; transform: translateX(-16px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .notif-card.unread {
+            background: rgba(77,163,255,0.05);
+            border-color: rgba(77,163,255,0.1);
+        }
+
+        .notif-card.read {
+            background: rgba(18,26,42,0.4);
+            border-color: transparent;
+        }
+
+        .notif-card:hover {
+            background: rgba(26,36,56,0.7);
+            border-color: rgba(77,163,255,0.15);
+            transform: translateX(4px);
+        }
+
+        .notif-card:active { transform: scale(0.98); }
+
+        /* Unread dot indicator */
+        .unread-indicator {
+            position: absolute;
+            top: 18px; left: 5px;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #4DA3FF;
+            animation: unreadPulse 2s ease-in-out infinite;
+        }
+
+        .notif-card.read .unread-indicator { display: none; }
+
+        @keyframes unreadPulse {
+            0%,100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.7); }
+        }
+
+        /* Avatar area */
+        .notif-avatar-wrap {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .notif-avatar {
+            width: 48px; height: 48px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+        }
+
+        .notif-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .notif-avatar .nav-placeholder {
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* Type badge on avatar */
+        .notif-type-badge {
+            position: absolute;
+            bottom: -4px; right: -4px;
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            border: 2px solid #0B0F1A;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+        }
+
+        .notif-type-badge.follow   { background: #4DA3FF; }
+        .notif-type-badge.gift     { background: #FF4D8D; }
+        .notif-type-badge.live     { background: #FF3B30; }
+        .notif-type-badge.system   { background: #A855F7; }
+        .notif-type-badge.coin     { background: #FBBF24; color: #0B0F1A; }
+        .notif-type-badge.payout   { background: #34D399; color: #0B0F1A; }
+        .notif-type-badge.reminder { background: #4DA3FF; }
+        .notif-type-badge.mention  { background: #FF4D8D; }
+
+        /* Notification content */
+        .notif-content { flex: 1; min-width: 0; }
+
+        .notif-message {
+            font-size: 13px;
+            line-height: 1.45;
+            margin-bottom: 5px;
+            color: #E5E7EB;
+        }
+
+        .notif-message strong {
+            color: #FFFFFF;
+            font-weight: 700;
+        }
+
+        .notif-message .accent { color: #4DA3FF; }
+
+        .notif-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .notif-time {
+            font-size: 11px;
+            color: #6B7280;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .notif-time i { font-size: 9px; }
+
+        .notif-tag {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .notif-tag.follow   { background: rgba(77,163,255,0.12);  color: #4DA3FF; }
+        .notif-tag.gift     { background: rgba(255,77,141,0.12);  color: #FF4D8D; }
+        .notif-tag.live     { background: rgba(255,59,48,0.12);   color: #FF3B30; }
+        .notif-tag.system   { background: rgba(168,85,247,0.12);  color: #A855F7; }
+        .notif-tag.coin     { background: rgba(251,191,36,0.12);  color: #FBBF24; }
+        .notif-tag.payout   { background: rgba(52,211,153,0.12);  color: #34D399; }
+
+        /* Action button inside notification */
+        .notif-action-btn {
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .notif-action-btn.join {
+            background: linear-gradient(135deg, #FF3B30, #FF4D8D);
+            color: #FFFFFF;
+        }
+
+        .notif-action-btn.follow {
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            color: #FFFFFF;
+        }
+
+        .notif-action-btn.view {
+            background: rgba(77,163,255,0.1);
+            border: 1px solid rgba(77,163,255,0.2);
+            color: #4DA3FF;
+        }
+
+        .notif-action-btn:hover { opacity: 0.85; transform: scale(1.04); }
+        .notif-action-btn:active { transform: scale(0.93); }
+
+        /* Swipe delete hint */
+        .notif-card-wrap {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            margin-bottom: 8px;
+        }
+
+        .delete-bg {
+            position: absolute;
+            right: 0; top: 0;
+            height: 100%;
+            width: 80px;
+            background: linear-gradient(135deg, transparent, rgba(255,59,48,0.15));
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 16px;
+            color: #FF3B30;
+            font-size: 18px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        /* ========== LOAD MORE ========== */
+        .load-more-btn {
+            width: calc(100% - 32px);
+            margin: 12px 16px;
+            padding: 14px;
+            border-radius: 14px;
+            border: 1.5px solid rgba(77,163,255,0.15);
+            background: transparent;
+            color: #4DA3FF;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .load-more-btn.show { display: flex; }
+        .load-more-btn:hover { background: rgba(77,163,255,0.08); border-color: #4DA3FF; }
+        .load-more-btn:active { transform: scale(0.97); }
+
+        /* ========== EMPTY STATE ========== */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 24px;
+            text-align: center;
+            animation: fadeUp 0.5s ease;
+        }
+
+        .empty-bell {
+            width: 80px; height: 80px;
+            border-radius: 24px;
+            background: rgba(77,163,255,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin-bottom: 20px;
+            animation: bellRing 4s ease-in-out infinite;
+        }
+
+        @keyframes bellRing {
+            0%,90%,100% { transform: rotate(0deg); }
+            92% { transform: rotate(-12deg); }
+            94% { transform: rotate(12deg); }
+            96% { transform: rotate(-8deg); }
+            98% { transform: rotate(8deg); }
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .empty-text {
+            font-size: 13px;
+            color: #6B7280;
+            line-height: 1.6;
+            max-width: 280px;
+        }
+
+        /* ========== SKELETON ========== */
+        .skeleton-notif {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px;
+            background: rgba(18,26,42,0.4);
+            border-radius: 16px;
+            margin-bottom: 8px;
+        }
+
+        .sk {
+            background: linear-gradient(90deg, #1A2438 25%, #243050 50%, #1A2438 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s ease-in-out infinite;
+            border-radius: 8px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* ========== SETTINGS PANEL ========== */
+        .settings-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.65);
+            z-index: 200;
+            display: none;
+            align-items: flex-end;
+        }
+
+        .settings-overlay.open { display: flex; }
+
+        .settings-panel {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(18,26,42,0.98);
+            backdrop-filter: blur(24px);
+            border-radius: 28px 28px 0 0;
+            border: 1px solid rgba(77,163,255,0.1);
+            padding: 20px 20px;
+            padding-bottom: max(24px, env(safe-area-inset-bottom));
+            animation: panelUp 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+
+        @keyframes panelUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .panel-handle {
+            width: 40px; height: 4px;
+            background: rgba(255,255,255,0.12);
+            border-radius: 4px;
+            margin: 0 auto 20px;
+        }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-title i { color: #4DA3FF; }
+
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(77,163,255,0.06);
+        }
+
+        .setting-row:last-child { border-bottom: none; }
+
+        .setting-row-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .setting-row-icon {
+            width: 38px; height: 38px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+        }
+
+        .setting-row-text h4 { font-size: 13px; font-weight: 600; }
+        .setting-row-text p { font-size: 11px; color: #6B7280; margin-top: 2px; }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px; height: 26px;
+        }
+
+        .toggle-switch input { display: none; }
+
+        .toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: rgba(77,163,255,0.1);
+            border: 1.5px solid rgba(77,163,255,0.15);
+            border-radius: 26px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            background: #6B7280;
+            top: 2px; left: 2px;
+            transition: all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: rgba(77,163,255,0.2);
+            border-color: #4DA3FF;
+        }
+
+        .toggle-switch input:checked + .toggle-slider::before {
+            background: #4DA3FF;
+            transform: translateX(22px);
+            box-shadow: 0 0 6px rgba(77,163,255,0.4);
+        }
+
+        /* ========== TOAST ========== */
+        .toast-container {
+            position: fixed;
+            top: 20px; right: 16px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast {
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 340px;
+            animation: toastIn 0.4s ease, toastOut 0.4s ease 3.6s forwards;
+            backdrop-filter: blur(10px);
+        }
+
+        .toast.success { background: rgba(52,211,153,0.15); border: 1px solid rgba(52,211,153,0.3); color: #34D399; }
+        .toast.error   { background: rgba(255,59,48,0.15);  border: 1px solid rgba(255,59,48,0.3);  color: #FF3B30; }
+        .toast.info    { background: rgba(77,163,255,0.15); border: 1px solid rgba(77,163,255,0.3); color: #4DA3FF; }
+        .toast.warning { background: rgba(251,191,36,0.15); border: 1px solid rgba(251,191,36,0.3); color: #FBBF24; }
+
+        @keyframes toastIn  { from { opacity: 0; transform: translateX(80px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes toastOut { to { opacity: 0; transform: translateX(80px); } }
+
+        /* ========== BOTTOM NAV ========== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0;
+            width: 100%;
+            z-index: 100;
+            background: rgba(11,15,26,0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(77,163,255,0.08);
+            padding: 8px 0;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+        }
+
+        .nav-inner {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 6px 12px;
+            border: none;
+            background: none;
+            color: #6B7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .nav-item i { font-size: 20px; transition: all 0.3s ease; }
+        .nav-item span { font-size: 10px; font-weight: 500; }
+        .nav-item.active { color: #4DA3FF; }
+        .nav-item.active i { transform: translateY(-2px); }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            top: -8px; left: 50%;
+            transform: translateX(-50%);
+            width: 20px; height: 3px;
+            background: #4DA3FF;
+            border-radius: 3px;
+        }
+
+        .nav-item.go-live .go-live-icon {
+            width: 48px; height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #FF3B30, #FF4D8D);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #FFFFFF;
+            margin-top: -20px;
+            box-shadow: 0 6px 24px rgba(255,59,48,0.35);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.go-live:hover .go-live-icon { transform: translateY(-4px); }
+        .nav-item.go-live span { color: #FF4D8D; margin-top: 2px; }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 360px) {
+            .notif-avatar { width: 42px; height: 42px; }
+            .notif-message { font-size: 12px; }
+            .notif-action-btn { padding: 5px 10px; font-size: 10px; }
+            .unread-count-badge { width: 28px; height: 28px; font-size: 12px; }
+            .toast { max-width: calc(100vw - 32px); }
+            .toast-container { right: 10px; left: 10px; }
+        }
+
+        @media (min-width: 600px) {
+            .notif-avatar { width: 54px; height: 54px; border-radius: 17px; }
+        }
+
+        @media (min-width: 768px) {
+            body { padding-bottom: 40px; }
+            .bottom-nav { display: none; }
+        }
+
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-glow">
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Settings Panel -->
+<div class="settings-overlay" id="settingsOverlay" onclick="closeSettings(event)">
+    <div class="settings-panel">
+        <div class="panel-handle"></div>
+        <div class="panel-title">
+            <i class="fa-solid fa-bell"></i> Notification Settings
+        </div>
+
+        <div class="setting-row">
+            <div class="setting-row-left">
+                <div class="setting-row-icon" style="background:rgba(77,163,255,0.1); color:#4DA3FF;">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="setting-row-text">
+                    <h4>Follow Alerts</h4>
+                    <p>When someone follows you</p>
+                </div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="settFollow" checked onchange="saveSetting('follow', this.checked)">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-row">
+            <div class="setting-row-left">
+                <div class="setting-row-icon" style="background:rgba(255,77,141,0.1); color:#FF4D8D;">
+                    <i class="fa-solid fa-gift"></i>
+                </div>
+                <div class="setting-row-text">
+                    <h4>Gift Alerts</h4>
+                    <p>When you receive a gift</p>
+                </div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="settGift" checked onchange="saveSetting('gift', this.checked)">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-row">
+            <div class="setting-row-left">
+                <div class="setting-row-icon" style="background:rgba(255,59,48,0.1); color:#FF3B30;">
+                    <i class="fa-solid fa-tower-broadcast"></i>
+                </div>
+                <div class="setting-row-text">
+                    <h4>Live Alerts</h4>
+                    <p>When creators you follow go live</p>
+                </div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="settLive" checked onchange="saveSetting('live', this.checked)">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-row">
+            <div class="setting-row-left">
+                <div class="setting-row-icon" style="background:rgba(77,163,255,0.1); color:#4DA3FF;">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <div class="setting-row-text">
+                    <h4>Stream Reminders</h4>
+                    <p>Upcoming stream reminders</p>
+                </div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="settReminder" checked onchange="saveSetting('reminder', this.checked)">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-row">
+            <div class="setting-row-left">
+                <div class="setting-row-icon" style="background:rgba(52,211,153,0.1); color:#34D399;">
+                    <i class="fa-solid fa-sack-dollar"></i>
+                </div>
+                <div class="setting-row-text">
+                    <h4>Payout Updates</h4>
+                    <p>Payout status notifications</p>
+                </div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="settPayout" checked onchange="saveSetting('payout', this.checked)">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-row">
+            <div class="setting-row-left">
+                <div class="setting-row-icon" style="background:rgba(168,85,247,0.1); color:#A855F7;">
+                    <i class="fa-solid fa-bullhorn"></i>
+                </div>
+                <div class="setting-row-text">
+                    <h4>System Alerts</h4>
+                    <p>Platform updates & announcements</p>
+                </div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="settSystem" checked onchange="saveSetting('system', this.checked)">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="content">
+
+    <!-- Header -->
+    <div class="top-header" id="topHeader">
+        <div class="header-inner">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="header-center">
+                <div class="header-title">
+                    <i class="fa-solid fa-bell" style="margin-right:6px;"></i>Notifications
+                </div>
+                <div class="header-subtitle" id="headerSubtitle">Loading...</div>
+            </div>
+            <div class="header-actions">
+                <button class="header-action-btn" onclick="openSettings()" title="Settings">
+                    <i class="fa-solid fa-sliders"></i>
+                </button>
+                <button class="header-action-btn" onclick="deleteAllRead()" title="Clear Read">
+                    <i class="fa-solid fa-broom"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unread Banner -->
+    <div class="unread-banner" id="unreadBanner">
+        <div class="unread-banner-left">
+            <div class="unread-count-badge" id="unreadCountBadge">0</div>
+            <div>
+                <div class="unread-banner-text">Unread notifications</div>
+                <div class="unread-banner-sub">Tap to mark all as read</div>
+            </div>
+        </div>
+        <button class="mark-all-btn" onclick="markAllRead()">
+            <i class="fa-solid fa-check-double"></i> Mark All
+        </button>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+        <button class="filter-tab active" onclick="filterNotifs('all', this)" id="tabAll">
+            <i class="fa-solid fa-list"></i> All
+            <span class="tab-badge" id="badgeAll"></span>
+        </button>
+        <button class="filter-tab" onclick="filterNotifs('follow', this)">
+            <i class="fa-solid fa-user-plus"></i> Follows
+            <span class="tab-badge" id="badgeFollow"></span>
+        </button>
+        <button class="filter-tab" onclick="filterNotifs('gift', this)">
+            <i class="fa-solid fa-gift"></i> Gifts
+            <span class="tab-badge" id="badgeGift"></span>
+        </button>
+        <button class="filter-tab" onclick="filterNotifs('live', this)">
+            <i class="fa-solid fa-tower-broadcast"></i> Live
+            <span class="tab-badge" id="badgeLive"></span>
+        </button>
+        <button class="filter-tab" onclick="filterNotifs('system', this)">
+            <i class="fa-solid fa-bullhorn"></i> System
+            <span class="tab-badge" id="badgeSystem"></span>
+        </button>
+    </div>
+
+    <!-- Notification List -->
+    <div class="notif-list" id="notifList">
+        <!-- Skeleton loading -->
+        <div id="skeletonLoader">
+            <div class="date-group-header">Today</div>
+            <div class="skeleton-notif">
+                <div class="sk" style="width:48px;height:48px;border-radius:15px;flex-shrink:0;"></div>
+                <div style="flex:1;">
+                    <div class="sk" style="height:13px;width:85%;margin-bottom:8px;"></div>
+                    <div class="sk" style="height:11px;width:50%;margin-bottom:6px;"></div>
+                    <div class="sk" style="height:11px;width:35%;"></div>
+                </div>
+            </div>
+            <div class="skeleton-notif">
+                <div class="sk" style="width:48px;height:48px;border-radius:15px;flex-shrink:0;"></div>
+                <div style="flex:1;">
+                    <div class="sk" style="height:13px;width:75%;margin-bottom:8px;"></div>
+                    <div class="sk" style="height:11px;width:45%;margin-bottom:6px;"></div>
+                    <div class="sk" style="height:11px;width:30%;"></div>
+                </div>
+            </div>
+            <div class="skeleton-notif">
+                <div class="sk" style="width:48px;height:48px;border-radius:15px;flex-shrink:0;"></div>
+                <div style="flex:1;">
+                    <div class="sk" style="height:13px;width:90%;margin-bottom:8px;"></div>
+                    <div class="sk" style="height:11px;width:55%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load More -->
+    <button class="load-more-btn" id="loadMoreBtn" onclick="loadMore()">
+        <i class="fa-solid fa-chevron-down"></i> Load More
+    </button>
+
+    <div style="height:20px;"></div>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav">
+    <div class="nav-inner">
+        <button class="nav-item" onclick="window.location.href='home.html'">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='search.html'">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span>Search</span>
+        </button>
+        <button class="nav-item go-live" id="goLiveNav" style="display:none;" onclick="window.location.href='create-stream.html'">
+            <div class="go-live-icon">
+                <i class="fa-solid fa-microphone-lines"></i>
+            </div>
+            <span>Go Live</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='messages.html'">
+            <i class="fa-solid fa-comment-dots"></i>
+            <span>Messages</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='profile.html'">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </button>
+    </div>
+</nav>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+
+<script>
+// ========== FIREBASE ==========
+const firebaseConfig = {
+    apiKey: "AIzaSyATqi4oZTu5j5ZNJKN6dBRCN64c_zfzwVs",
+  authDomain: "ooooo-a0f87.firebaseapp.com",
+  projectId: "ooooo-a0f87",
+  storageBucket: "ooooo-a0f87.firebasestorage.app",
+  messagingSenderId: "427620508727",
+  appId: "1:427620508727:web:360997dac7362780940bb2"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+// ========== STATE ==========
+let currentUser      = null;
+let currentUserData  = null;
+let allNotifs        = [];
+let currentFilter    = 'all';
+let lastDoc          = null;
+let hasMore          = false;
+const PAGE_SIZE      = 20;
+let unsubscribeNotifs = null;
+
+// ========== NOTIFICATION CONFIG ==========
+const NOTIF_CONFIG = {
+    follow: {
+        icon:      'fa-user-plus',
+        tagClass:  'follow',
+        tagLabel:  'Follow',
+        badgeColor:'follow',
+        color:     '#4DA3FF',
+        bg:        'rgba(77,163,255,0.15)',
+    },
+    gift: {
+        icon:      'fa-gift',
+        tagClass:  'gift',
+        tagLabel:  'Gift',
+        badgeColor:'gift',
+        color:     '#FF4D8D',
+        bg:        'rgba(255,77,141,0.15)',
+    },
+    live: {
+        icon:      'fa-tower-broadcast',
+        tagClass:  'live',
+        tagLabel:  'Live',
+        badgeColor:'live',
+        color:     '#FF3B30',
+        bg:        'rgba(255,59,48,0.15)',
+    },
+    system: {
+        icon:      'fa-bullhorn',
+        tagClass:  'system',
+        tagLabel:  'System',
+        badgeColor:'system',
+        color:     '#A855F7',
+        bg:        'rgba(168,85,247,0.15)',
+    },
+    coin: {
+        icon:      'fa-coins',
+        tagClass:  'coin',
+        tagLabel:  'Coins',
+        badgeColor:'coin',
+        color:     '#FBBF24',
+        bg:        'rgba(251,191,36,0.15)',
+    },
+    payout: {
+        icon:      'fa-sack-dollar',
+        tagClass:  'payout',
+        tagLabel:  'Payout',
+        badgeColor:'payout',
+        color:     '#34D399',
+        bg:        'rgba(52,211,153,0.15)',
+    },
+    reminder: {
+        icon:      'fa-clock',
+        tagClass:  'follow',
+        tagLabel:  'Reminder',
+        badgeColor:'reminder',
+        color:     '#4DA3FF',
+        bg:        'rgba(77,163,255,0.15)',
+    },
+    mention: {
+        icon:      'fa-at',
+        tagClass:  'gift',
+        tagLabel:  'Mention',
+        badgeColor:'mention',
+        color:     '#FF4D8D',
+        bg:        'rgba(255,77,141,0.15)',
+    },
+};
+
+// ========== AUTH ==========
+auth.onAuthStateChanged(async (user) => {
+    if (!user) { window.location.href = 'index.html'; return; }
+    currentUser = user;
+
+    try {
+        const uDoc = await db.collection('users').doc(user.uid).get();
+        if (uDoc.exists) {
+            currentUserData = uDoc.data();
+            if (currentUserData.role === 'streamer') {
+                document.getElementById('goLiveNav').style.display = 'flex';
+            }
+        }
+
+        loadNotificationSettings();
+        subscribeToNotifications();
+        setupScrollHeader();
+
+    } catch(err) {
+        console.error('Notifications init error:', err);
+        showToast('Failed to load notifications', 'error');
+    }
+});
+
+// ========== REAL-TIME SUBSCRIPTION ==========
+function subscribeToNotifications() {
+    if (unsubscribeNotifs) unsubscribeNotifs();
+
+    unsubscribeNotifs = db.collection('notifications')
+        .where('userId', '==', currentUser.uid)
+        .orderBy('createdAt', 'desc')
+        .limit(PAGE_SIZE)
+        .onSnapshot((snapshot) => {
+            if (!snapshot.empty) {
+                lastDoc = snapshot.docs[snapshot.docs.length - 1];
+                hasMore = snapshot.docs.length === PAGE_SIZE;
+            }
+
+            allNotifs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            processNotifications();
+
+            // Hide skeleton
+            const sk = document.getElementById('skeletonLoader');
+            if (sk) sk.remove();
+
+        }, (err) => {
+            console.error('Notif subscription error:', err);
+            document.getElementById('skeletonLoader')?.remove();
+            renderEmpty();
+        });
+}
+
+// ========== PROCESS NOTIFICATIONS ==========
+function processNotifications() {
+    // Count unread by type
+    const unreadAll    = allNotifs.filter(n => !n.read).length;
+    const unreadFollow = allNotifs.filter(n => !n.read && n.type === 'follow').length;
+    const unreadGift   = allNotifs.filter(n => !n.read && n.type === 'gift').length;
+    const unreadLive   = allNotifs.filter(n => !n.read && n.type === 'live').length;
+    const unreadSystem = allNotifs.filter(n => !n.read && ['system','coin','payout'].includes(n.type)).length;
+
+    // Update unread banner
+    const banner = document.getElementById('unreadBanner');
+    if (unreadAll > 0) {
+        banner.classList.add('show');
+        document.getElementById('unreadCountBadge').textContent = unreadAll;
+    } else {
+        banner.classList.remove('show');
+    }
+
+    // Update tab badges
+    updateBadge('badgeAll',    unreadAll);
+    updateBadge('badgeFollow', unreadFollow);
+    updateBadge('badgeGift',   unreadGift);
+    updateBadge('badgeLive',   unreadLive);
+    updateBadge('badgeSystem', unreadSystem);
+
+    // Update header subtitle
+    document.getElementById('headerSubtitle').textContent =
+        `${allNotifs.length} notification${allNotifs.length !== 1 ? 's' : ''}`;
+
+    // Load more button
+    document.getElementById('loadMoreBtn').classList.toggle('show', hasMore);
+
+    // Render
+    renderNotifications(currentFilter);
+}
+
+function updateBadge(elId, count) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    if (count > 0) {
+        el.textContent = count > 99 ? '99+' : count;
+        el.classList.add('show');
+    } else {
+        el.classList.remove('show');
+    }
+}
+
+// ========== RENDER NOTIFICATIONS ==========
+function renderNotifications(filter) {
+    const list = document.getElementById('notifList');
+
+    let filtered = allNotifs;
+    if (filter === 'follow') {
+        filtered = allNotifs.filter(n => n.type === 'follow');
+    } else if (filter === 'gift') {
+        filtered = allNotifs.filter(n => n.type === 'gift');
+    } else if (filter === 'live') {
+        filtered = allNotifs.filter(n => n.type === 'live' || n.type === 'reminder');
+    } else if (filter === 'system') {
+        filtered = allNotifs.filter(n => ['system','coin','payout'].includes(n.type));
+    }
+
+    list.innerHTML = '';
+
+    if (!filtered.length) {
+        renderEmpty();
+        return;
+    }
+
+    // Group by date
+    const groups = groupByDate(filtered);
+    let animIndex = 0;
+
+    Object.entries(groups).forEach(([dateLabel, notifs]) => {
+        // Date header
+        const hdr = document.createElement('div');
+        hdr.className = 'date-group-header';
+        hdr.textContent = dateLabel;
+        list.appendChild(hdr);
+
+        notifs.forEach(notif => {
+            const card = buildNotifCard(notif, animIndex);
+            list.appendChild(card);
+            animIndex++;
+        });
+    });
+}
+
+// ========== GROUP BY DATE ==========
+function groupByDate(notifs) {
+    const groups = {};
+    const now    = new Date();
+    const today  = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(today - 86400000);
+
+    notifs.forEach(n => {
+        const d = n.createdAt?.toDate ? n.createdAt.toDate() : new Date();
+        const day = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+        let label;
+        if (day.getTime() === today.getTime())     label = 'Today';
+        else if (day.getTime() === yesterday.getTime()) label = 'Yesterday';
+        else label = d.toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' });
+
+        if (!groups[label]) groups[label] = [];
+        groups[label].push(n);
+    });
+
+    return groups;
+}
+
+// ========== BUILD NOTIFICATION CARD ==========
+function buildNotifCard(notif, index) {
+    const config  = NOTIF_CONFIG[notif.type] || NOTIF_CONFIG.system;
+    const isUnread = !notif.read;
+    const timeAgo  = getTimeAgo(notif.createdAt);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'notif-card-wrap';
+
+    const card = document.createElement('div');
+    card.className = `notif-card ${isUnread ? 'unread' : 'read'}`;
+    card.style.animationDelay = `${index * 0.04}s`;
+
+    // Avatar
+    const initial   = (notif.actorName || 'C').charAt(0).toUpperCase();
+    const gradients = [
+        'linear-gradient(135deg,#4DA3FF,#A855F7)',
+        'linear-gradient(135deg,#FF4D8D,#FBBF24)',
+        'linear-gradient(135deg,#34D399,#4DA3FF)',
+        'linear-gradient(135deg,#A855F7,#FF4D8D)',
+    ];
+    const grad = gradients[initial.charCodeAt(0) % gradients.length];
+
+    const avatarHtml = notif.actorAvatar
+        ? `<img src="${notif.actorAvatar}" alt="">`
+        : `<div class="nav-placeholder" style="background:${grad};">${initial}</div>`;
+
+    // Action button
+    let actionBtn = '';
+    if (notif.type === 'live' && notif.streamId) {
+        actionBtn = `<button class="notif-action-btn join" onclick="event.stopPropagation(); joinStream('${notif.streamId}')">
+            <i class="fa-solid fa-headphones"></i> Join
+        </button>`;
+    } else if (notif.type === 'follow' && notif.actorId) {
+        actionBtn = `<button class="notif-action-btn follow" onclick="event.stopPropagation(); viewProfile('${notif.actorId}')">
+            <i class="fa-solid fa-user"></i> View
+        </button>`;
+    } else if (notif.type === 'payout') {
+        actionBtn = `<button class="notif-action-btn view" onclick="event.stopPropagation(); window.location.href='streamer-dashboard.html'">
+            <i class="fa-solid fa-chart-simple"></i> Dashboard
+        </button>`;
+    } else if (notif.type === 'gift') {
+        actionBtn = `<button class="notif-action-btn view" onclick="event.stopPropagation(); window.location.href='streamer-dashboard.html'">
+            <i class="fa-solid fa-gift"></i> View
+        </button>`;
+    }
+
+    card.innerHTML = `
+        ${isUnread ? '<div class="unread-indicator"></div>' : ''}
+        <div class="notif-avatar-wrap">
+            <div class="notif-avatar">${avatarHtml}</div>
+            <div class="notif-type-badge ${config.badgeColor}" style="background:${config.bg};">
+                <i class="fa-solid ${config.icon}" style="color:${config.color};"></i>
+            </div>
+        </div>
+        <div class="notif-content">
+            <div class="notif-message">${formatNotifMessage(notif)}</div>
+            <div class="notif-meta">
+                <span class="notif-time">
+                    <i class="fa-solid fa-clock"></i> ${timeAgo}
+                </span>
+                <span class="notif-tag ${config.tagClass}">${config.tagLabel}</span>
+                ${actionBtn}
+            </div>
+        </div>`;
+
+    // Click to mark as read and navigate
+    card.onclick = () => handleNotifClick(notif);
+
+    wrap.appendChild(card);
+    return wrap;
+}
+
+// ========== FORMAT NOTIFICATION MESSAGE ==========
+function formatNotifMessage(notif) {
+    const actor = `<strong>${escapeHtml(notif.actorName || 'Someone')}</strong>`;
+
+    switch(notif.type) {
+        case 'follow':
+            return `${actor} started following you 🎉`;
+
+        case 'gift':
+            return `${actor} sent you <span class="accent">${escapeHtml(notif.giftName || 'a gift')}</span> ${notif.giftEmoji || '🎁'} — <strong>${notif.coins || 0} coins</strong>`;
+
+        case 'live':
+            return `${actor} is now <span class="accent">Live</span> 🔴 — ${escapeHtml(notif.streamTitle || 'Join now!')}`;
+
+        case 'reminder':
+            return `⏰ Stream reminder: <strong>${escapeHtml(notif.streamTitle || 'A stream')}</strong> starts soon!`;
+
+        case 'mention':
+            return `${actor} mentioned you in a chat`;
+
+        case 'coin':
+            return `✅ <strong>${notif.coins || 0} coins</strong> have been added to your wallet`;
+
+        case 'payout':
+            return `💸 Your payout of <strong>₦${formatCurrency(notif.amount || 0)}</strong> has been <span class="accent">${notif.status || 'processed'}</span>`;
+
+        case 'system':
+            return `<i class="fa-solid fa-bullhorn" style="color:#A855F7; margin-right:4px;"></i> ${escapeHtml(notif.message || 'System update')}`;
+
+        default:
+            return escapeHtml(notif.message || 'You have a new notification');
+    }
+}
+
+// ========== HANDLE NOTIFICATION CLICK ==========
+async function handleNotifClick(notif) {
+    // Mark as read
+    if (!notif.read) {
+        await markAsRead(notif.id);
+    }
+
+    // Navigate
+    if (notif.type === 'live' && notif.streamId) {
+        window.location.href = `stream-room.html?id=${notif.streamId}`;
+    } else if (notif.type === 'follow' && notif.actorId) {
+        window.location.href = `profile.html?uid=${notif.actorId}`;
+    } else if (notif.type === 'gift') {
+        window.location.href = 'streamer-dashboard.html';
+    } else if (notif.type === 'payout') {
+        window.location.href = 'streamer-dashboard.html';
+    } else if (notif.type === 'coin') {
+        window.location.href = 'wallet.html';
+    } else if (notif.type === 'reminder' && notif.streamId) {
+        window.location.href = `stream-room.html?id=${notif.streamId}`;
+    }
+}
+
+// ========== MARK AS READ ==========
+async function markAsRead(notifId) {
+    try {
+        await db.collection('notifications').doc(notifId).update({ read: true });
+    } catch(err) { console.error('Mark read error:', err); }
+}
+
+// ========== MARK ALL READ ==========
+async function markAllRead() {
+    const unread = allNotifs.filter(n => !n.read);
+    if (!unread.length) return;
+
+    try {
+        const batch = db.batch();
+        unread.forEach(n => {
+            const ref = db.collection('notifications').doc(n.id);
+            batch.update(ref, { read: true });
+        });
+        await batch.commit();
+        showToast('All notifications marked as read ✅', 'success');
+    } catch(err) {
+        console.error('Mark all read error:', err);
+        showToast('Failed to update notifications', 'error');
+    }
+}
+
+// ========== FILTER ==========
+function filterNotifs(filter, btn) {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = filter;
+    renderNotifications(filter);
+}
+
+// ========== LOAD MORE ==========
+async function loadMore() {
+    if (!lastDoc || !hasMore) return;
+
+    const btn = document.getElementById('loadMoreBtn');
+    btn.innerHTML = '<i class="fa-solid fa-rotate fa-spin"></i> Loading...';
+    btn.disabled = true;
+
+    try {
+        const snap = await db.collection('notifications')
+            .where('userId','==',currentUser.uid)
+            .orderBy('createdAt','desc')
+            .startAfter(lastDoc)
+            .limit(PAGE_SIZE)
+            .get();
+
+        if (!snap.empty) {
+            lastDoc = snap.docs[snap.docs.length - 1];
+            hasMore = snap.docs.length === PAGE_SIZE;
+            const newNotifs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            allNotifs = [...allNotifs, ...newNotifs];
+            renderNotifications(currentFilter);
+        } else {
+            hasMore = false;
+        }
+
+        btn.innerHTML = '<i class="fa-solid fa-chevron-down"></i> Load More';
+        btn.disabled = false;
+        btn.classList.toggle('show', hasMore);
+
+    } catch(err) {
+        console.error('Load more error:', err);
+        btn.innerHTML = '<i class="fa-solid fa-chevron-down"></i> Load More';
+        btn.disabled = false;
+        showToast('Failed to load more', 'error');
+    }
+}
+
+// ========== DELETE ALL READ ==========
+async function deleteAllRead() {
+    const read = allNotifs.filter(n => n.read);
+    if (!read.length) {
+        showToast('No read notifications to clear', 'info');
+        return;
+    }
+
+    try {
+        const batch = db.batch();
+        read.forEach(n => {
+            batch.delete(db.collection('notifications').doc(n.id));
+        });
+        await batch.commit();
+        showToast(`Cleared ${read.length} read notification${read.length > 1 ? 's' : ''} 🗑️`, 'success');
+    } catch(err) {
+        console.error('Delete read error:', err);
+        showToast('Failed to clear notifications', 'error');
+    }
+}
+
+// ========== EMPTY STATE ==========
+function renderEmpty() {
+    const list = document.getElementById('notifList');
+    const labels = {
+        all:    { title:'All Quiet!', text:'No notifications yet.\nWe\'ll alert you when something happens.' },
+        follow: { title:'No Follows Yet', text:'When someone follows you,\nyou\'ll see it here.' },
+        gift:   { title:'No Gifts Yet', text:'Go live and start receiving gifts\nfrom your fans!' },
+        live:   { title:'No Live Alerts', text:'Follow creators to get notified\nwhen they go live.' },
+        system: { title:'No System Alerts', text:'Platform updates and announcements\nwill appear here.' },
+    };
+
+    const cfg = labels[currentFilter] || labels.all;
+
+    list.innerHTML = `
+        <div class="empty-state">
+            <div class="empty-bell">
+                <i class="fa-solid fa-bell-slash" style="color:rgba(77,163,255,0.3);"></i>
+            </div>
+            <div class="empty-title">${cfg.title}</div>
+            <div class="empty-text">${cfg.text.replace(/\n/g,'<br>')}</div>
+        </div>`;
+}
+
+// ========== NOTIFICATION SETTINGS ==========
+function loadNotificationSettings() {
+    const settings = JSON.parse(localStorage.getItem('chaterra_notif_settings') || '{}');
+    ['Follow','Gift','Live','Reminder','Payout','System'].forEach(key => {
+        const el = document.getElementById(`sett${key}`);
+        if (el && settings[key.toLowerCase()] !== undefined) {
+            el.checked = settings[key.toLowerCase()];
+        }
+    });
+}
+
+function saveSetting(key, value) {
+    const settings = JSON.parse(localStorage.getItem('chaterra_notif_settings') || '{}');
+    settings[key] = value;
+    localStorage.setItem('chaterra_notif_settings', JSON.stringify(settings));
+    showToast(`${capitalize(key)} alerts ${value ? 'enabled' : 'disabled'}`, 'info');
+}
+
+function openSettings() {
+    document.getElementById('settingsOverlay').classList.add('open');
+}
+
+function closeSettings(e) {
+    if (e.target === document.getElementById('settingsOverlay')) {
+        document.getElementById('settingsOverlay').classList.remove('open');
+    }
+}
+
+// ========== NAVIGATION ==========
+function joinStream(id) {
+    window.location.href = `stream-room.html?id=${id}`;
+}
+
+function viewProfile(uid) {
+    window.location.href = `profile.html?uid=${uid}`;
+}
+
+function goBack() {
+    if (window.history.length > 1) window.history.back();
+    else window.location.href = 'home.html';
+}
+
+// ========== SCROLL HEADER ==========
+function setupScrollHeader() {
+    window.addEventListener('scroll', () => {
+        document.getElementById('topHeader')
+            .classList.toggle('scrolled', window.scrollY > 20);
+    });
+}
+
+// ========== TIME AGO ==========
+function getTimeAgo(ts) {
+    if (!ts) return 'Just now';
+    const d    = ts.toDate ? ts.toDate() : new Date();
+    const diff = Date.now() - d.getTime();
+    const mins = Math.floor(diff / 60000);
+    const hrs  = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+
+    if (diff < 60000)  return 'Just now';
+    if (mins < 60)     return `${mins}m ago`;
+    if (hrs < 24)      return `${hrs}h ago`;
+    if (days < 7)      return `${days}d ago`;
+    return d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+}
+
+// ========== UTILS ==========
+function capitalize(str) {
+    return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+}
+
+function formatCurrency(n) {
+    return parseInt(n || 0).toLocaleString('en-NG');
+}
+
+function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str || '';
+    return d.innerHTML;
+}
+
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    const icons = {
+        success:'fa-circle-check',
+        error:'fa-circle-xmark',
+        warning:'fa-triangle-exclamation',
+        info:'fa-circle-info'
+    };
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i> ${message}`;
+    container.appendChild(toast);
+    setTimeout(() => { if (toast.parentNode) toast.remove(); }, 4000);
+}
+
+// Cleanup on leave
+window.addEventListener('beforeunload', () => {
+    if (unsubscribeNotifs) unsubscribeNotifs();
+});
+</script>
+</body>
+</html>

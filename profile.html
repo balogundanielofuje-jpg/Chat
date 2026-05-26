@@ -1,0 +1,2106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chaterra — Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* ========== RESET & BASE ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Poppins', 'Inter', sans-serif;
+            background: #0B0F1A;
+            color: #FFFFFF;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
+
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(77,163,255,0.3); border-radius: 3px; }
+
+        /* ========== ANIMATED BG ========== */
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-glow .g {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.1;
+        }
+
+        .bg-glow .g1 {
+            width: 400px; height: 400px;
+            background: #A855F7;
+            top: -150px; right: -100px;
+            animation: gDrift1 14s ease-in-out infinite;
+        }
+
+        .bg-glow .g2 {
+            width: 350px; height: 350px;
+            background: #4DA3FF;
+            bottom: -100px; left: -80px;
+            animation: gDrift2 18s ease-in-out infinite;
+        }
+
+        .bg-glow .g3 {
+            width: 250px; height: 250px;
+            background: #FF4D8D;
+            top: 40%; right: 15%;
+            animation: gDrift3 10s ease-in-out infinite;
+        }
+
+        @keyframes gDrift1 {
+            0%,100% { transform: translate(0,0) scale(1); }
+            50% { transform: translate(-50px,60px) scale(1.1); }
+        }
+
+        @keyframes gDrift2 {
+            0%,100% { transform: translate(0,0); }
+            50% { transform: translate(50px,-40px) scale(1.1); }
+        }
+
+        @keyframes gDrift3 {
+            0%,100% { transform: translate(0,0) scale(1); }
+            50% { transform: translate(-30px,30px) scale(1.15); }
+        }
+
+        /* ========== CONTENT ========== */
+        .content {
+            position: relative;
+            z-index: 1;
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        /* ========== HEADER ========== */
+        .page-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(11,15,26,0.88);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(77,163,255,0.08);
+            padding: 14px 16px;
+        }
+
+        .header-inner {
+            max-width: 680px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .back-btn {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(26,36,56,0.7);
+            color: #A1A1AA;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .back-btn:hover { background: rgba(77,163,255,0.15); color: #4DA3FF; transform: translateX(-2px); }
+        .back-btn:active { transform: scale(0.9); }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-action-btn {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(26,36,56,0.7);
+            color: #A1A1AA;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .header-action-btn:hover { background: rgba(77,163,255,0.15); color: #4DA3FF; }
+        .header-action-btn:active { transform: scale(0.9); }
+
+        /* ========== PROFILE BANNER ========== */
+        .profile-banner {
+            width: 100%;
+            height: 140px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .banner-bg {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        .banner-placeholder {
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, #1A2438 0%, #121A2A 50%, #1A2438 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .banner-glow {
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(77,163,255,0.15), rgba(168,85,247,0.15), rgba(255,77,141,0.1));
+            position: absolute;
+            top: 0; left: 0;
+            animation: bannerShift 8s ease-in-out infinite;
+        }
+
+        @keyframes bannerShift {
+            0%,100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .banner-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 60%;
+            background: linear-gradient(180deg, transparent, rgba(11,15,26,0.95));
+        }
+
+        /* ========== PROFILE AVATAR SECTION ========== */
+        .profile-avatar-section {
+            padding: 0 20px;
+            margin-top: -50px;
+            position: relative;
+            z-index: 5;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            animation: fadeUp 0.6s ease;
+        }
+
+        .profile-avatar-wrap {
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 96px; height: 96px;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 3px solid #0B0F1A;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            transition: all 0.4s ease;
+        }
+
+        .profile-avatar:hover { transform: scale(1.04); }
+
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .profile-avatar .avatar-placeholder {
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        /* Live ring around avatar */
+        .live-ring {
+            position: absolute;
+            inset: -4px;
+            border-radius: 28px;
+            border: 2px solid #FF3B30;
+            animation: liveRing 1.5s ease-in-out infinite;
+            display: none;
+        }
+
+        .live-ring.active { display: block; }
+
+        @keyframes liveRing {
+            0%,100% { box-shadow: 0 0 0 0 rgba(255,59,48,0.5); }
+            50% { box-shadow: 0 0 0 8px rgba(255,59,48,0); }
+        }
+
+        .live-tag {
+            position: absolute;
+            bottom: -10px; left: 50%;
+            transform: translateX(-50%);
+            background: #FF3B30;
+            color: #FFFFFF;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            display: none;
+            white-space: nowrap;
+            animation: livePulse 2s ease-in-out infinite;
+        }
+
+        .live-tag.active { display: block; }
+
+        @keyframes livePulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(255,59,48,0.5); }
+            50% { box-shadow: 0 0 0 4px rgba(255,59,48,0); }
+        }
+
+        /* Profile action buttons */
+        .profile-action-btns {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            padding-bottom: 4px;
+        }
+
+        .edit-profile-btn {
+            padding: 10px 18px;
+            border-radius: 12px;
+            border: 1.5px solid rgba(77,163,255,0.3);
+            background: rgba(77,163,255,0.08);
+            color: #4DA3FF;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .edit-profile-btn:hover { background: rgba(77,163,255,0.15); border-color: #4DA3FF; transform: translateY(-2px); }
+        .edit-profile-btn:active { transform: scale(0.95); }
+
+        .follow-main-btn {
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            color: #FFFFFF;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .follow-main-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .follow-main-btn:hover::before { left: 100%; }
+        .follow-main-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(77,163,255,0.3); }
+        .follow-main-btn:active { transform: scale(0.95); }
+
+        .follow-main-btn.following {
+            background: rgba(52,211,153,0.12);
+            border: 1.5px solid rgba(52,211,153,0.3);
+            color: #34D399;
+        }
+
+        .message-btn {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            border: 1.5px solid rgba(77,163,255,0.2);
+            background: rgba(77,163,255,0.06);
+            color: #4DA3FF;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .message-btn:hover { background: rgba(77,163,255,0.15); border-color: #4DA3FF; transform: translateY(-2px); }
+        .message-btn:active { transform: scale(0.9); }
+
+        /* ========== PROFILE INFO ========== */
+        .profile-info {
+            padding: 16px 20px 0;
+            animation: fadeUp 0.7s ease;
+        }
+
+        .profile-name-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 4px;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .verified-badge {
+            width: 22px; height: 22px;
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            flex-shrink: 0;
+        }
+
+        .role-tag {
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .role-tag.streamer {
+            background: rgba(255,77,141,0.15);
+            color: #FF4D8D;
+            border: 1px solid rgba(255,77,141,0.2);
+        }
+
+        .role-tag.listener {
+            background: rgba(77,163,255,0.12);
+            color: #4DA3FF;
+            border: 1px solid rgba(77,163,255,0.2);
+        }
+
+        .profile-username {
+            font-size: 14px;
+            color: #A1A1AA;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .profile-username i { color: #4DA3FF; font-size: 12px; }
+
+        .profile-bio {
+            font-size: 14px;
+            color: #D1D5DB;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .profile-meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .profile-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            color: #A1A1AA;
+        }
+
+        .profile-meta-item i { color: #6B7280; font-size: 11px; }
+
+        /* ========== STATS ROW ========== */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 0 20px 20px;
+            animation: fadeUp 0.75s ease;
+        }
+
+        .stat-card {
+            background: rgba(18,26,42,0.6);
+            border: 1.5px solid rgba(77,163,255,0.08);
+            border-radius: 16px;
+            padding: 14px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(77,163,255,0.2);
+            background: rgba(26,36,56,0.6);
+            transform: translateY(-3px);
+        }
+
+        .stat-card:active { transform: scale(0.95); }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4DA3FF, #A855F7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        /* ========== STREAMER EARNINGS CARD ========== */
+        .earnings-card {
+            margin: 0 20px 20px;
+            background: linear-gradient(135deg, rgba(255,77,141,0.08), rgba(168,85,247,0.08));
+            border: 1.5px solid rgba(255,77,141,0.15);
+            border-radius: 20px;
+            padding: 18px;
+            display: none;
+            animation: fadeUp 0.8s ease;
+        }
+
+        .earnings-card.visible { display: block; }
+
+        .earnings-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .earnings-card-title {
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #FF4D8D;
+        }
+
+        .earnings-card-title i { font-size: 15px; }
+
+        .view-dashboard-btn {
+            font-size: 12px;
+            color: #4DA3FF;
+            background: none;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .view-dashboard-btn:hover { color: #A855F7; gap: 8px; }
+
+        .earnings-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .earning-item {
+            background: rgba(11,15,26,0.5);
+            border-radius: 12px;
+            padding: 12px 8px;
+            text-align: center;
+        }
+
+        .earning-value {
+            font-size: 16px;
+            font-weight: 800;
+            color: #FBBF24;
+            margin-bottom: 3px;
+        }
+
+        .earning-label {
+            font-size: 10px;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        /* ========== TABS ========== */
+        .profile-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid rgba(77,163,255,0.08);
+            margin: 0 0 0;
+            position: sticky;
+            top: 69px;
+            z-index: 50;
+            background: rgba(11,15,26,0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            animation: fadeIn 0.8s ease;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 14px 8px;
+            border: none;
+            background: transparent;
+            color: #6B7280;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .tab-btn i { font-size: 14px; }
+
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; left: 50%;
+            transform: translateX(-50%);
+            width: 0; height: 2px;
+            background: linear-gradient(90deg, #4DA3FF, #A855F7);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: #4DA3FF;
+        }
+
+        .tab-btn.active::after { width: 60%; }
+
+        .tab-btn:hover:not(.active) { color: #A1A1AA; }
+
+        /* ========== TAB CONTENT ========== */
+        .tab-content {
+            display: none;
+            animation: tabFade 0.4s ease;
+            padding: 16px 20px;
+        }
+
+        .tab-content.active { display: block; }
+
+        @keyframes tabFade {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== STREAM GRID (PAST STREAMS) ========== */
+        .streams-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .stream-thumb-card {
+            background: rgba(18,26,42,0.6);
+            border: 1.5px solid rgba(77,163,255,0.08);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            animation: cardAppear 0.5s ease backwards;
+        }
+
+        .stream-thumb-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(77,163,255,0.2);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+
+        .stream-thumb-card:active { transform: scale(0.97); }
+
+        @keyframes cardAppear {
+            from { opacity: 0; transform: translateY(16px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .stream-thumb-img {
+            width: 100%;
+            height: 100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stream-thumb-img img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .stream-thumb-card:hover .stream-thumb-img img { transform: scale(1.08); }
+
+        .stream-thumb-placeholder {
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: rgba(77,163,255,0.15);
+        }
+
+        .stream-thumb-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 40%, rgba(11,15,26,0.8) 100%);
+        }
+
+        .stream-thumb-badge {
+            position: absolute;
+            top: 6px; left: 6px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .stream-thumb-badge.live {
+            background: rgba(255,59,48,0.9);
+            animation: livePulse 2s ease-in-out infinite;
+        }
+
+        .stream-thumb-badge.ended {
+            background: rgba(107,114,128,0.8);
+        }
+
+        .stream-thumb-badge.scheduled {
+            background: rgba(77,163,255,0.85);
+        }
+
+        .stream-thumb-stats {
+            position: absolute;
+            bottom: 5px; right: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: rgba(255,255,255,0.9);
+            background: rgba(0,0,0,0.5);
+            padding: 2px 6px;
+            border-radius: 5px;
+        }
+
+        .stream-thumb-stats i { font-size: 9px; color: #4DA3FF; }
+
+        .stream-thumb-info {
+            padding: 10px;
+        }
+
+        .stream-thumb-title {
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .stream-thumb-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4px;
+        }
+
+        .stream-thumb-cat {
+            font-size: 10px;
+            color: #A855F7;
+            background: rgba(168,85,247,0.1);
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+
+        .stream-thumb-date {
+            font-size: 10px;
+            color: #6B7280;
+        }
+
+        /* ========== GIFTS TAB ========== */
+        .gift-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .gift-stat-card {
+            background: rgba(18,26,42,0.6);
+            border: 1.5px solid rgba(77,163,255,0.08);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .gift-stat-card:hover {
+            border-color: rgba(77,163,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .gift-stat-icon {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin: 0 auto 8px;
+        }
+
+        .gift-stat-value {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 2px;
+        }
+
+        .gift-stat-label {
+            font-size: 11px;
+            color: #6B7280;
+        }
+
+        /* ========== ACTIVITY FEED ========== */
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(77,163,255,0.06);
+            animation: cardAppear 0.4s ease backwards;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:last-child { border-bottom: none; }
+
+        .activity-icon {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.gift { background: rgba(255,77,141,0.12); color: #FF4D8D; }
+        .activity-icon.follow { background: rgba(77,163,255,0.12); color: #4DA3FF; }
+        .activity-icon.stream { background: rgba(168,85,247,0.12); color: #A855F7; }
+        .activity-icon.coin { background: rgba(251,191,36,0.12); color: #FBBF24; }
+
+        .activity-info { flex: 1; min-width: 0; }
+
+        .activity-text {
+            font-size: 13px;
+            line-height: 1.4;
+            margin-bottom: 3px;
+        }
+
+        .activity-text strong { color: #4DA3FF; }
+
+        .activity-time {
+            font-size: 11px;
+            color: #6B7280;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .activity-time i { font-size: 9px; }
+
+        /* ========== FOLLOWERS LIST ========== */
+        .followers-list { display: flex; flex-direction: column; gap: 10px; }
+
+        .follower-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(18,26,42,0.5);
+            border: 1.5px solid rgba(77,163,255,0.06);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: cardAppear 0.4s ease backwards;
+        }
+
+        .follower-card:hover {
+            background: rgba(26,36,56,0.6);
+            border-color: rgba(77,163,255,0.15);
+            transform: translateX(4px);
+        }
+
+        .follower-card:active { transform: scale(0.97); }
+
+        .follower-avatar {
+            width: 46px; height: 46px;
+            border-radius: 14px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .follower-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .follower-avatar .f-placeholder {
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .follower-info { flex: 1; min-width: 0; }
+        .follower-name { font-size: 14px; font-weight: 600; }
+        .follower-username { font-size: 12px; color: #A1A1AA; margin-top: 2px; }
+
+        .follower-role-tag {
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .follower-role-tag.streamer {
+            background: rgba(255,77,141,0.12);
+            color: #FF4D8D;
+        }
+
+        .follower-role-tag.listener {
+            background: rgba(77,163,255,0.1);
+            color: #4DA3FF;
+        }
+
+        /* ========== EMPTY STATE ========== */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 20px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            width: 72px; height: 72px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 16px;
+            animation: emptyFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes emptyFloat {
+            0%,100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .empty-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+        .empty-text { font-size: 13px; color: #6B7280; }
+
+        /* ========== SKELETON ========== */
+        .skeleton {
+            background: linear-gradient(90deg, #1A2438 25%, #243050 50%, #1A2438 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s ease-in-out infinite;
+            border-radius: 8px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* ========== TOAST ========== */
+        .toast-container {
+            position: fixed;
+            top: 20px; right: 16px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast {
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 320px;
+            animation: toastIn 0.4s ease, toastOut 0.4s ease 3.6s forwards;
+            backdrop-filter: blur(10px);
+        }
+
+        .toast.success { background: rgba(52,211,153,0.15); border: 1px solid rgba(52,211,153,0.3); color: #34D399; }
+        .toast.error { background: rgba(255,59,48,0.15); border: 1px solid rgba(255,59,48,0.3); color: #FF3B30; }
+        .toast.info { background: rgba(77,163,255,0.15); border: 1px solid rgba(77,163,255,0.3); color: #4DA3FF; }
+        .toast.warning { background: rgba(251,191,36,0.15); border: 1px solid rgba(251,191,36,0.3); color: #FBBF24; }
+
+        @keyframes toastIn { from { opacity: 0; transform: translateX(80px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes toastOut { to { opacity: 0; transform: translateX(80px); } }
+
+        /* ========== BOTTOM NAV ========== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0;
+            width: 100%;
+            z-index: 100;
+            background: rgba(11,15,26,0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(77,163,255,0.08);
+            padding: 8px 0;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+        }
+
+        .nav-inner {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 6px 12px;
+            border: none;
+            background: none;
+            color: #6B7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .nav-item i { font-size: 20px; transition: all 0.3s ease; }
+        .nav-item span { font-size: 10px; font-weight: 500; }
+
+        .nav-item.active { color: #4DA3FF; }
+        .nav-item.active i { transform: translateY(-2px); }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            top: -8px; left: 50%;
+            transform: translateX(-50%);
+            width: 20px; height: 3px;
+            background: #4DA3FF;
+            border-radius: 3px;
+        }
+
+        .nav-item.go-live .go-live-icon {
+            width: 48px; height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #FF3B30, #FF4D8D);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #FFFFFF;
+            margin-top: -20px;
+            box-shadow: 0 6px 24px rgba(255,59,48,0.35);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.go-live:hover .go-live-icon {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(255,59,48,0.5);
+        }
+
+        .nav-item.go-live span { color: #FF4D8D; margin-top: 2px; }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 360px) {
+            .profile-avatar { width: 80px; height: 80px; border-radius: 20px; }
+            .profile-name { font-size: 18px; }
+            .stat-value { font-size: 16px; }
+            .stats-row { gap: 8px; }
+            .streams-grid { grid-template-columns: 1fr; }
+            .gift-stats-grid { grid-template-columns: 1fr; }
+            .tab-btn { font-size: 11px; padding: 12px 4px; }
+            .tab-btn i { font-size: 12px; }
+            .tab-btn span { display: none; }
+            .earning-value { font-size: 14px; }
+            .toast { max-width: calc(100vw - 32px); }
+            .toast-container { right: 10px; left: 10px; }
+        }
+
+        @media (max-width: 400px) {
+            .profile-banner { height: 120px; }
+            .profile-avatar-section { padding: 0 16px; margin-top: -44px; }
+            .profile-info { padding: 14px 16px 0; }
+            .stats-row { margin: 0 16px 16px; }
+            .earnings-card { margin: 0 16px 16px; }
+            .tab-content { padding: 14px 16px; }
+        }
+
+        @media (min-width: 481px) {
+            .streams-grid { grid-template-columns: repeat(3, 1fr); }
+            .profile-banner { height: 160px; }
+        }
+
+        @media (min-width: 600px) {
+            .profile-banner { height: 180px; }
+            .profile-avatar { width: 108px; height: 108px; }
+            .streams-grid { grid-template-columns: repeat(3, 1fr); }
+            .gift-stats-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        @media (min-width: 768px) {
+            body { padding-bottom: 40px; }
+            .bottom-nav { display: none; }
+            .profile-tabs { top: 69px; }
+            .streams-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-glow">
+    <div class="g g1"></div>
+    <div class="g g2"></div>
+    <div class="g g3"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Content -->
+<div class="content">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div class="header-inner">
+            <button class="back-btn" id="backBtn" onclick="goBack()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <span class="header-title" id="headerTitle">Profile</span>
+            <div class="header-actions">
+                <button class="header-action-btn" onclick="shareProfile()" title="Share">
+                    <i class="fa-solid fa-share-nodes"></i>
+                </button>
+                <button class="header-action-btn" id="moreBtn" onclick="showMoreOptions()">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Banner -->
+    <div class="profile-banner">
+        <div class="banner-placeholder">
+            <div class="banner-glow"></div>
+        </div>
+        <div class="banner-overlay"></div>
+    </div>
+
+    <!-- Avatar + Action Buttons -->
+    <div class="profile-avatar-section">
+        <div class="profile-avatar-wrap">
+            <div class="profile-avatar" id="profileAvatar">
+                <div class="avatar-placeholder" id="avatarInitial">U</div>
+            </div>
+            <div class="live-ring" id="liveRing"></div>
+            <div class="live-tag" id="liveTag">● LIVE</div>
+        </div>
+
+        <!-- Buttons: shown based on own vs other profile -->
+        <div class="profile-action-btns" id="actionBtns">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+
+    <!-- Profile Info -->
+    <div class="profile-info">
+        <!-- Skeleton while loading -->
+        <div id="profileSkeleton">
+            <div class="skeleton" style="height:24px; width:60%; margin-bottom:8px;"></div>
+            <div class="skeleton" style="height:14px; width:40%; margin-bottom:10px;"></div>
+            <div class="skeleton" style="height:14px; width:90%; margin-bottom:6px;"></div>
+            <div class="skeleton" style="height:14px; width:70%; margin-bottom:16px;"></div>
+        </div>
+
+        <div id="profileInfoContent" style="display:none;">
+            <div class="profile-name-row" id="profileNameRow"></div>
+            <div class="profile-username" id="profileUsername"></div>
+            <div class="profile-bio" id="profileBio"></div>
+            <div class="profile-meta-row" id="profileMeta"></div>
+        </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row" id="statsRow">
+        <div class="stat-card" onclick="switchTab('followers')">
+            <div class="stat-value" id="statFollowers">—</div>
+            <div class="stat-label">Followers</div>
+        </div>
+        <div class="stat-card" onclick="switchTab('following')">
+            <div class="stat-value" id="statFollowing">—</div>
+            <div class="stat-label">Following</div>
+        </div>
+        <div class="stat-card" onclick="switchTab('streams')">
+            <div class="stat-value" id="statStreams">—</div>
+            <div class="stat-label">Streams</div>
+        </div>
+    </div>
+
+    <!-- Earnings Card (streamers only) -->
+    <div class="earnings-card" id="earningsCard">
+        <div class="earnings-card-header">
+            <div class="earnings-card-title">
+                <i class="fa-solid fa-sack-dollar"></i> Earnings Overview
+            </div>
+            <button class="view-dashboard-btn" onclick="window.location.href='streamer-dashboard.html'">
+                Dashboard <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+        <div class="earnings-grid">
+            <div class="earning-item">
+                <div class="earning-value" id="earnTotal">₦0</div>
+                <div class="earning-label">Total Earned</div>
+            </div>
+            <div class="earning-item">
+                <div class="earning-value" id="earnGifts">0</div>
+                <div class="earning-label">Gifts Received</div>
+            </div>
+            <div class="earning-item">
+                <div class="earning-value" id="earnStreams">0</div>
+                <div class="earning-label">Total Streams</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="profile-tabs" id="profileTabs">
+        <button class="tab-btn active" id="tab-streams" onclick="switchTab('streams')">
+            <i class="fa-solid fa-tower-broadcast"></i>
+            <span>Streams</span>
+        </button>
+        <button class="tab-btn" id="tab-gifts" onclick="switchTab('gifts')">
+            <i class="fa-solid fa-gift"></i>
+            <span>Gifts</span>
+        </button>
+        <button class="tab-btn" id="tab-followers" onclick="switchTab('followers')">
+            <i class="fa-solid fa-user-group"></i>
+            <span>Followers</span>
+        </button>
+        <button class="tab-btn" id="tab-following" onclick="switchTab('following')">
+            <i class="fa-solid fa-user-check"></i>
+            <span>Following</span>
+        </button>
+        <button class="tab-btn" id="tab-activity" onclick="switchTab('activity')">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>Activity</span>
+        </button>
+    </div>
+
+    <!-- ===== STREAMS TAB ===== -->
+    <div class="tab-content active" id="tabStreams">
+        <div class="streams-grid" id="streamsGrid">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+
+    <!-- ===== GIFTS TAB ===== -->
+    <div class="tab-content" id="tabGifts">
+        <div class="gift-stats-grid">
+            <div class="gift-stat-card">
+                <div class="gift-stat-icon" style="background:rgba(255,77,141,0.12); color:#FF4D8D;">
+                    <i class="fa-solid fa-gift"></i>
+                </div>
+                <div class="gift-stat-value" id="gsSent" style="color:#FF4D8D;">0</div>
+                <div class="gift-stat-label">Gifts Sent</div>
+            </div>
+            <div class="gift-stat-card">
+                <div class="gift-stat-icon" style="background:rgba(251,191,36,0.12); color:#FBBF24;">
+                    <i class="fa-solid fa-coins"></i>
+                </div>
+                <div class="gift-stat-value" id="gsCoins" style="color:#FBBF24;">0</div>
+                <div class="gift-stat-label">Coins Spent</div>
+            </div>
+            <div class="gift-stat-card">
+                <div class="gift-stat-icon" style="background:rgba(52,211,153,0.12); color:#34D399;">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <div class="gift-stat-value" id="gsReceived" style="color:#34D399;">0</div>
+                <div class="gift-stat-label">Gifts Received</div>
+            </div>
+            <div class="gift-stat-card">
+                <div class="gift-stat-icon" style="background:rgba(168,85,247,0.12); color:#A855F7;">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <div class="gift-stat-value" id="gsFavorite" style="color:#A855F7;">—</div>
+                <div class="gift-stat-label">Fav Gift</div>
+            </div>
+        </div>
+
+        <div id="giftActivityList">
+            <div style="text-align:center; padding:24px; color:#6B7280;">
+                <i class="fa-solid fa-rotate fa-spin" style="color:#4DA3FF; margin-bottom:8px; font-size:20px; display:block;"></i>
+                Loading gift activity...
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FOLLOWERS TAB ===== -->
+    <div class="tab-content" id="tabFollowers">
+        <div class="followers-list" id="followersList">
+            <div style="text-align:center; padding:24px; color:#6B7280;">
+                <i class="fa-solid fa-rotate fa-spin" style="color:#4DA3FF; margin-bottom:8px; font-size:20px; display:block;"></i>
+                Loading followers...
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FOLLOWING TAB ===== -->
+    <div class="tab-content" id="tabFollowing">
+        <div class="followers-list" id="followingList">
+            <div style="text-align:center; padding:24px; color:#6B7280;">
+                <i class="fa-solid fa-rotate fa-spin" style="color:#4DA3FF; margin-bottom:8px; font-size:20px; display:block;"></i>
+                Loading following...
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ACTIVITY TAB ===== -->
+    <div class="tab-content" id="tabActivity">
+        <div id="activityList">
+            <div style="text-align:center; padding:24px; color:#6B7280;">
+                <i class="fa-solid fa-rotate fa-spin" style="color:#4DA3FF; margin-bottom:8px; font-size:20px; display:block;"></i>
+                Loading activity...
+            </div>
+        </div>
+    </div>
+
+    <!-- Spacer -->
+    <div style="height:20px;"></div>
+
+</div>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav">
+    <div class="nav-inner">
+        <button class="nav-item" onclick="window.location.href='home.html'">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='search.html'">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span>Search</span>
+        </button>
+        <button class="nav-item go-live" id="goLiveNav" style="display:none;" onclick="window.location.href='create-stream.html'">
+            <div class="go-live-icon">
+                <i class="fa-solid fa-microphone-lines"></i>
+            </div>
+            <span>Go Live</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='messages.html'">
+            <i class="fa-solid fa-comment-dots"></i>
+            <span>Messages</span>
+        </button>
+        <button class="nav-item active" onclick="window.location.href='profile.html'">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </button>
+    </div>
+</nav>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+
+<script>
+// ========== FIREBASE ==========
+const firebaseConfig = {
+    apiKey: "AIzaSyATqi4oZTu5j5ZNJKN6dBRCN64c_zfzwVs",
+  authDomain: "ooooo-a0f87.firebaseapp.com",
+  projectId: "ooooo-a0f87",
+  storageBucket: "ooooo-a0f87.firebasestorage.app",
+  messagingSenderId: "427620508727",
+  appId: "1:427620508727:web:360997dac7362780940bb2"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+// ========== STATE ==========
+const params       = new URLSearchParams(window.location.search);
+const TARGET_UID   = params.get('uid');
+
+let currentUser     = null;
+let currentUserData = null;
+let profileData     = null;
+let isOwnProfile    = false;
+let isFollowing     = false;
+let activeTab       = 'streams';
+let loadedTabs      = new Set();
+
+// ========== AUTH ==========
+auth.onAuthStateChanged(async (user) => {
+    if (!user) { window.location.href = 'index.html'; return; }
+    currentUser = user;
+
+    try {
+        const uDoc = await db.collection('users').doc(user.uid).get();
+        if (uDoc.exists) currentUserData = uDoc.data();
+
+        const profileUid = TARGET_UID || user.uid;
+        isOwnProfile = profileUid === user.uid;
+
+        await loadProfile(profileUid);
+        setupUI();
+        loadTab('streams');
+    } catch(err) {
+        console.error('Profile init error:', err);
+        showToast('Failed to load profile', 'error');
+    }
+});
+
+// ========== LOAD PROFILE ==========
+async function loadProfile(uid) {
+    try {
+        const doc = await db.collection('users').doc(uid).get();
+        if (!doc.exists) {
+            showToast('User not found', 'error');
+            return;
+        }
+
+        profileData = { uid, ...doc.data() };
+
+        // Avatar
+        const avatarEl = document.getElementById('profileAvatar');
+        if (profileData.avatar && (profileData.avatar.startsWith('data:') || profileData.avatar.startsWith('http'))) {
+            avatarEl.innerHTML = `<img src="${profileData.avatar}" alt="${profileData.fullName}">`;
+        } else {
+            const initial = (profileData.fullName || 'U').charAt(0).toUpperCase();
+            document.getElementById('avatarInitial').textContent = initial;
+        }
+
+        // Live ring
+        if (profileData.isLive) {
+            document.getElementById('liveRing').classList.add('active');
+            document.getElementById('liveTag').classList.add('active');
+        }
+
+        // Header title
+        document.getElementById('headerTitle').textContent =
+            isOwnProfile ? 'My Profile' : `@${profileData.username || 'User'}`;
+        document.title = `Chaterra — ${profileData.fullName || 'Profile'}`;
+
+        // Build info
+        buildProfileInfo();
+        buildStats();
+
+        // Check following (not own profile)
+        if (!isOwnProfile) await checkFollowing(uid);
+
+    } catch(err) {
+        console.error('Load profile error:', err);
+        showToast('Could not load profile', 'error');
+    }
+}
+
+// ========== BUILD PROFILE INFO ==========
+function buildProfileInfo() {
+    document.getElementById('profileSkeleton').style.display = 'none';
+    const content = document.getElementById('profileInfoContent');
+    content.style.display = 'block';
+
+    // Name row
+    const nameRow = document.getElementById('profileNameRow');
+    nameRow.innerHTML = `
+        <span class="profile-name">${escapeHtml(profileData.fullName || 'User')}</span>
+        ${profileData.isVerified ? '<div class="verified-badge"><i class="fa-solid fa-check"></i></div>' : ''}
+        <span class="role-tag ${profileData.role}">${capitalize(profileData.role || 'listener')}</span>
+    `;
+
+    // Username
+    document.getElementById('profileUsername').innerHTML = `
+        <i class="fa-solid fa-at"></i>
+        ${escapeHtml(profileData.username || 'unknown')}
+        ${profileData.country ? ` · <i class="fa-solid fa-earth-africa"></i> ${profileData.country}` : ''}
+    `;
+
+    // Bio
+    const bioEl = document.getElementById('profileBio');
+    bioEl.textContent = profileData.bio || (isOwnProfile ? 'Add a bio to tell others about yourself...' : 'No bio yet.');
+    if (!profileData.bio) bioEl.style.color = '#6B7280';
+
+    // Meta
+    const metaEl = document.getElementById('profileMeta');
+    const joinDate = profileData.createdAt?.toDate
+        ? profileData.createdAt.toDate()
+        : new Date();
+    const joinStr = joinDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+    metaEl.innerHTML = `
+        <div class="profile-meta-item">
+            <i class="fa-solid fa-calendar-days"></i>
+            Joined ${joinStr}
+        </div>
+        ${profileData.isLive ? `
+        <div class="profile-meta-item" style="color:#FF3B30;">
+            <i class="fa-solid fa-tower-broadcast" style="color:#FF3B30;"></i>
+            Live now!
+        </div>` : ''}
+    `;
+
+    // Earnings (own streamer profile)
+    if (isOwnProfile && profileData.role === 'streamer') {
+        document.getElementById('earningsCard').classList.add('visible');
+        document.getElementById('earnTotal').textContent =
+            `₦${formatCurrency(profileData.totalEarnings || 0)}`;
+        document.getElementById('earnGifts').textContent =
+            formatCount(profileData.totalGiftsReceived || 0);
+    }
+}
+
+// ========== BUILD STATS ==========
+function buildStats() {
+    document.getElementById('statFollowers').textContent =
+        formatCount(profileData.followers || 0);
+    document.getElementById('statFollowing').textContent =
+        formatCount(profileData.following || 0);
+
+    // Stream count loaded separately
+    db.collection('streams')
+        .where('hostId', '==', profileData.uid)
+        .get()
+        .then(snap => {
+            document.getElementById('statStreams').textContent = snap.size;
+            if (isOwnProfile && profileData.role === 'streamer') {
+                document.getElementById('earnStreams').textContent = snap.size;
+            }
+        }).catch(console.error);
+}
+
+// ========== SETUP UI ==========
+function setupUI() {
+    const actionBtns = document.getElementById('actionBtns');
+
+    if (isOwnProfile) {
+        // Own profile: show edit button
+        actionBtns.innerHTML = `
+            <button class="edit-profile-btn" onclick="window.location.href='edit-profile.html'">
+                <i class="fa-solid fa-pen"></i> Edit Profile
+            </button>`;
+
+        // Show go live nav for streamers
+        if (profileData?.role === 'streamer') {
+            document.getElementById('goLiveNav').style.display = 'flex';
+        }
+
+        // Hide back btn on own profile (no ?uid param)
+        if (!TARGET_UID) {
+            document.getElementById('backBtn').style.visibility = 'hidden';
+        }
+    } else {
+        // Other's profile: follow + message buttons
+        updateFollowBtn();
+        actionBtns.innerHTML = `
+            <button class="message-btn" onclick="sendMessage()">
+                <i class="fa-solid fa-comment-dots"></i>
+            </button>`;
+        // Insert follow button dynamically
+        const followBtn = document.createElement('button');
+        followBtn.id = 'followMainBtn';
+        followBtn.className = `follow-main-btn${isFollowing ? ' following' : ''}`;
+        followBtn.onclick = toggleFollow;
+        updateFollowBtnEl(followBtn);
+        actionBtns.insertBefore(followBtn, actionBtns.firstChild);
+    }
+}
+
+// ========== FOLLOW SYSTEM ==========
+async function checkFollowing(uid) {
+    try {
+        const fDoc = await db.collection('follows')
+            .doc(`${currentUser.uid}_${uid}`).get();
+        isFollowing = fDoc.exists;
+    } catch(err) { console.error(err); }
+}
+
+async function toggleFollow() {
+    if (!profileData) return;
+    const btn = document.getElementById('followMainBtn');
+    if (btn) btn.disabled = true;
+
+    try {
+        const fId = `${currentUser.uid}_${profileData.uid}`;
+
+        if (isFollowing) {
+            await db.collection('follows').doc(fId).delete();
+            await db.collection('users').doc(profileData.uid).update({
+                followers: firebase.firestore.FieldValue.increment(-1)
+            });
+            await db.collection('users').doc(currentUser.uid).update({
+                following: firebase.firestore.FieldValue.increment(-1)
+            });
+            profileData.followers = Math.max(0, (profileData.followers || 1) - 1);
+            isFollowing = false;
+            showToast('Unfollowed', 'info');
+        } else {
+            await db.collection('follows').doc(fId).set({
+                followerId:  currentUser.uid,
+                followingId: profileData.uid,
+                createdAt:   firebase.firestore.FieldValue.serverTimestamp()
+            });
+            await db.collection('users').doc(profileData.uid).update({
+                followers: firebase.firestore.FieldValue.increment(1)
+            });
+            await db.collection('users').doc(currentUser.uid).update({
+                following: firebase.firestore.FieldValue.increment(1)
+            });
+            profileData.followers = (profileData.followers || 0) + 1;
+            isFollowing = true;
+            showToast(`Following ${profileData.fullName}! 🎉`, 'success');
+
+            // Notify
+            await db.collection('notifications').add({
+                userId:    profileData.uid,
+                type:      'follow',
+                actorId:   currentUser.uid,
+                actorName: currentUserData?.fullName || 'Someone',
+                actorAvatar: currentUserData?.avatar || '',
+                message:   `${currentUserData?.fullName || 'Someone'} started following you`,
+                read:      false,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+
+        document.getElementById('statFollowers').textContent =
+            formatCount(profileData.followers);
+
+        if (btn) {
+            updateFollowBtnEl(btn);
+            btn.className = `follow-main-btn${isFollowing ? ' following' : ''}`;
+        }
+    } catch(err) {
+        console.error(err);
+        showToast('Action failed', 'error');
+    } finally {
+        if (btn) btn.disabled = false;
+    }
+}
+
+function updateFollowBtn() {}
+
+function updateFollowBtnEl(btn) {
+    if (isFollowing) {
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Following';
+    } else {
+        btn.innerHTML = '<i class="fa-solid fa-plus"></i> Follow';
+    }
+}
+
+// ========== TAB SWITCHING ==========
+function switchTab(tab) {
+    // Deactivate all
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+    // Activate selected
+    document.getElementById(`tab-${tab}`)?.classList.add('active');
+    const contentId = 'tab' + capitalize(tab);
+    document.getElementById(contentId)?.classList.add('active');
+
+    activeTab = tab;
+
+    if (!loadedTabs.has(tab)) {
+        loadedTabs.add(tab);
+        loadTab(tab);
+    }
+}
+
+// ========== LOAD TAB DATA ==========
+function loadTab(tab) {
+    switch(tab) {
+        case 'streams':    loadStreams();    break;
+        case 'gifts':      loadGifts();     break;
+        case 'followers':  loadFollowers(); break;
+        case 'following':  loadFollowing(); break;
+        case 'activity':   loadActivity();  break;
+    }
+}
+
+// ========== LOAD STREAMS ==========
+async function loadStreams() {
+    const grid = document.getElementById('streamsGrid');
+    try {
+        const snap = await db.collection('streams')
+            .where('hostId', '==', profileData.uid)
+            .orderBy('createdAt', 'desc')
+            .limit(18)
+            .get();
+
+        grid.innerHTML = '';
+
+        if (snap.empty) {
+            grid.innerHTML = `
+                <div class="empty-state" style="grid-column:1/-1;">
+                    <div class="empty-icon" style="background:rgba(168,85,247,0.1); color:#A855F7;">
+                        <i class="fa-solid fa-tower-broadcast"></i>
+                    </div>
+                    <div class="empty-title">No Streams Yet</div>
+                    <div class="empty-text">${isOwnProfile ? 'Start your first live stream!' : 'This user hasn\'t streamed yet.'}</div>
+                </div>`;
+            return;
+        }
+
+        snap.forEach((doc, i) => {
+            const s = doc.data();
+            grid.appendChild(createStreamThumb(doc.id, s, i));
+        });
+    } catch(err) {
+        console.error(err);
+        grid.innerHTML = `
+            <div class="empty-state" style="grid-column:1/-1;">
+                <div class="empty-icon" style="background:rgba(255,59,48,0.1); color:#FF3B30;">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                </div>
+                <div class="empty-title">Failed to Load</div>
+                <div class="empty-text">Could not load streams. Please try again.</div>
+            </div>`;
+    }
+}
+
+function createStreamThumb(id, s, index) {
+    const card = document.createElement('div');
+    card.className = 'stream-thumb-card';
+    card.style.animationDelay = `${index * 0.06}s`;
+    card.onclick = () => {
+        if (s.status === 'live') {
+            window.location.href = `stream-room.html?id=${id}`;
+        } else if (s.status === 'scheduled') {
+            showToast('Stream not started yet', 'info');
+        }
+    };
+
+    const imgHtml = s.coverImage
+        ? `<img src="${s.coverImage}" alt="" loading="lazy">`
+        : `<div class="stream-thumb-placeholder" style="background:${s.coverGradient || 'linear-gradient(135deg,#1A2438,#121A2A)'};">
+               <i class="fa-solid fa-headphones"></i>
+           </div>`;
+
+    const badgeClass = s.status === 'live' ? 'live' : s.status === 'scheduled' ? 'scheduled' : 'ended';
+    const badgeText  = s.status === 'live' ? '🔴 LIVE' : s.status === 'scheduled' ? '⏰ Soon' : '✓ Ended';
+
+    const date = s.createdAt?.toDate
+        ? s.createdAt.toDate().toLocaleDateString('en-US', { month:'short', day:'numeric' })
+        : '';
+
+    card.innerHTML = `
+        <div class="stream-thumb-img">
+            ${imgHtml}
+            <div class="stream-thumb-overlay"></div>
+            <div class="stream-thumb-badge ${badgeClass}">${badgeText}</div>
+            <div class="stream-thumb-stats">
+                <i class="fa-solid fa-headphones"></i> ${formatCount(s.listenerCount || 0)}
+            </div>
+        </div>
+        <div class="stream-thumb-info">
+            <div class="stream-thumb-title">${escapeHtml(s.title || 'Untitled')}</div>
+            <div class="stream-thumb-meta">
+                <span class="stream-thumb-cat">${escapeHtml(s.category || 'General')}</span>
+                <span class="stream-thumb-date">${date}</span>
+            </div>
+        </div>`;
+    return card;
+}
+
+// ========== LOAD GIFTS ==========
+async function loadGifts() {
+    try {
+        // Sent gifts
+        const sentSnap = await db.collection('transactions')
+            .where('senderId', '==', profileData.uid)
+            .where('type', '==', 'gift_sent')
+            .orderBy('createdAt', 'desc')
+            .limit(20)
+            .get();
+
+        let totalSent  = 0;
+        let totalCoins = 0;
+        const giftCounts = {};
+
+        sentSnap.forEach(doc => {
+            const d = doc.data();
+            totalSent  += (d.qty || 1);
+            totalCoins += (d.coinsSpent || 0);
+            giftCounts[d.giftName] = (giftCounts[d.giftName] || 0) + (d.qty || 1);
+        });
+
+        const favGift = Object.keys(giftCounts).sort((a,b) => giftCounts[b] - giftCounts[a])[0];
+
+        document.getElementById('gsSent').textContent    = formatCount(totalSent);
+        document.getElementById('gsCoins').textContent   = formatCount(totalCoins);
+        document.getElementById('gsReceived').textContent = formatCount(profileData.totalGiftsReceived || 0);
+        document.getElementById('gsFavorite').textContent = favGift || '—';
+
+        // Activity list
+        const listEl = document.getElementById('giftActivityList');
+        listEl.innerHTML = '';
+
+        if (sentSnap.empty) {
+            listEl.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon" style="background:rgba(255,77,141,0.1); color:#FF4D8D;">
+                        <i class="fa-solid fa-gift"></i>
+                    </div>
+                    <div class="empty-title">No Gifts Yet</div>
+                    <div class="empty-text">${isOwnProfile ? 'Send your first gift!' : 'This user hasn\'t sent any gifts.'}</div>
+                </div>`;
+            return;
+        }
+
+        sentSnap.forEach((doc, i) => {
+            const d = doc.data();
+            const item = document.createElement('div');
+            item.className = 'activity-item';
+            item.style.animationDelay = `${i * 0.05}s`;
+
+            const date = d.createdAt?.toDate
+                ? d.createdAt.toDate().toLocaleDateString('en-US', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })
+                : '';
+
+            item.innerHTML = `
+                <div class="activity-icon gift"><i class="fa-solid fa-gift"></i></div>
+                <div class="activity-info">
+                    <div class="activity-text">
+                        Sent ${d.qty||1}x <strong>${escapeHtml(d.giftName||'Gift')}</strong> ${d.giftEmoji||'🎁'}
+                    </div>
+                    <div class="activity-time">
+                        <i class="fa-solid fa-coins" style="color:#FBBF24;"></i>
+                        ${d.coinsSpent||0} coins
+                        <span style="margin-left:6px;">${date}</span>
+                    </div>
+                </div>`;
+            listEl.appendChild(item);
+        });
+    } catch(err) {
+        console.error(err);
+        document.getElementById('giftActivityList').innerHTML =
+            '<div style="text-align:center; color:#FF3B30; padding:20px;">Failed to load gift data</div>';
+    }
+}
+
+// ========== LOAD FOLLOWERS ==========
+async function loadFollowers() {
+    const listEl = document.getElementById('followersList');
+    try {
+        const snap = await db.collection('follows')
+            .where('followingId', '==', profileData.uid)
+            .orderBy('createdAt', 'desc')
+            .limit(30)
+            .get();
+
+        listEl.innerHTML = '';
+
+        if (snap.empty) {
+            listEl.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon" style="background:rgba(77,163,255,0.1); color:#4DA3FF;">
+                        <i class="fa-solid fa-user-group"></i>
+                    </div>
+                    <div class="empty-title">No Followers Yet</div>
+                    <div class="empty-text">${isOwnProfile ? 'Go live to gain followers!' : 'No followers yet.'}</div>
+                </div>`;
+            return;
+        }
+
+        const followerIds = snap.docs.map(d => d.data().followerId);
+        await renderUserList(listEl, followerIds);
+    } catch(err) {
+        console.error(err);
+        listEl.innerHTML = '<div style="text-align:center; color:#FF3B30; padding:20px;">Failed to load</div>';
+    }
+}
+
+// ========== LOAD FOLLOWING ==========
+async function loadFollowing() {
+    const listEl = document.getElementById('followingList');
+    try {
+        const snap = await db.collection('follows')
+            .where('followerId', '==', profileData.uid)
+            .orderBy('createdAt', 'desc')
+            .limit(30)
+            .get();
+
+        listEl.innerHTML = '';
+
+        if (snap.empty) {
+            listEl.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon" style="background:rgba(52,211,153,0.1); color:#34D399;">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                    <div class="empty-title">Not Following Anyone</div>
+                    <div class="empty-text">${isOwnProfile ? 'Discover and follow creators!' : 'Not following anyone yet.'}</div>
+                </div>`;
+            return;
+        }
+
+        const followingIds = snap.docs.map(d => d.data().followingId);
+        await renderUserList(listEl, followingIds);
+    } catch(err) {
+        console.error(err);
+        listEl.innerHTML = '<div style="text-align:center; color:#FF3B30; padding:20px;">Failed to load</div>';
+    }
+}
+
+// ========== RENDER USER LIST ==========
+async function renderUserList(container, uids) {
+    const gradients = [
+        'linear-gradient(135deg,#4DA3FF,#A855F7)',
+        'linear-gradient(135deg,#FF4D8D,#FBBF24)',
+        'linear-gradient(135deg,#34D399,#4DA3FF)',
+        'linear-gradient(135deg,#A855F7,#FF4D8D)',
+    ];
+
+    for (let i = 0; i < uids.length; i++) {
+        try {
+            const uDoc = await db.collection('users').doc(uids[i]).get();
+            if (!uDoc.exists) continue;
+
+            const u = uDoc.data();
+            const card = document.createElement('div');
+            card.className = 'follower-card';
+            card.style.animationDelay = `${i * 0.05}s`;
+            card.onclick = () => {
+                window.location.href = `profile.html?uid=${uids[i]}`;
+            };
+
+            const initial  = (u.fullName || 'U').charAt(0).toUpperCase();
+            const grad     = gradients[i % gradients.length];
+            const avatarHtml = u.avatar
+                ? `<img src="${u.avatar}" alt="">`
+                : `<div class="f-placeholder" style="background:${grad};">${initial}</div>`;
+
+            card.innerHTML = `
+                <div class="follower-avatar">${avatarHtml}</div>
+                <div class="follower-info">
+                    <div class="follower-name">${escapeHtml(u.fullName||'User')}</div>
+                    <div class="follower-username">@${escapeHtml(u.username||'unknown')}</div>
+                </div>
+                <span class="follower-role-tag ${u.role||'listener'}">${capitalize(u.role||'listener')}</span>`;
+
+            container.appendChild(card);
+        } catch(err) { console.error(err); }
+    }
+}
+
+// ========== LOAD ACTIVITY ==========
+async function loadActivity() {
+    const listEl = document.getElementById('activityList');
+    try {
+        const snap = await db.collection('transactions')
+            .where('senderId', '==', profileData.uid)
+            .orderBy('createdAt', 'desc')
+            .limit(25)
+            .get();
+
+        listEl.innerHTML = '';
+
+        if (snap.empty) {
+            listEl.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon" style="background:rgba(77,163,255,0.1); color:#4DA3FF;">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                    <div class="empty-title">No Activity Yet</div>
+                    <div class="empty-text">Activity will appear here as you interact.</div>
+                </div>`;
+            return;
+        }
+
+        snap.forEach((doc, i) => {
+            const d = doc.data();
+            const item = document.createElement('div');
+            item.className = 'activity-item';
+            item.style.animationDelay = `${i * 0.05}s`;
+
+            const date = d.createdAt?.toDate
+                ? d.createdAt.toDate().toLocaleDateString('en-US', { month:'short', day:'numeric' })
+                : '';
+
+            let iconClass = 'coin';
+            let iconEl    = '<i class="fa-solid fa-coins"></i>';
+            let text      = 'Transaction';
+
+            if (d.type === 'gift_sent') {
+                iconClass = 'gift';
+                iconEl    = '<i class="fa-solid fa-gift"></i>';
+                text      = `Sent ${d.qty||1}x <strong>${escapeHtml(d.giftName||'Gift')}</strong> ${d.giftEmoji||'🎁'} — ${d.coinsSpent||0} coins`;
+            } else if (d.type === 'coin_purchase') {
+                iconClass = 'coin';
+                iconEl    = '<i class="fa-solid fa-coins"></i>';
+                text      = `Purchased <strong>${d.coins||0} coins</strong>`;
+            } else if (d.type === 'payout') {
+                iconClass = 'stream';
+                iconEl    = '<i class="fa-solid fa-sack-dollar"></i>';
+                text      = `Received payout of <strong>₦${formatCurrency(d.amount||0)}</strong>`;
+            }
+
+            item.innerHTML = `
+                <div class="activity-icon ${iconClass}">${iconEl}</div>
+                <div class="activity-info">
+                    <div class="activity-text">${text}</div>
+                    <div class="activity-time">
+                        <i class="fa-solid fa-clock"></i> ${date}
+                    </div>
+                </div>`;
+            listEl.appendChild(item);
+        });
+    } catch(err) {
+        console.error(err);
+        listEl.innerHTML = '<div style="text-align:center; color:#FF3B30; padding:20px;">Failed to load</div>';
+    }
+}
+
+// ========== SHARE PROFILE ==========
+function shareProfile() {
+    const url = `${window.location.origin}/profile.html?uid=${profileData?.uid}`;
+    if (navigator.share) {
+        navigator.share({
+            title: `${profileData?.fullName} on Chaterra`,
+            text:  `Check out @${profileData?.username} on Chaterra!`,
+            url
+        }).catch(() => {});
+    } else {
+        navigator.clipboard.writeText(url).then(() => {
+            showToast('Profile link copied! 🔗', 'success');
+        }).catch(() => showToast('Could not copy link', 'error'));
+    }
+}
+
+function sendMessage() {
+    window.location.href = `messages.html?uid=${profileData?.uid}`;
+}
+
+function showMoreOptions() {
+    if (!isOwnProfile) {
+        showToast('Options: Report / Block', 'info');
+    } else {
+        window.location.href = 'edit-profile.html';
+    }
+}
+
+function goBack() {
+    if (window.history.length > 1) {
+        window.history.back();
+    } else {
+        window.location.href = 'home.html';
+    }
+}
+
+// ========== UTILS ==========
+function capitalize(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function formatCount(n) {
+    n = parseInt(n) || 0;
+    if (n >= 1000000) return (n/1000000).toFixed(1)+'M';
+    if (n >= 1000)    return (n/1000).toFixed(1)+'K';
+    return n.toString();
+}
+
+function formatCurrency(n) {
+    return parseInt(n || 0).toLocaleString('en-NG');
+}
+
+function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str || '';
+    return d.innerHTML;
+}
+
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    const icons = {
+        success:'fa-circle-check',
+        error:'fa-circle-xmark',
+        warning:'fa-triangle-exclamation',
+        info:'fa-circle-info'
+    };
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i> ${message}`;
+    container.appendChild(toast);
+    setTimeout(() => { if (toast.parentNode) toast.remove(); }, 4000);
+}
+</script>
+</body>
+</html>
